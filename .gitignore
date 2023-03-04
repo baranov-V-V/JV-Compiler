@@ -9,3 +9,20 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
+
+# VS-CODE FILES
+
+.vscode
+
+
+# BISON FILES
+
+src/parser/location.hh
+src/parser/parser.hh
+src/parser/parser.cpp
+
+
+# FLEX FILES
+
+src/scanner/scanner.cpp
+
