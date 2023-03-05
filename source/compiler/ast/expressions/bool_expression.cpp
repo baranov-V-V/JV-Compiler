@@ -1,12 +1,10 @@
 #include "bool_expression.hpp"
 
 void TrueExpression::Accept(Visitor* visitor) {
-  return;
-  //visitor->Visit(this->shared_from_this());
+  visitor->Visit(this);
 }
 
 void FalseExpression::Accept(Visitor* visitor) {
-  return;
-  //visitor->Visit(this->shared_from_this());
+  visitor->Visit(this);
 }
 

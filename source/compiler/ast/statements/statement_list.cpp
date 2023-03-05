@@ -4,4 +4,8 @@ StatementList::StatementList(Statement* statement) {
   elements.push_back(statement);
 }
 
-void StatementList::Accept(Visitor* visitor) { return; }
+void StatementList::Accept(Visitor* visitor) {
+  for (Statement* element: elements) {
+    element->Accept(visitor);
+  }
+}

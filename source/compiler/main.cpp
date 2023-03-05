@@ -1,23 +1,25 @@
 #include <iostream>
-#include "parser/driver.hpp"
+#include <string>
+#include <fstream>
+#include "compiler/parser/driver.hpp"
+#include <filesystem>
 
 int main(int argc, char** argv) {
-/*
-    Driver driver;
+  Driver driver;
+  std::string filename = "../test1.jv";
 
-    for (int i = 1; i < argc; ++i) {
-        if (argv[i] == std::string("-p")) {
-            driver.trace_parsing = true;
-        } else if (argv[i] == std::string("-s")) {
-            driver.trace_scanning = true;
-        } else if (!driver.parse(argv[i])) {
-            std::cout << driver.result << std::endl;
-        } else {
-            result = 1;
-        }
+  for (int i = 1; i < argc; ++i) {
+    if (argv[i] == std::string("-p")) {
+      driver.SetTraceParse(true);
+    } else if (argv[i] == std::string("-s")) {
+      driver.SetTraceScan(true);
+    } else {
+      filename = argv[i];
     }
+  }
 
-    return result;
-*/    int result = 0;
+  driver.Parse(filename);
+  driver.Run();
+  
   return 0;
 }

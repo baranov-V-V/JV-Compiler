@@ -11,5 +11,5 @@ IfElseStatement::~IfElseStatement() {
 }
 
 void IfElseStatement::Accept(Visitor* visitor) {
-  return;
+  visitor->Visit(this);
 }

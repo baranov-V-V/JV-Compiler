@@ -41,7 +41,7 @@
 
 
 // Unqualified %code blocks.
-#line 23 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+#line 21 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
 
   #include "driver.hpp"
   #include "location.hh"
@@ -53,7 +53,7 @@
   #include "../ast/declarations/class_declaration.hpp"
   #include "../ast/declarations/declaration_list.hpp"
   #include "../ast/declarations/declaration.hpp"
-  //#include "../ast/declarations/method_declaration.hpp"
+  #include "../ast/declarations/method_declaration.hpp"
   #include "../ast/declarations/variable_declaration.hpp"
 
   #include "../ast/expressions/binary_op_expression.hpp"
@@ -71,7 +71,7 @@
   #include "../ast/statements/print_statement.hpp"
   #include "../ast/statements/return_statement.hpp"
   #include "../ast/statements/statement_list.hpp"
-  #include "../ast/statements/statement_list_node.hpp"
+  #include "../ast/statements/statement_list_statement.hpp"
   #include "../ast/statements/statement.hpp"
   #include "../ast/statements/while_statement.hpp"
   #include "../ast/statements/local_variable_statement.hpp"
@@ -285,7 +285,7 @@ namespace yy {
   {
     switch (that.type_get ())
     {
-      case 54: // expr
+      case 53: // expr
         value.YY_MOVE_OR_COPY< Expression* > (YY_MOVE (that.value));
         break;
 
@@ -293,23 +293,23 @@ namespace yy {
         value.YY_MOVE_OR_COPY< LocalVariableStatement* > (YY_MOVE (that.value));
         break;
 
-      case 49: // main_class
+      case 48: // main_class
         value.YY_MOVE_OR_COPY< MainClass* > (YY_MOVE (that.value));
         break;
 
-      case 48: // program
+      case 47: // program
         value.YY_MOVE_OR_COPY< Program* > (YY_MOVE (that.value));
         break;
 
-      case 52: // statement
+      case 50: // statement
         value.YY_MOVE_OR_COPY< Statement* > (YY_MOVE (that.value));
         break;
 
-      case 53: // statement_list
+      case 52: // statement_list
         value.YY_MOVE_OR_COPY< StatementList* > (YY_MOVE (that.value));
         break;
 
-      case 50: // variable_declaration
+      case 49: // variable_declaration
         value.YY_MOVE_OR_COPY< VariableDeclaration* > (YY_MOVE (that.value));
         break;
 
@@ -325,7 +325,7 @@ namespace yy {
       case 12: // "&&"
       case 13: // "%"
       case 45: // "number"
-      case 47: // integer_literal
+      case 54: // integer_literal
         value.YY_MOVE_OR_COPY< int > (YY_MOVE (that.value));
         break;
 
@@ -348,7 +348,7 @@ namespace yy {
   {
     switch (that.type_get ())
     {
-      case 54: // expr
+      case 53: // expr
         value.move< Expression* > (YY_MOVE (that.value));
         break;
 
@@ -356,23 +356,23 @@ namespace yy {
         value.move< LocalVariableStatement* > (YY_MOVE (that.value));
         break;
 
-      case 49: // main_class
+      case 48: // main_class
         value.move< MainClass* > (YY_MOVE (that.value));
         break;
 
-      case 48: // program
+      case 47: // program
         value.move< Program* > (YY_MOVE (that.value));
         break;
 
-      case 52: // statement
+      case 50: // statement
         value.move< Statement* > (YY_MOVE (that.value));
         break;
 
-      case 53: // statement_list
+      case 52: // statement_list
         value.move< StatementList* > (YY_MOVE (that.value));
         break;
 
-      case 50: // variable_declaration
+      case 49: // variable_declaration
         value.move< VariableDeclaration* > (YY_MOVE (that.value));
         break;
 
@@ -388,7 +388,7 @@ namespace yy {
       case 12: // "&&"
       case 13: // "%"
       case 45: // "number"
-      case 47: // integer_literal
+      case 54: // integer_literal
         value.move< int > (YY_MOVE (that.value));
         break;
 
@@ -411,7 +411,7 @@ namespace yy {
     state = that.state;
     switch (that.type_get ())
     {
-      case 54: // expr
+      case 53: // expr
         value.copy< Expression* > (that.value);
         break;
 
@@ -419,23 +419,23 @@ namespace yy {
         value.copy< LocalVariableStatement* > (that.value);
         break;
 
-      case 49: // main_class
+      case 48: // main_class
         value.copy< MainClass* > (that.value);
         break;
 
-      case 48: // program
+      case 47: // program
         value.copy< Program* > (that.value);
         break;
 
-      case 52: // statement
+      case 50: // statement
         value.copy< Statement* > (that.value);
         break;
 
-      case 53: // statement_list
+      case 52: // statement_list
         value.copy< StatementList* > (that.value);
         break;
 
-      case 50: // variable_declaration
+      case 49: // variable_declaration
         value.copy< VariableDeclaration* > (that.value);
         break;
 
@@ -451,7 +451,7 @@ namespace yy {
       case 12: // "&&"
       case 13: // "%"
       case 45: // "number"
-      case 47: // integer_literal
+      case 54: // integer_literal
         value.copy< int > (that.value);
         break;
 
@@ -473,7 +473,7 @@ namespace yy {
     state = that.state;
     switch (that.type_get ())
     {
-      case 54: // expr
+      case 53: // expr
         value.move< Expression* > (that.value);
         break;
 
@@ -481,23 +481,23 @@ namespace yy {
         value.move< LocalVariableStatement* > (that.value);
         break;
 
-      case 49: // main_class
+      case 48: // main_class
         value.move< MainClass* > (that.value);
         break;
 
-      case 48: // program
+      case 47: // program
         value.move< Program* > (that.value);
         break;
 
-      case 52: // statement
+      case 50: // statement
         value.move< Statement* > (that.value);
         break;
 
-      case 53: // statement_list
+      case 52: // statement_list
         value.move< StatementList* > (that.value);
         break;
 
-      case 50: // variable_declaration
+      case 49: // variable_declaration
         value.move< VariableDeclaration* > (that.value);
         break;
 
@@ -513,7 +513,7 @@ namespace yy {
       case 12: // "&&"
       case 13: // "%"
       case 45: // "number"
-      case 47: // integer_literal
+      case 54: // integer_literal
         value.move< int > (that.value);
         break;
 
@@ -771,7 +771,7 @@ namespace yy {
          when using variants.  */
       switch (yyr1_[yyn])
     {
-      case 54: // expr
+      case 53: // expr
         yylhs.value.emplace< Expression* > ();
         break;
 
@@ -779,23 +779,23 @@ namespace yy {
         yylhs.value.emplace< LocalVariableStatement* > ();
         break;
 
-      case 49: // main_class
+      case 48: // main_class
         yylhs.value.emplace< MainClass* > ();
         break;
 
-      case 48: // program
+      case 47: // program
         yylhs.value.emplace< Program* > ();
         break;
 
-      case 52: // statement
+      case 50: // statement
         yylhs.value.emplace< Statement* > ();
         break;
 
-      case 53: // statement_list
+      case 52: // statement_list
         yylhs.value.emplace< StatementList* > ();
         break;
 
-      case 50: // variable_declaration
+      case 49: // variable_declaration
         yylhs.value.emplace< VariableDeclaration* > ();
         break;
 
@@ -811,7 +811,7 @@ namespace yy {
       case 12: // "&&"
       case 13: // "%"
       case 45: // "number"
-      case 47: // integer_literal
+      case 54: // integer_literal
         yylhs.value.emplace< int > ();
         break;
 
@@ -840,193 +840,193 @@ namespace yy {
           switch (yyn)
             {
   case 2:
-#line 151 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+#line 148 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
   { yylhs.value.as < Program* > () = new Program(yystack_[0].value.as < MainClass* > ()); driver.SetProgram(yylhs.value.as < Program* > ()); }
 #line 846 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 3:
-#line 161 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+#line 152 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
   { yylhs.value.as < MainClass* > () = new MainClass(yystack_[2].value.as < StatementList* > ()); }
 #line 852 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 4:
-#line 171 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  { yylhs.value.as < StatementList* > () = new StatementList(yystack_[0].value.as < Statement* > ()); }
+#line 178 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  { yylhs.value.as < VariableDeclaration* > () = new VariableDeclaration(yystack_[1].value.as < std::string > ()); }
 #line 858 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 5:
-#line 173 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  { yylhs.value.as < StatementList* > () = yystack_[1].value.as < StatementList* > (); yylhs.value.as < StatementList* > ()->Add(yystack_[0].value.as < Statement* > ()); }
+#line 182 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  { yylhs.value.as < Statement* > () = yystack_[0].value.as < LocalVariableStatement* > (); }
 #line 864 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 6:
-#line 187 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  { yylhs.value.as < VariableDeclaration* > () = new VariableDeclaration(yystack_[1].value.as < std::string > ()); }
+#line 184 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  { yylhs.value.as < Statement* > () = new StatementListStatement(yystack_[1].value.as < StatementList* > ()); }
 #line 870 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 7:
-#line 191 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  { yylhs.value.as < LocalVariableStatement* > () = new LocalVariableStatement(yystack_[0].value.as < VariableDeclaration* > ()); }
+#line 186 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  { yylhs.value.as < Statement* > () = new IfElseStatement(yystack_[4].value.as < Expression* > (), yystack_[2].value.as < Statement* > (), yystack_[0].value.as < Statement* > ()); }
 #line 876 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 8:
-#line 195 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  { yylhs.value.as < Statement* > () = yystack_[0].value.as < LocalVariableStatement* > (); }
+#line 188 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  { yylhs.value.as < Statement* > () = new IfStatement(yystack_[2].value.as < Expression* > (), yystack_[0].value.as < Statement* > ()); }
 #line 882 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 9:
-#line 197 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  { yylhs.value.as < Statement* > () = new StatementListNode(yystack_[1].value.as < StatementList* > ()); }
+#line 190 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  { yylhs.value.as < Statement* > () = new WhileStatement(yystack_[2].value.as < Expression* > (), yystack_[0].value.as < Statement* > ()); }
 #line 888 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 10:
-#line 199 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  { yylhs.value.as < Statement* > () = new IfStatement(yystack_[2].value.as < Expression* > (), yystack_[0].value.as < Statement* > ()); }
+#line 192 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  { yylhs.value.as < Statement* > () = new PrintStatement(yystack_[2].value.as < Expression* > ()); }
 #line 894 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 11:
-#line 201 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  { yylhs.value.as < Statement* > () = new IfElseStatement(yystack_[4].value.as < Expression* > (), yystack_[2].value.as < Statement* > (), yystack_[0].value.as < Statement* > ()); }
+#line 194 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  { yylhs.value.as < Statement* > () = new AssignmentStatement(yystack_[3].value.as < std::string > (), yystack_[1].value.as < Expression* > ()); }
 #line 900 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 12:
-#line 203 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  { yylhs.value.as < Statement* > () = new WhileStatement(yystack_[2].value.as < Expression* > (), yystack_[0].value.as < Statement* > ()); }
+#line 198 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  { yylhs.value.as < LocalVariableStatement* > () = new LocalVariableStatement(yystack_[0].value.as < VariableDeclaration* > ()); }
 #line 906 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 13:
-#line 205 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  { yylhs.value.as < Statement* > () = new PrintStatement(yystack_[2].value.as < Expression* > ()); }
+#line 202 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  { yylhs.value.as < StatementList* > () = new StatementList(yystack_[0].value.as < Statement* > ()); }
 #line 912 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 14:
-#line 207 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  { yylhs.value.as < Statement* > () = new AssignmentStatement(yystack_[3].value.as < std::string > (), yystack_[1].value.as < Expression* > ()); }
+#line 204 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  { yylhs.value.as < StatementList* > () = yystack_[1].value.as < StatementList* > (); yylhs.value.as < StatementList* > ()->Add(yystack_[0].value.as < Statement* > ()); }
 #line 918 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 15:
-#line 212 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::AND, yystack_[0].value.as < Expression* > ());}
+#line 208 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  { yylhs.value.as < Expression* > () = yystack_[1].value.as < Expression* > (); }
 #line 924 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 16:
-#line 214 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::OR, yystack_[0].value.as < Expression* > ());}
+#line 210 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::PLUS, yystack_[0].value.as < Expression* > ());}
 #line 930 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 17:
-#line 216 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::LESS, yystack_[0].value.as < Expression* > ());}
+#line 212 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::MINUS, yystack_[0].value.as < Expression* > ());}
 #line 936 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 18:
-#line 218 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::GREATER, yystack_[0].value.as < Expression* > ());}
+#line 214 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::MUL, yystack_[0].value.as < Expression* > ());}
 #line 942 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 19:
-#line 220 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::EQUAL, yystack_[0].value.as < Expression* > ());}
+#line 216 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::DIV, yystack_[0].value.as < Expression* > ());}
 #line 948 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 20:
-#line 222 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::NEQUAL, yystack_[0].value.as < Expression* > ());}
+#line 218 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::EQUAL, yystack_[0].value.as < Expression* > ());}
 #line 954 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 21:
-#line 224 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::PLUS, yystack_[0].value.as < Expression* > ());}
+#line 220 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::NEQUAL, yystack_[0].value.as < Expression* > ());}
 #line 960 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 22:
-#line 226 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::MINUS, yystack_[0].value.as < Expression* > ());}
+#line 222 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::LESS, yystack_[0].value.as < Expression* > ());}
 #line 966 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 23:
-#line 228 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::MUL, yystack_[0].value.as < Expression* > ());}
+#line 224 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::GREATER, yystack_[0].value.as < Expression* > ());}
 #line 972 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 24:
-#line 230 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::DIV, yystack_[0].value.as < Expression* > ());}
+#line 226 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::OR, yystack_[0].value.as < Expression* > ());}
 #line 978 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 25:
-#line 232 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::PERCENT, yystack_[0].value.as < Expression* > ());}
+#line 228 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::AND, yystack_[0].value.as < Expression* > ());}
 #line 984 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 26:
-#line 234 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
-  { yylhs.value.as < Expression* > () = yystack_[1].value.as < Expression* > (); }
+#line 230 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+  {yylhs.value.as < Expression* > () = new BinOpExpression(yystack_[2].value.as < Expression* > (), BinOperation::PERCENT, yystack_[0].value.as < Expression* > ());}
 #line 990 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 27:
-#line 236 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+#line 232 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
   { yylhs.value.as < Expression* > () = new IdentifierExpression(yystack_[0].value.as < std::string > ()); }
 #line 996 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 28:
-#line 238 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+#line 234 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
   { yylhs.value.as < Expression* > () = new IntegerExpression(yystack_[0].value.as < int > ()); }
 #line 1002 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 29:
-#line 240 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+#line 236 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
   { yylhs.value.as < Expression* > () = new TrueExpression(); }
 #line 1008 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 30:
-#line 242 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+#line 238 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
   { yylhs.value.as < Expression* > () = new FalseExpression(); }
 #line 1014 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 31:
-#line 244 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+#line 240 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
   { yylhs.value.as < Expression* > () = new NotExpression(yystack_[0].value.as < Expression* > ()); }
 #line 1020 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 32:
-#line 248 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+#line 243 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
   { yylhs.value.as < int > () = yystack_[0].value.as < int > (); }
 #line 1026 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
 
   case 33:
-#line 250 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+#line 245 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
   { yylhs.value.as < int > () = -yystack_[0].value.as < int > (); }
 #line 1032 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
     break;
@@ -1303,22 +1303,22 @@ namespace yy {
   }
 
 
-  const signed char parser::yypact_ninf_ = -41;
+  const signed char parser::yypact_ninf_ = -30;
 
   const signed char parser::yytable_ninf_ = -1;
 
   const short
   parser::yypact_[] =
   {
-     -31,   -40,    11,   -41,    -4,   -41,   -18,   -12,   -24,     5,
-      16,    17,    15,    -8,    -8,    21,    24,    25,    14,    47,
-     -41,   -41,   -41,    35,    39,    -2,    -2,    -2,    38,    -2,
-      42,   -41,   -41,    19,    -2,    -2,   -41,   -41,   -41,   -41,
-     -41,   103,   118,   133,   -41,    81,   -41,   -41,   185,   148,
+     -15,   -29,    22,   -30,     5,   -30,    -3,    -5,    -9,    10,
+      25,    41,    39,    40,    40,    45,    46,    48,    21,    52,
+     -30,   -30,   -30,    -4,    35,    -2,    -2,    -2,    49,    -2,
+      51,   -30,   -30,    24,    -2,    -2,   -30,   -30,   -30,   -30,
+     104,   -30,   119,   134,   -30,    82,   -30,   -30,   175,   149,
       -2,    -2,    -2,    -2,    -2,    -2,    -2,    -2,    -2,    -2,
-      -2,    -8,    -8,    44,   -41,   -41,     4,     4,    53,    53,
-     185,   185,     2,     2,   174,   174,   163,    41,   -41,   -41,
-      -8,   -41
+      -2,    40,    40,    50,   -30,   -30,    13,    13,    57,    57,
+     175,   175,   186,   186,     0,     0,   164,    47,   -30,   -30,
+      40,   -30
   };
 
   const signed char
@@ -1326,105 +1326,105 @@ namespace yy {
   {
        0,     0,     0,     2,     0,     1,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       7,     8,     4,     0,     0,     0,     0,     0,     0,     0,
-       0,     5,     9,     0,     0,     0,    29,    30,    27,    32,
-      28,     0,     0,     0,     6,     0,     3,    33,    31,     0,
+      12,    13,     5,     0,     0,     0,     0,     0,     0,     0,
+       0,    14,     6,     0,     0,     0,    29,    30,    27,    32,
+       0,    28,     0,     0,     4,     0,     3,    33,    31,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,    14,    26,    21,    22,    23,    24,
-      19,    20,    17,    18,    16,    15,    25,    10,    12,    13,
-       0,    11
+       0,     0,     0,     0,    11,    15,    16,    17,    18,    19,
+      20,    21,    22,    23,    24,    25,    26,     8,     9,    10,
+       0,     7
   };
 
   const signed char
   parser::yypgoto_[] =
   {
-     -41,   -41,   -41,   -41,   -41,   -41,   -23,    56,    -6
+     -30,   -30,   -30,   -30,   -23,   -30,    64,    -6,   -30
   };
 
   const signed char
   parser::yydefgoto_[] =
   {
-      -1,    40,     2,     3,    20,    21,    22,    23,    41
+      -1,     2,     3,    20,    21,    22,    23,    40,    41
   };
 
   const signed char
   parser::yytable_[] =
   {
-      31,    31,    33,     1,     4,    50,    51,    52,    53,    52,
-      53,     5,    14,    34,    35,    60,     6,    60,     7,     9,
-      42,    43,    15,    45,    16,     8,    36,    37,    48,    49,
-      10,    17,    11,    18,    12,    13,    19,    25,    77,    78,
-      26,    27,    38,    39,    66,    67,    68,    69,    70,    71,
-      72,    73,    74,    75,    76,    14,    30,    81,    28,    14,
-      32,    29,    44,    46,    47,    15,    60,    16,    79,    15,
-      24,    16,    80,     0,    17,     0,    18,     0,    17,    19,
-      18,     0,     0,    19,    50,    51,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,    64,    50,    51,    52,    53,
-      54,    55,    56,    57,    58,    59,    60,     0,     0,     0,
-      61,    50,    51,    52,    53,    54,    55,    56,    57,    58,
-      59,    60,     0,     0,     0,    62,    50,    51,    52,    53,
-      54,    55,    56,    57,    58,    59,    60,     0,     0,     0,
-      63,    50,    51,    52,    53,    54,    55,    56,    57,    58,
-      59,    60,     0,     0,     0,    65,    50,    51,    52,    53,
-      54,    55,    56,    57,    58,    59,    60,    50,    51,    52,
-      53,    54,    55,    56,    57,     0,     0,    60,    50,    51,
-      52,    53,     0,     0,    56,    57,     0,     0,    60
+      31,    31,    33,    50,    51,    52,    53,    54,    55,    56,
+      57,     1,    34,    60,    35,     4,    14,    30,    52,    53,
+      42,    43,     5,    45,    15,     6,    60,    16,    48,    49,
+      36,    37,     8,     7,     9,    10,    17,    18,    77,    78,
+      19,    11,    38,    39,    66,    67,    68,    69,    70,    71,
+      72,    73,    74,    75,    76,    14,    32,    81,    12,    13,
+      14,    25,    26,    15,    27,    28,    16,    29,    15,    47,
+      60,    16,    46,    44,    79,    17,    18,    80,    24,    19,
+      17,    18,     0,     0,    19,    50,    51,    52,    53,    54,
+      55,    56,    57,    58,    59,    60,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,    64,    50,    51,    52,
+      53,    54,    55,    56,    57,    58,    59,    60,     0,     0,
+       0,    61,    50,    51,    52,    53,    54,    55,    56,    57,
+      58,    59,    60,     0,     0,     0,    62,    50,    51,    52,
+      53,    54,    55,    56,    57,    58,    59,    60,     0,     0,
+       0,    63,    50,    51,    52,    53,    54,    55,    56,    57,
+      58,    59,    60,     0,     0,     0,    65,    50,    51,    52,
+      53,    54,    55,    56,    57,    58,    59,    60,    50,    51,
+      52,    53,     0,     0,    56,    57,     0,     0,    60,    50,
+      51,    52,    53,     0,     0,     0,     0,     0,     0,    60
   };
 
   const signed char
   parser::yycheck_[] =
   {
-      23,    24,     4,    34,    44,     3,     4,     5,     6,     5,
-       6,     0,    20,    15,    16,    13,    20,    13,    36,    43,
-      26,    27,    30,    29,    32,    37,    28,    29,    34,    35,
-      25,    39,    16,    41,    17,    20,    44,    16,    61,    62,
-      16,    16,    44,    45,    50,    51,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    20,    21,    80,    44,    20,
-      21,    14,    24,    21,    45,    30,    13,    32,    24,    30,
-      14,    32,    31,    -1,    39,    -1,    41,    -1,    39,    44,
-      41,    -1,    -1,    44,     3,     4,     5,     6,     7,     8,
-       9,    10,    11,    12,    13,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    24,     3,     4,     5,     6,
-       7,     8,     9,    10,    11,    12,    13,    -1,    -1,    -1,
-      17,     3,     4,     5,     6,     7,     8,     9,    10,    11,
-      12,    13,    -1,    -1,    -1,    17,     3,     4,     5,     6,
-       7,     8,     9,    10,    11,    12,    13,    -1,    -1,    -1,
-      17,     3,     4,     5,     6,     7,     8,     9,    10,    11,
-      12,    13,    -1,    -1,    -1,    17,     3,     4,     5,     6,
-       7,     8,     9,    10,    11,    12,    13,     3,     4,     5,
-       6,     7,     8,     9,    10,    -1,    -1,    13,     3,     4,
-       5,     6,    -1,    -1,     9,    10,    -1,    -1,    13
+      23,    24,     4,     3,     4,     5,     6,     7,     8,     9,
+      10,    26,    14,    13,    16,    44,    20,    21,     5,     6,
+      26,    27,     0,    29,    28,    20,    13,    31,    34,    35,
+      32,    33,    37,    36,    43,    25,    40,    41,    61,    62,
+      44,    16,    44,    45,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    60,    20,    21,    80,    17,    20,
+      20,    16,    16,    28,    16,    44,    31,    15,    28,    45,
+      13,    31,    21,    24,    24,    40,    41,    30,    14,    44,
+      40,    41,    -1,    -1,    44,     3,     4,     5,     6,     7,
+       8,     9,    10,    11,    12,    13,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    24,     3,     4,     5,
+       6,     7,     8,     9,    10,    11,    12,    13,    -1,    -1,
+      -1,    17,     3,     4,     5,     6,     7,     8,     9,    10,
+      11,    12,    13,    -1,    -1,    -1,    17,     3,     4,     5,
+       6,     7,     8,     9,    10,    11,    12,    13,    -1,    -1,
+      -1,    17,     3,     4,     5,     6,     7,     8,     9,    10,
+      11,    12,    13,    -1,    -1,    -1,    17,     3,     4,     5,
+       6,     7,     8,     9,    10,    11,    12,    13,     3,     4,
+       5,     6,    -1,    -1,     9,    10,    -1,    -1,    13,     3,
+       4,     5,     6,    -1,    -1,    -1,    -1,    -1,    -1,    13
   };
 
   const signed char
   parser::yystos_[] =
   {
-       0,    34,    48,    49,    44,     0,    20,    36,    37,    43,
-      25,    16,    17,    20,    20,    30,    32,    39,    41,    44,
-      50,    51,    52,    53,    53,    16,    16,    16,    44,    14,
-      21,    52,    21,     4,    15,    16,    28,    29,    44,    45,
-      47,    54,    54,    54,    24,    54,    21,    45,    54,    54,
+       0,    26,    47,    48,    44,     0,    20,    36,    37,    43,
+      25,    16,    17,    20,    20,    28,    31,    40,    41,    44,
+      49,    50,    51,    52,    52,    16,    16,    16,    44,    15,
+      21,    50,    21,     4,    14,    16,    32,    33,    44,    45,
+      53,    54,    53,    53,    24,    53,    21,    45,    53,    53,
        3,     4,     5,     6,     7,     8,     9,    10,    11,    12,
-      13,    17,    17,    17,    24,    17,    54,    54,    54,    54,
-      54,    54,    54,    54,    54,    54,    54,    52,    52,    24,
-      31,    52
+      13,    17,    17,    17,    24,    17,    53,    53,    53,    53,
+      53,    53,    53,    53,    53,    53,    53,    50,    50,    24,
+      30,    50
   };
 
   const signed char
   parser::yyr1_[] =
   {
-       0,    46,    48,    49,    53,    53,    50,    51,    52,    52,
-      52,    52,    52,    52,    52,    54,    54,    54,    54,    54,
-      54,    54,    54,    54,    54,    54,    54,    54,    54,    54,
-      54,    54,    47,    47
+       0,    46,    47,    48,    49,    50,    50,    50,    50,    50,
+      50,    50,    51,    52,    52,    53,    53,    53,    53,    53,
+      53,    53,    53,    53,    53,    53,    53,    53,    53,    53,
+      53,    53,    54,    54
   };
 
   const signed char
   parser::yyr2_[] =
   {
-       0,     2,     1,    13,     1,     2,     3,     1,     1,     3,
-       5,     7,     5,     5,     4,     3,     3,     3,     3,     3,
+       0,     2,     1,    13,     3,     1,     3,     7,     5,     5,
+       5,     4,     1,     1,     2,     3,     3,     3,     3,     3,
        3,     3,     3,     3,     3,     3,     3,     1,     1,     1,
        1,     2,     1,     2
   };
@@ -1438,24 +1438,24 @@ namespace yy {
   {
   "\"end of file\"", "error", "$undefined", "\"+\"", "\"-\"", "\"*\"",
   "\"/\"", "\"==\"", "\"!=\"", "\"<\"", "\">\"", "\"||\"", "\"&&\"",
-  "\"%\"", "\"=\"", "\"!\"", "\"(\"", "\")\"", "\"[\"", "\"]\"", "\"{\"",
-  "\"}\"", "\".\"", "\",\"", "\";\"", "\"main\"", "\"new\"", "\"this\"",
-  "\"true\"", "\"false\"", "\"if\"", "\"else\"", "\"while\"", "\"assert\"",
-  "\"class\"", "\"extends\"", "\"public\"", "\"static\"", "\"return\"",
-  "\"print\"", "\"length\"", "\"int\"", "\"bool\"", "\"void\"",
-  "\"identifier\"", "\"number\"", "$accept", "integer_literal", "program",
-  "main_class", "variable_declaration", "local_variable_statement",
-  "statement", "statement_list", "expr", YY_NULLPTR
+  "\"%\"", "\"!\"", "\"=\"", "\"(\"", "\")\"", "\"[\"", "\"]\"", "\"{\"",
+  "\"}\"", "\".\"", "\",\"", "\";\"", "\"main\"", "\"class\"", "\"this\"",
+  "\"if\"", "\"new\"", "\"else\"", "\"while\"", "\"true\"", "\"false\"",
+  "\"extends\"", "\"assert\"", "\"public\"", "\"static\"", "\"return\"",
+  "\"length\"", "\"println\"", "\"int\"", "\"bool\"", "\"void\"",
+  "\"identifier\"", "\"number\"", "$accept", "program", "main_class",
+  "variable_declaration", "statement", "local_variable_statement",
+  "statement_list", "expr", "integer_literal", YY_NULLPTR
   };
 
 #if YYDEBUG
   const unsigned char
   parser::yyrline_[] =
   {
-       0,   150,   150,   160,   170,   172,   186,   190,   194,   196,
-     198,   200,   202,   204,   206,   211,   213,   215,   217,   219,
-     221,   223,   225,   227,   229,   231,   233,   235,   237,   239,
-     241,   243,   247,   249
+       0,   147,   147,   151,   177,   181,   183,   185,   187,   189,
+     191,   193,   197,   201,   203,   207,   209,   211,   213,   215,
+     217,   219,   221,   223,   225,   227,   229,   231,   233,   235,
+     237,   239,   242,   244
   };
 
   // Print the state stack on the debug stream.
@@ -1491,7 +1491,7 @@ namespace yy {
 } // yy
 #line 1493 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.cpp"
 
-#line 271 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
+#line 247 "/home/viktor/repos/MiniCompiler/source/compiler/parser/parser.y"
 
 
 void

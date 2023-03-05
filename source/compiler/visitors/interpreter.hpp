@@ -14,9 +14,14 @@ class Interpreter : public Visitor, public VisitorHelper<int> {
   Interpreter() = default;
   virtual ~Interpreter() override = default;
     
-  int GetResult(Program* program);
+  void Run(Program* program);
 
+  virtual void Visit(Program* program) override;
+  virtual void Visit(MainClass* main_class) override;
+  
   virtual void Visit(ClassDeclaration* class_declaration) override;
+  virtual void Visit(ClassDeclarationList* class_declaration_list) override;
+  virtual void Visit(DeclarationList* declaration_list) override;
   virtual void Visit(MethodDeclaration* method_declaration) override;
   virtual void Visit(VariableDeclaration* variable_declaration) override;
   
@@ -27,9 +32,6 @@ class Interpreter : public Visitor, public VisitorHelper<int> {
   virtual void Visit(IntegerExpression* expression) override;
   virtual void Visit(NotExpression* expression) override;
 
-  virtual void Visit(MainClass* main_class) override;
-  virtual void Visit(Program* program) override;
-
   virtual void Visit(AssignmentStatement* statement) override;
   virtual void Visit(IfElseStatement* statement) override;
   virtual void Visit(IfStatement* statement) override;
@@ -38,8 +40,9 @@ class Interpreter : public Visitor, public VisitorHelper<int> {
   virtual void Visit(WhileStatement* statement) override;
   virtual void Visit(StatementList* statement) override;
   virtual void Visit(LocalVariableStatement* statement) override;
+  virtual void Visit(StatementListStatement* expression) override;
   
-  virtual int Visit(AstNode* ast_node) override;
+  virtual int Accept(AstNode* ast_node) override;
  private:
   SymbolTable table;
   ProgramStack stack;

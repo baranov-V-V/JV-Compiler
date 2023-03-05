@@ -9,5 +9,5 @@ MethodDeclaration::~MethodDeclaration() {
 }
 
 void MethodDeclaration::Accept(Visitor* visitor) {
-  return;
+  visitor->Visit(this);
 }

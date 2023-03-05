@@ -13,5 +13,5 @@ Program::~Program() {
 }
 
 void Program::Accept(Visitor* visitor) {
-  return;
+  visitor->Visit(this);
 }

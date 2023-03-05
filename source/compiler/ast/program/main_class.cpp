@@ -8,5 +8,5 @@ MainClass::~MainClass() {
 }
 
 void MainClass::Accept(Visitor* visitor) {
-  return;
+  visitor->Visit(this);
 }

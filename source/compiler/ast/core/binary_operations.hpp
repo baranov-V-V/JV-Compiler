@@ -1,6 +1,6 @@
 #pragma once
 
-enum class BinOperation {  
+enum BinOperation {  
   PLUS,
   MINUS,
   MUL,

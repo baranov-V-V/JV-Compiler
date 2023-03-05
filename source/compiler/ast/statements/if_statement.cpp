@@ -9,5 +9,5 @@ IfStatement::~IfStatement() {
 }
 
 void IfStatement::Accept(Visitor* visitor) {
-  return;
+  visitor->Visit(this);
 }

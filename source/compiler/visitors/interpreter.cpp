@@ -5,16 +5,31 @@
 
 #include <iostream>
 
-int Interpreter::GetResult(Program* program) {
+void Interpreter::Run(Program* program) {
   table.Clear();
   stack.Clear();
   Visit(program);
-  return stack.Top();
+}
+
+void Interpreter::Visit(Program* program) {
+  program->main_class->Accept(this);
+}
+
+void Interpreter::Visit(MainClass* main_class) {
+  main_class->statement_list->Accept(this);
 }
 
 void Interpreter::Visit(ClassDeclaration* class_declaration) {
   //some class stuff
   return;
+}
+
+void Interpreter::Visit(ClassDeclarationList* class_declaration_list) {
+  class_declaration_list->Accept(this);
+}
+
+void Interpreter::Visit(DeclarationList* declaration_list) {
+  declaration_list->Accept(this);
 }
 
 void Interpreter::Visit(MethodDeclaration* method_declaration) {
@@ -27,8 +42,8 @@ void Interpreter::Visit(VariableDeclaration* variable_declaration) {
 }
 
 void Interpreter::Visit(BinOpExpression* expression) {
-  int lhs = Visit(expression->lhs);
-  int rhs = Visit(expression->rhs);
+  int lhs = Accept(expression->lhs);
+  int rhs = Accept(expression->rhs);
 
   int result = 0;
   switch(expression->operation) {
@@ -61,7 +76,60 @@ void Interpreter::Visit(IdentifierExpression* expression) {
   stack.Put(table.Get(expression->identifier));
 }
 
-int Interpreter::Visit(AstNode* ast_node) {
+void Interpreter::Visit(IntegerExpression* expression) {
+  stack.Put(expression->value);
+}
+
+void Interpreter::Visit(NotExpression* expression) {
+  stack.Put(!Accept(expression->expression));
+}
+
+void Interpreter::Visit(AssignmentStatement* statement) {
+  table.Update(statement->identifier, Accept(statement->expression));
+}
+
+void Interpreter::Visit(IfElseStatement* statement) {
+  if (Accept(statement->cond_expression)) {
+    statement->statement_true->Accept(this);
+  } else {
+    statement->statement_false->Accept(this);
+  }
+}
+
+void Interpreter::Visit(IfStatement* statement) {
+  if (Accept(statement->cond_expression)) {
+    statement->statement_true->Accept(this);
+  }
+}
+
+void Interpreter::Visit(PrintStatement* statement) {
+  std::cout << Accept(statement->expression) << std::endl;
+}
+
+void Interpreter::Visit(ReturnStatement* statement) {
+  // do fun stuff
+  return;
+}
+
+void Interpreter::Visit(WhileStatement* statement) {
+  while (Accept(statement->cond_expression)) {
+    statement->statement->Accept(this);
+  }
+}
+
+void Interpreter::Visit(StatementList* statement) {
+  statement->Accept(this);
+}
+
+void Interpreter::Visit(LocalVariableStatement* statement) {
+  statement->variable_declaration->Accept(this);
+}
+
+void Interpreter::Visit(StatementListStatement* statement) {
+  statement->statement_list->Accept(this);
+}
+
+int Interpreter::Accept(AstNode* ast_node) {
   ast_node->Accept(this);
   return stack.TopAndPop();
 }

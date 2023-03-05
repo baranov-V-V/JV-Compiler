@@ -31,4 +31,5 @@ class Visitor {
   virtual void Visit(WhileStatement* statement) = 0;
   virtual void Visit(StatementList* statement) = 0;
   virtual void Visit(LocalVariableStatement* expression) = 0;
+  virtual void Visit(StatementListStatement* statement) = 0;
 };

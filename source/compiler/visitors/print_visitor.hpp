@@ -19,30 +19,34 @@ class PrintVisitor: public Visitor {
 
   void Print(const std::string& filename, PrintType type, Program* program);
 
-  virtual Visit(ClassDeclarationList* class_declaration_list) override;
-  virtual Visit(ClassDeclaration* class_declaration) override;
-  virtual Visit(DeclarationList* declaration_list) override;
-  virtual Visit(MethodDeclaration* method_declaration) override;
-  virtual Visit(VariableDeclaration* variable_declarations) override;
+  virtual void Visit(Program* program) override;
+  virtual void Visit(MainClass* main_class) override;
   
-  virtual Visit(BinOpExpression* bin_op) override;
-  virtual Visit(TrueExpression* expression) override;
-  virtual Visit(FalseExpression* expression) override;
-  virtual Visit(FalseExpression* expression) override;
-  virtual Visit(IdentifierExpression* expression) override;
-  virtual Visit(IntegerExpression* expression) override;
-  virtual Visit(NotExpression* expression) override;
+  virtual void Visit(ClassDeclaration* class_declaration) override;
+  virtual void Visit(ClassDeclarationList* class_declaration_list) override;
+  virtual void Visit(DeclarationList* declaration_list) override;
+  virtual void Visit(MethodDeclaration* method_declaration) override;
+  virtual void Visit(VariableDeclaration* variable_declaration) override;
+  
+  virtual void Visit(BinOpExpression* expression) override;
+  virtual void Visit(TrueExpression* expression) override;
+  virtual void Visit(FalseExpression* expression) override;
+  virtual void Visit(IdentifierExpression* expression) override;
+  virtual void Visit(IntegerExpression* expression) override;
+  virtual void Visit(NotExpression* expression) override;
 
-  virtual Visit(MainClass* main_class) override;
-  virtual Visit(Program* program) override;
-
-  virtual Visit(AssignmentStatement* statement) override;
-  virtual Visit(IfElseStatement* statement) override;
-  virtual Visit(IfStatement* statement) override;
-  virtual Visit(PrintStatement* statement) override;
-  virtual Visit(ReturnStatement* statement) override;
-  virtual Visit(WhileStatement* statement) override;
-  virtual Visit(StatementList* statement) override;
+  virtual void Visit(AssignmentStatement* statement) override;
+  virtual void Visit(IfElseStatement* statement) override;
+  virtual void Visit(IfStatement* statement) override;
+  virtual void Visit(PrintStatement* statement) override;
+  virtual void Visit(ReturnStatement* statement) override;
+  virtual void Visit(WhileStatement* statement) override;
+  virtual void Visit(StatementList* statement) override;
+  virtual void Visit(LocalVariableStatement* statement) override;
+  virtual void Visit(StatementListStatement* expression) override;
+  
+  virtual int Accept(AstNode* ast_node) override;
+  
 };
 
 */

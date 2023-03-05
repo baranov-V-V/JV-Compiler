@@ -402,7 +402,7 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[123] =
+static const flex_int16_t yy_accept[125] =
     {   0,
         0,    0,   48,   46,    1,    2,   15,   14,   46,   16,
        17,   12,   10,   23,   11,   22,   13,   44,   24,    6,
@@ -415,9 +415,9 @@ static const flex_int16_t yy_accept[123] =
        45,   45,   45,   45,   45,   45,   45,   45,   45,   39,
        45,   30,   45,   45,   45,   41,   45,   45,   45,   45,
 
-       26,   27,   40,   45,   45,   33,   45,   28,   45,   42,
-       45,   45,   45,   31,   32,   45,   43,   35,   37,   36,
-       34,    0
+       26,   27,   40,   45,   45,   33,   45,   28,   45,   45,
+       45,   45,   45,   31,   32,   45,   43,   45,   35,   37,
+       36,   34,   42,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -461,95 +461,95 @@ static const YY_CHAR yy_meta[48] =
         2,    2,    2,    2,    1,    1,    1
     } ;
 
-static const flex_int16_t yy_base[124] =
+static const flex_int16_t yy_base[126] =
     {   0,
-        0,    0,  129,  130,  126,  124,  108,  130,  119,  130,
-      130,  130,  130,  130,  130,  130,  130,  109,  130,  130,
-      105,  130,    0,  130,  130,   83,   85,   87,   15,   95,
-       20,   90,   93,   88,   12,   87,   74,   20,   77,   81,
-      130,   65,  130,  108,  106,  130,  130,   93,  130,    0,
-       68,   70,   81,   65,   63,   69,    0,   61,   65,   67,
-       55,   65,   71,   55,   70,   61,   51,   59,   58,  130,
-       61,   55,   48,   58,   57,   45,    0,   53,   47,    0,
-       46,   47,   38,   38,   38,   48,   48,   41,   35,    0,
-       33,    0,   36,   42,   29,    0,   28,   35,   28,   33,
+        0,    0,  131,  132,  128,  126,  110,  132,  121,  132,
+      132,  132,  132,  132,  132,  132,  132,  111,  132,  132,
+      107,  132,    0,  132,  132,   85,   87,   89,   15,   97,
+       20,   92,   95,   90,   12,   89,   76,   20,   79,   83,
+      132,   67,  132,  110,  108,  132,  132,   95,  132,    0,
+       70,   72,   83,   67,   65,   71,    0,   63,   67,   69,
+       57,   67,   73,   57,   72,   63,   53,   61,   60,  132,
+       63,   57,   50,   60,   59,   47,    0,   55,   49,    0,
+       48,   49,   40,   40,   40,   50,   50,   43,   37,    0,
+       35,    0,   38,   44,   31,    0,   30,   37,   30,   35,
 
-        0,    0,    0,   36,   23,    0,   35,    0,   30,    0,
-       34,   22,   30,    0,    0,   15,    0,    0,    0,    0,
-        0,  130,   50
+        0,    0,    0,   38,   25,    0,   37,    0,   32,   29,
+       35,   25,   31,    0,    0,   17,    0,   19,    0,    0,
+        0,    0,    0,  132,   50
     } ;
 
-static const flex_int16_t yy_def[124] =
+static const flex_int16_t yy_def[126] =
     {   0,
-      122,    1,  122,  122,  122,  122,  122,  122,  122,  122,
-      122,  122,  122,  122,  122,  122,  122,  122,  122,  122,
-      122,  122,  123,  122,  122,  123,  123,  123,  123,  123,
-      123,  123,  123,  123,  123,  123,  123,  123,  123,  123,
-      122,  122,  122,  122,  122,  122,  122,  122,  122,  123,
-      123,  123,  123,  123,  123,  123,  123,  123,  123,  123,
-      123,  123,  123,  123,  123,  123,  123,  123,  123,  122,
-      123,  123,  123,  123,  123,  123,  123,  123,  123,  123,
-      123,  123,  123,  123,  123,  123,  123,  123,  123,  123,
-      123,  123,  123,  123,  123,  123,  123,  123,  123,  123,
+      124,    1,  124,  124,  124,  124,  124,  124,  124,  124,
+      124,  124,  124,  124,  124,  124,  124,  124,  124,  124,
+      124,  124,  125,  124,  124,  125,  125,  125,  125,  125,
+      125,  125,  125,  125,  125,  125,  125,  125,  125,  125,
+      124,  124,  124,  124,  124,  124,  124,  124,  124,  125,
+      125,  125,  125,  125,  125,  125,  125,  125,  125,  125,
+      125,  125,  125,  125,  125,  125,  125,  125,  125,  124,
+      125,  125,  125,  125,  125,  125,  125,  125,  125,  125,
+      125,  125,  125,  125,  125,  125,  125,  125,  125,  125,
+      125,  125,  125,  125,  125,  125,  125,  125,  125,  125,
 
-      123,  123,  123,  123,  123,  123,  123,  123,  123,  123,
-      123,  123,  123,  123,  123,  123,  123,  123,  123,  123,
-      123,    0,  122
+      125,  125,  125,  125,  125,  125,  125,  125,  125,  125,
+      125,  125,  125,  125,  125,  125,  125,  125,  125,  125,
+      125,  125,  125,    0,  124
     } ;
 
-static const flex_int16_t yy_nxt[178] =
+static const flex_int16_t yy_nxt[180] =
     {   0,
         4,    5,    6,    7,    8,    9,   10,   11,   12,   13,
        14,   15,   16,   17,   18,   19,   20,   21,   22,   23,
        24,   25,    4,   26,   27,   28,   23,   29,   30,   23,
        23,   31,   32,   33,   34,   23,   35,   36,   37,   38,
        23,   39,   40,   23,   41,   42,   43,   54,   57,   62,
-       66,   50,   63,  121,   58,  120,  119,   67,   55,  118,
-      117,  116,  115,  114,  113,  112,  111,  110,  109,  108,
-      107,  106,  105,  104,  103,  102,  101,  100,   99,   98,
-       97,   96,   95,   94,   93,   92,   91,   90,   89,   88,
-       87,   86,   85,   84,   83,   82,   81,   80,   79,   78,
+       66,   50,   63,  123,   58,  122,  121,   67,   55,  120,
+      119,  118,  117,  116,  115,  114,  113,  112,  111,  110,
+      109,  108,  107,  106,  105,  104,  103,  102,  101,  100,
+       99,   98,   97,   96,   95,   94,   93,   92,   91,   90,
+       89,   88,   87,   86,   85,   84,   83,   82,   81,   80,
 
-       77,   76,   75,   74,   73,   72,   71,   48,   45,   44,
-       70,   69,   68,   65,   64,   61,   60,   59,   56,   53,
-       52,   51,   49,   48,   47,   46,   45,   44,  122,    3,
-      122,  122,  122,  122,  122,  122,  122,  122,  122,  122,
-      122,  122,  122,  122,  122,  122,  122,  122,  122,  122,
-      122,  122,  122,  122,  122,  122,  122,  122,  122,  122,
-      122,  122,  122,  122,  122,  122,  122,  122,  122,  122,
-      122,  122,  122,  122,  122,  122,  122
+       79,   78,   77,   76,   75,   74,   73,   72,   71,   48,
+       45,   44,   70,   69,   68,   65,   64,   61,   60,   59,
+       56,   53,   52,   51,   49,   48,   47,   46,   45,   44,
+      124,    3,  124,  124,  124,  124,  124,  124,  124,  124,
+      124,  124,  124,  124,  124,  124,  124,  124,  124,  124,
+      124,  124,  124,  124,  124,  124,  124,  124,  124,  124,
+      124,  124,  124,  124,  124,  124,  124,  124,  124,  124,
+      124,  124,  124,  124,  124,  124,  124,  124,  124
     } ;
 
-static const flex_int16_t yy_chk[178] =
+static const flex_int16_t yy_chk[180] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,   29,   31,   35,
-       38,  123,   35,  116,   31,  113,  112,   38,   29,  111,
-      109,  107,  105,  104,  100,   99,   98,   97,   95,   94,
-       93,   91,   89,   88,   87,   86,   85,   84,   83,   82,
-       81,   79,   78,   76,   75,   74,   73,   72,   71,   69,
-       68,   67,   66,   65,   64,   63,   62,   61,   60,   59,
+       38,  125,   35,  118,   31,  116,  113,   38,   29,  112,
+      111,  110,  109,  107,  105,  104,  100,   99,   98,   97,
+       95,   94,   93,   91,   89,   88,   87,   86,   85,   84,
+       83,   82,   81,   79,   78,   76,   75,   74,   73,   72,
+       71,   69,   68,   67,   66,   65,   64,   63,   62,   61,
 
-       58,   56,   55,   54,   53,   52,   51,   48,   45,   44,
-       42,   40,   39,   37,   36,   34,   33,   32,   30,   28,
-       27,   26,   21,   18,    9,    7,    6,    5,    3,  122,
-      122,  122,  122,  122,  122,  122,  122,  122,  122,  122,
-      122,  122,  122,  122,  122,  122,  122,  122,  122,  122,
-      122,  122,  122,  122,  122,  122,  122,  122,  122,  122,
-      122,  122,  122,  122,  122,  122,  122,  122,  122,  122,
-      122,  122,  122,  122,  122,  122,  122
+       60,   59,   58,   56,   55,   54,   53,   52,   51,   48,
+       45,   44,   42,   40,   39,   37,   36,   34,   33,   32,
+       30,   28,   27,   26,   21,   18,    9,    7,    6,    5,
+        3,  124,  124,  124,  124,  124,  124,  124,  124,  124,
+      124,  124,  124,  124,  124,  124,  124,  124,  124,  124,
+      124,  124,  124,  124,  124,  124,  124,  124,  124,  124,
+      124,  124,  124,  124,  124,  124,  124,  124,  124,  124,
+      124,  124,  124,  124,  124,  124,  124,  124,  124
     } ;
 
 static const flex_int16_t yy_rule_linenum[47] =
     {   0,
-       44,   45,   47,   48,   49,   50,   51,   52,   53,   54,
-       55,   56,   57,   58,   59,   60,   61,   62,   63,   64,
-       65,   66,   67,   68,   69,   70,   71,   72,   73,   74,
-       75,   76,   77,   78,   79,   80,   81,   82,   83,   84,
-       85,   86,   87,   88,   89,   90
+       41,   42,   44,   45,   46,   47,   48,   49,   50,   51,
+       52,   53,   54,   55,   56,   57,   58,   59,   60,   61,
+       62,   63,   64,   65,   66,   67,   68,   69,   70,   71,
+       72,   73,   74,   75,   76,   77,   78,   79,   80,   81,
+       82,   83,   84,   85,   86,   87
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -574,17 +574,15 @@ static const flex_int16_t yy_rule_linenum[47] =
 #line 575 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.cpp"
 #define YY_NO_INPUT 1
 #line 20 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
-  // A number symbol corresponding to the value in S.
   yy::parser::symbol_type make_NUMBER(
     const std::string &s,
     const yy::parser::location_type& loc
   );
-#line 583 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.cpp"
-#line 32 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
-  // Code run each time a pattern is matched.
+#line 582 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.cpp"
+#line 31 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
   # define YY_USER_ACTION  loc.columns (yyleng);
-#line 587 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.cpp"
-#line 588 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.cpp"
+#line 585 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.cpp"
+#line 586 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.cpp"
 
 #define INITIAL 0
 
@@ -776,17 +774,15 @@ YY_DECL
 
 	{
 /* %% [7.0] user's declarations go here */
-#line 35 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 34 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 
 
-#line 38 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
-  // A handy shortcut to the location held by the driver.
+#line 37 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
   yy::location& loc = driver.location;
-  // Code run each time yylex is called.
   loc.step();
 
 
-#line 790 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.cpp"
+#line 786 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -815,13 +811,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 123 )
+				if ( yy_current_state >= 125 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_current_state != 122 );
+		while ( yy_current_state != 124 );
 		yy_cp = (yy_last_accepting_cpos);
 		yy_current_state = (yy_last_accepting_state);
 
@@ -863,247 +859,247 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 44 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 41 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 loc.step ();
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 45 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 42 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 loc.lines (yyleng); loc.step ();
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 47 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 44 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_ASSIGN      (loc);
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 48 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 45 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_AND         (TOKEN::TOK_AND, loc);
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 49 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 46 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_OR          (TOKEN::TOK_OR, loc);
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 50 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 47 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_LESS        (TOKEN::TOK_LESS, loc);
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 51 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 48 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_GREATER     (TOKEN::TOK_GREATER, loc);
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 52 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 49 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_EQUAL       (TOKEN::TOK_EQUAL, loc);
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 53 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 50 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_NEQUAL      (TOKEN::TOK_NEQUAL, loc);
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 54 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 51 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_PLUS        (TOKEN::TOK_PLUS, loc);
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 55 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 52 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_MINUS       (TOKEN::TOK_MINUS, loc);
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 56 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 53 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_MUL         (TOKEN::TOK_MUL, loc);
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 57 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 54 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_DIV         (TOKEN::TOK_DIV, loc);
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 58 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 55 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_PERCENT     (TOKEN::TOK_PERCENT, loc);
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 59 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 56 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_NOT         (loc);
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 60 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 57 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_LPAREN      (loc);
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 61 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 58 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_RPAREN      (loc);
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 62 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 59 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_LSQUARE     (loc);
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 63 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 60 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_RSQUARE     (loc);
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 64 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 61 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_LBRACKET    (loc);
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 65 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 62 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_RBRACKET    (loc);
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 66 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 63 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_DOT         (loc);
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 67 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 64 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_COLON       (loc);
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 68 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 65 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_SEMICOLON   (loc);
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 69 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 66 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_NEW         (loc);
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 70 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 67 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_THIS        (loc);
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 71 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 68 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_TRUE        (loc);
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 72 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 69 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_FALSE       (loc);
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 73 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 70 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_IF          (loc);
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 74 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 71 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_ELSE        (loc);
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 75 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 72 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_WHILE       (loc);
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 76 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 73 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_ASSERT      (loc);
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 77 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 74 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_CLASS       (loc);
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 78 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 75 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_EXTENDS     (loc);
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 79 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 76 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_PUBLIC      (loc);
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 80 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 77 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_STATIC      (loc);
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 81 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 78 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_RETURN      (loc);
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 82 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 79 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_INT         (loc);
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 83 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 80 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_BOOL        (loc);
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 84 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 81 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_VOID        (loc);
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 85 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 82 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_MAIN        (loc);
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 86 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 83 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_PRINT       (loc);
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 87 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 84 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_LENGTH      (loc);
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 88 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 85 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return make_NUMBER(yytext, loc);
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 89 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 86 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_IDENTIFIER(yytext, loc);
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 90 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 87 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 {
-                throw yy::parser::syntax_error(loc, "invalid character: " + std::string(yytext));
+              throw yy::parser::syntax_error(loc, "invalid character: " + std::string(yytext));
            }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 93 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 90 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 return yy::parser::make_END (loc);
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 94 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 91 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 ECHO;
 	YY_BREAK
-#line 1107 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.cpp"
+#line 1103 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1541,7 +1537,7 @@ int yyFlexLexer::yy_get_next_buffer()
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 123 )
+			if ( yy_current_state >= 125 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1574,11 +1570,11 @@ int yyFlexLexer::yy_get_next_buffer()
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 123 )
+		if ( yy_current_state >= 125 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 122);
+	yy_is_jam = (yy_current_state == 124);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -2220,7 +2216,7 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 94 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
+#line 91 "/home/viktor/repos/MiniCompiler/source/compiler/parser/scanner.l"
 
 
 yy::parser::symbol_type make_NUMBER(

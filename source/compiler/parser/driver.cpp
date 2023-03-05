@@ -5,17 +5,24 @@
 
 #include "compiler/ast/program/program.hpp"
 
-Driver::Driver() :
-    trace_parsing(false),
-    trace_scanning(false),
-    scanner(*this), parser(scanner, *this) {
+Driver::Driver() : trace_parsing(false), trace_scanning(false), 
+  scanner(*this), parser(scanner, *this) {
+}
+
+Driver::~Driver() {
+  delete program;
 }
 
 void Driver::SetProgram(Program* program) {
-  program = program;
+  this->program = program;
 }
 
-void Driver::Parse(std::string file) {
+void Driver::DeleteProgram() {
+  delete program;
+}
+
+void Driver::Parse(const std::string& f) {
+  file = f;
   location.initialize(&file);
   ScanBegin();
   parser.set_debug_level(trace_parsing);
@@ -24,12 +31,13 @@ void Driver::Parse(std::string file) {
 }
 
 void Driver::ScanBegin() {
-  if (file.empty()) {
-    return;
+    scanner.set_debug(trace_scanning);
+  if (file.empty () || file == "-") {
+    std::cerr << "empty!" << std::endl;
+  } else {
+    stream.open(file);
+    scanner.yyrestart(&stream);
   }
-  scanner.set_debug(trace_scanning);
-  stream.open(file);
-  scanner.yyrestart(&stream);
 }
 
 void Driver::ScanEnd() {
@@ -40,10 +48,12 @@ void Driver::PrintTree(const std::string& filename) const {
   if (program == nullptr) {
     return;
   }
+  assert("not yet");
 }
 
-int Driver::Run() const {
-  return 0;
+void Driver::Run() const {
+  Interpreter interpreter;
+  interpreter.Run(program);
 }
 
 void Driver::SetTraceScan(bool trace) { trace_scanning = trace; }

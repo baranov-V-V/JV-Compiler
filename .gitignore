@@ -10,21 +10,20 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
-build
+build/**
 
 # VS-CODE FILES
 
-.vscode
-
+.vscode/**
 
 # BISON FILES
 
-src/parser/location.hh
-src/parser/parser.hh
-src/parser/parser.cpp
-
+source/compiler/parser/location.hh
+source/compiler/parser/parser.hpp
+source/compiler/parser/parser.cpp
+source/compiler/parser/parser.output
 
 # FLEX FILES
 
-src/scanner/scanner.cpp
+source/compiler/scanner/scanner.cpp
 

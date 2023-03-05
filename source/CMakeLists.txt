@@ -9,7 +9,6 @@ target_include_directories(compiler
 target_sources(compiler
   PUBLIC
     ${COMPILER_INCLUDES}
-    #${MINI_COMPILER_SOURCE_DIR}/parser/location.hh
   PRIVATE
     ${COMPILER_SOURCES}
 )

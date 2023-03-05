@@ -26,7 +26,7 @@
 #include "compiler/ast/statements/print_statement.hpp"
 #include "compiler/ast/statements/return_statement.hpp"
 #include "compiler/ast/statements/statement_list.hpp"
-#include "compiler/ast/statements/statement_list_node.hpp"
+#include "compiler/ast/statements/statement_list_statement.hpp"
 #include "compiler/ast/statements/statement.hpp"
 #include "compiler/ast/statements/while_statement.hpp"
 #include "compiler/ast/statements/local_variable_statement.hpp"

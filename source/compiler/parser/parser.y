@@ -15,8 +15,6 @@
   class Driver;
 }
 
-// %param { Driver &drv }
-
 %define parse.trace
 %define parse.error verbose
 
@@ -31,7 +29,7 @@
   #include "../ast/declarations/class_declaration.hpp"
   #include "../ast/declarations/declaration_list.hpp"
   #include "../ast/declarations/declaration.hpp"
-  //#include "../ast/declarations/method_declaration.hpp"
+  #include "../ast/declarations/method_declaration.hpp"
   #include "../ast/declarations/variable_declaration.hpp"
 
   #include "../ast/expressions/binary_op_expression.hpp"
@@ -49,7 +47,7 @@
   #include "../ast/statements/print_statement.hpp"
   #include "../ast/statements/return_statement.hpp"
   #include "../ast/statements/statement_list.hpp"
-  #include "../ast/statements/statement_list_node.hpp"
+  #include "../ast/statements/statement_list_statement.hpp"
   #include "../ast/statements/statement.hpp"
   #include "../ast/statements/while_statement.hpp"
   #include "../ast/statements/local_variable_statement.hpp"
@@ -73,8 +71,6 @@
 
 %token
   END 0 "end of file"
-
-%token
   <int> PLUS "+"
   <int> MINUS "-"
   <int> MUL "*"
@@ -88,8 +84,8 @@
   <int> PERCENT "%"
     
 %token
-  ASSIGN "="
   NOT "!"
+  ASSIGN "="
   LPAREN "("
   RPAREN ")"
   LSQUARE "["
@@ -100,36 +96,29 @@
   COLON ","
   SEMICOLON ";"
 
-
 %token
   MAIN "main"
-  NEW "new"
+  CLASS "class"
   THIS "this"
-  TRUE "true"
-  FALSE "false"
   IF "if"
+  NEW "new"
   ELSE "else"
   WHILE "while"
-  ASSERT "assert"
-  CLASS "class"
+  TRUE "true"
+  FALSE "false"
   EXTENDS "extends"
+  ASSERT "assert"
   PUBLIC "public"
   STATIC "static"
   RETURN "return"
-  PRINT "print"
   LENGTH "length"
-
-%token
+  PRINT "println"
   INT "int"
   BOOL "bool"
   VOID "void"
+  <std::string> IDENTIFIER "identifier"
+  <int> NUMBER "number"
 
-
-%token <std::string> IDENTIFIER "identifier"
-%token <int> NUMBER "number"
-
-%nterm <int> integer_literal
-//%nterm <int> binary_operator
 
 %nterm <Program*> program
 %nterm <MainClass*> main_class
@@ -138,11 +127,19 @@
 %nterm <DeclarationList*> declaration_list
 %nterm <Declaration*> declaration
 %nterm <VariableDeclaration*> variable_declaration
-%nterm <LocalVariableStatement*> local_variable_statement
 %nterm <Statement*> statement
+%nterm <LocalVariableStatement*> local_variable_statement
 %nterm <StatementList*> statement_list
-%nterm <StatementListNode*> statement_list_node
+%nterm <StatementListStatement*> statement_list_statement
 %nterm <Expression*> expr
+%nterm <int> integer_literal
+
+%left "&&" "||";
+%left "==" "!=" "!";
+%left "<" ">";
+%left "+" "-";
+%left "*" "/";
+%left "(";
 
 %%
 %start program;
@@ -151,26 +148,20 @@ program : main_class
   { $$ = new Program($1); driver.SetProgram($$); }
 ;
 
+main_class: "class" "identifier" "{" "public" "static" "void" "main" "(" ")" "{" statement_list "}" "}"
+  { $$ = new MainClass($11); }
+;
+
 class_declaration_list: class_declaration 
   { $$ = new ClassDeclarationList($1); }
                       | class_declaration_list class_declaration
   { $$ = $1; $$->Add($2); }
 ;
 
-main_class: "class" "identifier" "{" "public" "static" "void" "main" "(" ")" "{" statement_list "}" "}"
-  { $$ = new MainClass($11); }
-;
-
 class_declaration: "class" "identifier" "{" declaration_list "}" 
   { $$ = new ClassDeclaration($4); }
                  | "class" "identifier" "extends" "identifier" "{" declaration_list "}"
   { $$ = new ClassDeclaration($6); }
-;
-
-statement_list: statement 
-  { $$ = new StatementList($1); }
-              | statement_list statement 
-  { $$ = $1; $$->Add($2); }
 ;
 
 declaration_list : declaration
@@ -187,39 +178,34 @@ variable_declaration: "int" "identifier" ";"
   { $$ = new VariableDeclaration($2); }
 ;
 
-local_variable_statement: variable_declaration
-  { $$ = new LocalVariableStatement($1); }
-;
-
 statement: local_variable_statement
   { $$ = $1; }
          | "{" statement_list "}"
-  { $$ = new StatementListNode($2); }
-         | "if"  "(" expr ")" statement
-  { $$ = new IfStatement($3, $5); }
+  { $$ = new StatementListStatement($2); }
          | "if"  "(" expr ")" statement "else" statement
   { $$ = new IfElseStatement($3, $5, $7); }
+         | "if"  "(" expr ")" statement
+  { $$ = new IfStatement($3, $5); }
          | "while" "(" expr ")" statement
   { $$ = new WhileStatement($3, $5); }
-         | "print" "(" expr ")" ";"
+         | "println" "(" expr ")" ";"
   { $$ = new PrintStatement($3); }
          | "identifier" "=" expr ";"
   { $$ = new AssignmentStatement($1, $3); }
 ;
 
+local_variable_statement: variable_declaration
+  { $$ = new LocalVariableStatement($1); }
+;
 
-expr  : expr "&&"   expr
-  {$$ = new BinOpExpression($1, BinOperation::AND, $3);}
-      | expr "||"   expr
-  {$$ = new BinOpExpression($1, BinOperation::OR, $3);}
-      | expr "<"    expr
-  {$$ = new BinOpExpression($1, BinOperation::LESS, $3);}
-      | expr ">"    expr
-  {$$ = new BinOpExpression($1, BinOperation::GREATER, $3);}
-      | expr "=="   expr
-  {$$ = new BinOpExpression($1, BinOperation::EQUAL, $3);}
-      | expr "!="   expr
-  {$$ = new BinOpExpression($1, BinOperation::NEQUAL, $3);}
+statement_list: statement 
+  { $$ = new StatementList($1); }
+              | statement_list statement 
+  { $$ = $1; $$->Add($2); }
+;
+
+expr: "(" expr ")"
+  { $$ = $2; }
       | expr "+"    expr
   {$$ = new BinOpExpression($1, BinOperation::PLUS, $3);}
       | expr "-"   expr
@@ -228,10 +214,20 @@ expr  : expr "&&"   expr
   {$$ = new BinOpExpression($1, BinOperation::MUL, $3);}
       | expr "/"   expr
   {$$ = new BinOpExpression($1, BinOperation::DIV, $3);}
+      | expr "=="   expr
+  {$$ = new BinOpExpression($1, BinOperation::EQUAL, $3);}
+      | expr "!="   expr
+  {$$ = new BinOpExpression($1, BinOperation::NEQUAL, $3);}
+      | expr "<"    expr
+  {$$ = new BinOpExpression($1, BinOperation::LESS, $3);}
+      | expr ">"    expr
+  {$$ = new BinOpExpression($1, BinOperation::GREATER, $3);}
+      | expr "||"   expr
+  {$$ = new BinOpExpression($1, BinOperation::OR, $3);}
+      | expr "&&"   expr
+  {$$ = new BinOpExpression($1, BinOperation::AND, $3);}
       | expr "%"   expr
   {$$ = new BinOpExpression($1, BinOperation::PERCENT, $3);}
-      | "(" expr ")"
-  { $$ = $2; }
       | "identifier"
   { $$ = new IdentifierExpression($1); }
       | integer_literal
@@ -243,30 +239,10 @@ expr  : expr "&&"   expr
       | "!" expr
   { $$ = new NotExpression($2); }
 
-
-integer_literal: "number" 
+integer_literal : "number" 
   { $$ = $1; }
-               | "-" "number" 
+        | "-" "number" 
   { $$ = -$2; };
-
-/*binary_operator : "&&" 
-                | "||" 
-                | "<" 
-                | ">" 
-                | "=="
-                | "!="
-                | "+"  
-                | "-"  
-                | "*" 
-                | "/" 
-                | "%";
-*/
-
-%left "&&" "||";
-%left "==" "!=" "!";
-%left "<" ">";
-%left "+" "-";
-%left "*" "/";
 
 %%
 

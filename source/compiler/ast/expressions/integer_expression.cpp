@@ -3,4 +3,6 @@
 IntegerExpression::IntegerExpression(int value) :
   value(value) {}
 
-void IntegerExpression::Accept(Visitor* visitor) { return; }
+void IntegerExpression::Accept(Visitor* visitor) {
+  visitor->Visit(this);
+}

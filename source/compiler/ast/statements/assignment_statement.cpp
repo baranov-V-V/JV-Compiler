@@ -9,5 +9,5 @@ AssignmentStatement::~AssignmentStatement() {
 }
 
 void AssignmentStatement::Accept(Visitor* visitor) {
-  return;
+  visitor->Visit(this);
 }

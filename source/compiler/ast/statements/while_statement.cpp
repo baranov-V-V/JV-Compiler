@@ -9,5 +9,5 @@ WhileStatement::~WhileStatement() {
 }
 
 void WhileStatement::Accept(Visitor* visitor) {
-  return;
+  visitor->Visit(this);
 }

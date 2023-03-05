@@ -12,7 +12,6 @@ class PrintStatement: public Statement {
   virtual ~PrintStatement() override;
 
   virtual void Accept(Visitor* visitor) override;
-  //void Accept(Visitor* visitor) override;
 
   Expression* expression;
 };

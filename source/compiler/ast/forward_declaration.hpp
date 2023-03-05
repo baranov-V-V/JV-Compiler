@@ -1,7 +1,6 @@
 #pragma once
 
 class AstNode;
-//class BinOperation;
 
 class ClassDeclarationList;
 class ClassDeclaration;
@@ -30,6 +29,7 @@ class StatementList;
 class Statement;
 class WhileStatement;
 class LocalVariableStatement;
+class StatementListStatement;
 
 class Integer;
 class Type;

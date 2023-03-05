@@ -488,8 +488,8 @@ namespace yy {
         TOK_OR = 266,
         TOK_AND = 267,
         TOK_PERCENT = 268,
-        TOK_ASSIGN = 269,
-        TOK_NOT = 270,
+        TOK_NOT = 269,
+        TOK_ASSIGN = 270,
         TOK_LPAREN = 271,
         TOK_RPAREN = 272,
         TOK_LSQUARE = 273,
@@ -500,21 +500,21 @@ namespace yy {
         TOK_COLON = 278,
         TOK_SEMICOLON = 279,
         TOK_MAIN = 280,
-        TOK_NEW = 281,
+        TOK_CLASS = 281,
         TOK_THIS = 282,
-        TOK_TRUE = 283,
-        TOK_FALSE = 284,
-        TOK_IF = 285,
-        TOK_ELSE = 286,
-        TOK_WHILE = 287,
-        TOK_ASSERT = 288,
-        TOK_CLASS = 289,
-        TOK_EXTENDS = 290,
+        TOK_IF = 283,
+        TOK_NEW = 284,
+        TOK_ELSE = 285,
+        TOK_WHILE = 286,
+        TOK_TRUE = 287,
+        TOK_FALSE = 288,
+        TOK_EXTENDS = 289,
+        TOK_ASSERT = 290,
         TOK_PUBLIC = 291,
         TOK_STATIC = 292,
         TOK_RETURN = 293,
-        TOK_PRINT = 294,
-        TOK_LENGTH = 295,
+        TOK_LENGTH = 294,
+        TOK_PRINT = 295,
         TOK_INT = 296,
         TOK_BOOL = 297,
         TOK_VOID = 298,
@@ -713,7 +713,7 @@ namespace yy {
         // Type destructor.
 switch (yytype)
     {
-      case 54: // expr
+      case 53: // expr
         value.template destroy< Expression* > ();
         break;
 
@@ -721,23 +721,23 @@ switch (yytype)
         value.template destroy< LocalVariableStatement* > ();
         break;
 
-      case 49: // main_class
+      case 48: // main_class
         value.template destroy< MainClass* > ();
         break;
 
-      case 48: // program
+      case 47: // program
         value.template destroy< Program* > ();
         break;
 
-      case 52: // statement
+      case 50: // statement
         value.template destroy< Statement* > ();
         break;
 
-      case 53: // statement_list
+      case 52: // statement_list
         value.template destroy< StatementList* > ();
         break;
 
-      case 50: // variable_declaration
+      case 49: // variable_declaration
         value.template destroy< VariableDeclaration* > ();
         break;
 
@@ -753,7 +753,7 @@ switch (yytype)
       case 12: // "&&"
       case 13: // "%"
       case 45: // "number"
-      case 47: // integer_literal
+      case 54: // integer_literal
         value.template destroy< int > ();
         break;
 
@@ -837,13 +837,13 @@ switch (yytype)
       symbol_type (int tok, location_type l)
         : super_type(token_type (tok), std::move (l))
       {
-        YY_ASSERT (tok == token::TOK_END || tok == token::TOK_ASSIGN || tok == token::TOK_NOT || tok == token::TOK_LPAREN || tok == token::TOK_RPAREN || tok == token::TOK_LSQUARE || tok == token::TOK_RSQUARE || tok == token::TOK_LBRACKET || tok == token::TOK_RBRACKET || tok == token::TOK_DOT || tok == token::TOK_COLON || tok == token::TOK_SEMICOLON || tok == token::TOK_MAIN || tok == token::TOK_NEW || tok == token::TOK_THIS || tok == token::TOK_TRUE || tok == token::TOK_FALSE || tok == token::TOK_IF || tok == token::TOK_ELSE || tok == token::TOK_WHILE || tok == token::TOK_ASSERT || tok == token::TOK_CLASS || tok == token::TOK_EXTENDS || tok == token::TOK_PUBLIC || tok == token::TOK_STATIC || tok == token::TOK_RETURN || tok == token::TOK_PRINT || tok == token::TOK_LENGTH || tok == token::TOK_INT || tok == token::TOK_BOOL || tok == token::TOK_VOID);
+        YY_ASSERT (tok == token::TOK_END || tok == token::TOK_NOT || tok == token::TOK_ASSIGN || tok == token::TOK_LPAREN || tok == token::TOK_RPAREN || tok == token::TOK_LSQUARE || tok == token::TOK_RSQUARE || tok == token::TOK_LBRACKET || tok == token::TOK_RBRACKET || tok == token::TOK_DOT || tok == token::TOK_COLON || tok == token::TOK_SEMICOLON || tok == token::TOK_MAIN || tok == token::TOK_CLASS || tok == token::TOK_THIS || tok == token::TOK_IF || tok == token::TOK_NEW || tok == token::TOK_ELSE || tok == token::TOK_WHILE || tok == token::TOK_TRUE || tok == token::TOK_FALSE || tok == token::TOK_EXTENDS || tok == token::TOK_ASSERT || tok == token::TOK_PUBLIC || tok == token::TOK_STATIC || tok == token::TOK_RETURN || tok == token::TOK_LENGTH || tok == token::TOK_PRINT || tok == token::TOK_INT || tok == token::TOK_BOOL || tok == token::TOK_VOID);
       }
 #else
       symbol_type (int tok, const location_type& l)
         : super_type(token_type (tok), l)
       {
-        YY_ASSERT (tok == token::TOK_END || tok == token::TOK_ASSIGN || tok == token::TOK_NOT || tok == token::TOK_LPAREN || tok == token::TOK_RPAREN || tok == token::TOK_LSQUARE || tok == token::TOK_RSQUARE || tok == token::TOK_LBRACKET || tok == token::TOK_RBRACKET || tok == token::TOK_DOT || tok == token::TOK_COLON || tok == token::TOK_SEMICOLON || tok == token::TOK_MAIN || tok == token::TOK_NEW || tok == token::TOK_THIS || tok == token::TOK_TRUE || tok == token::TOK_FALSE || tok == token::TOK_IF || tok == token::TOK_ELSE || tok == token::TOK_WHILE || tok == token::TOK_ASSERT || tok == token::TOK_CLASS || tok == token::TOK_EXTENDS || tok == token::TOK_PUBLIC || tok == token::TOK_STATIC || tok == token::TOK_RETURN || tok == token::TOK_PRINT || tok == token::TOK_LENGTH || tok == token::TOK_INT || tok == token::TOK_BOOL || tok == token::TOK_VOID);
+        YY_ASSERT (tok == token::TOK_END || tok == token::TOK_NOT || tok == token::TOK_ASSIGN || tok == token::TOK_LPAREN || tok == token::TOK_RPAREN || tok == token::TOK_LSQUARE || tok == token::TOK_RSQUARE || tok == token::TOK_LBRACKET || tok == token::TOK_RBRACKET || tok == token::TOK_DOT || tok == token::TOK_COLON || tok == token::TOK_SEMICOLON || tok == token::TOK_MAIN || tok == token::TOK_CLASS || tok == token::TOK_THIS || tok == token::TOK_IF || tok == token::TOK_NEW || tok == token::TOK_ELSE || tok == token::TOK_WHILE || tok == token::TOK_TRUE || tok == token::TOK_FALSE || tok == token::TOK_EXTENDS || tok == token::TOK_ASSERT || tok == token::TOK_PUBLIC || tok == token::TOK_STATIC || tok == token::TOK_RETURN || tok == token::TOK_LENGTH || tok == token::TOK_PRINT || tok == token::TOK_INT || tok == token::TOK_BOOL || tok == token::TOK_VOID);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1092,21 +1092,6 @@ switch (yytype)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_ASSIGN (location_type l)
-      {
-        return symbol_type (token::TOK_ASSIGN, std::move (l));
-      }
-#else
-      static
-      symbol_type
-      make_ASSIGN (const location_type& l)
-      {
-        return symbol_type (token::TOK_ASSIGN, l);
-      }
-#endif
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
       make_NOT (location_type l)
       {
         return symbol_type (token::TOK_NOT, std::move (l));
@@ -1117,6 +1102,21 @@ switch (yytype)
       make_NOT (const location_type& l)
       {
         return symbol_type (token::TOK_NOT, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_ASSIGN (location_type l)
+      {
+        return symbol_type (token::TOK_ASSIGN, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_ASSIGN (const location_type& l)
+      {
+        return symbol_type (token::TOK_ASSIGN, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1272,16 +1272,16 @@ switch (yytype)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_NEW (location_type l)
+      make_CLASS (location_type l)
       {
-        return symbol_type (token::TOK_NEW, std::move (l));
+        return symbol_type (token::TOK_CLASS, std::move (l));
       }
 #else
       static
       symbol_type
-      make_NEW (const location_type& l)
+      make_CLASS (const location_type& l)
       {
-        return symbol_type (token::TOK_NEW, l);
+        return symbol_type (token::TOK_CLASS, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1302,36 +1302,6 @@ switch (yytype)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_TRUE (location_type l)
-      {
-        return symbol_type (token::TOK_TRUE, std::move (l));
-      }
-#else
-      static
-      symbol_type
-      make_TRUE (const location_type& l)
-      {
-        return symbol_type (token::TOK_TRUE, l);
-      }
-#endif
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
-      make_FALSE (location_type l)
-      {
-        return symbol_type (token::TOK_FALSE, std::move (l));
-      }
-#else
-      static
-      symbol_type
-      make_FALSE (const location_type& l)
-      {
-        return symbol_type (token::TOK_FALSE, l);
-      }
-#endif
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
       make_IF (location_type l)
       {
         return symbol_type (token::TOK_IF, std::move (l));
@@ -1342,6 +1312,21 @@ switch (yytype)
       make_IF (const location_type& l)
       {
         return symbol_type (token::TOK_IF, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_NEW (location_type l)
+      {
+        return symbol_type (token::TOK_NEW, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_NEW (const location_type& l)
+      {
+        return symbol_type (token::TOK_NEW, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1377,31 +1362,31 @@ switch (yytype)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_ASSERT (location_type l)
+      make_TRUE (location_type l)
       {
-        return symbol_type (token::TOK_ASSERT, std::move (l));
+        return symbol_type (token::TOK_TRUE, std::move (l));
       }
 #else
       static
       symbol_type
-      make_ASSERT (const location_type& l)
+      make_TRUE (const location_type& l)
       {
-        return symbol_type (token::TOK_ASSERT, l);
+        return symbol_type (token::TOK_TRUE, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_CLASS (location_type l)
+      make_FALSE (location_type l)
       {
-        return symbol_type (token::TOK_CLASS, std::move (l));
+        return symbol_type (token::TOK_FALSE, std::move (l));
       }
 #else
       static
       symbol_type
-      make_CLASS (const location_type& l)
+      make_FALSE (const location_type& l)
       {
-        return symbol_type (token::TOK_CLASS, l);
+        return symbol_type (token::TOK_FALSE, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1417,6 +1402,21 @@ switch (yytype)
       make_EXTENDS (const location_type& l)
       {
         return symbol_type (token::TOK_EXTENDS, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_ASSERT (location_type l)
+      {
+        return symbol_type (token::TOK_ASSERT, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_ASSERT (const location_type& l)
+      {
+        return symbol_type (token::TOK_ASSERT, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1467,21 +1467,6 @@ switch (yytype)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_PRINT (location_type l)
-      {
-        return symbol_type (token::TOK_PRINT, std::move (l));
-      }
-#else
-      static
-      symbol_type
-      make_PRINT (const location_type& l)
-      {
-        return symbol_type (token::TOK_PRINT, l);
-      }
-#endif
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
       make_LENGTH (location_type l)
       {
         return symbol_type (token::TOK_LENGTH, std::move (l));
@@ -1492,6 +1477,21 @@ switch (yytype)
       make_LENGTH (const location_type& l)
       {
         return symbol_type (token::TOK_LENGTH, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_PRINT (location_type l)
+      {
+        return symbol_type (token::TOK_PRINT, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_PRINT (const location_type& l)
+      {
+        return symbol_type (token::TOK_PRINT, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1875,7 +1875,7 @@ switch (yytype)
     enum
     {
       yyeof_ = 0,
-      yylast_ = 198,     ///< Last index in yytable_.
+      yylast_ = 199,     ///< Last index in yytable_.
       yynnts_ = 9,  ///< Number of nonterminal symbols.
       yyfinal_ = 5, ///< Termination state number.
       yyntokens_ = 46  ///< Number of tokens.
@@ -1949,7 +1949,7 @@ switch (yytype)
   {
     switch (this->type_get ())
     {
-      case 54: // expr
+      case 53: // expr
         value.move< Expression* > (std::move (that.value));
         break;
 
@@ -1957,23 +1957,23 @@ switch (yytype)
         value.move< LocalVariableStatement* > (std::move (that.value));
         break;
 
-      case 49: // main_class
+      case 48: // main_class
         value.move< MainClass* > (std::move (that.value));
         break;
 
-      case 48: // program
+      case 47: // program
         value.move< Program* > (std::move (that.value));
         break;
 
-      case 52: // statement
+      case 50: // statement
         value.move< Statement* > (std::move (that.value));
         break;
 
-      case 53: // statement_list
+      case 52: // statement_list
         value.move< StatementList* > (std::move (that.value));
         break;
 
-      case 50: // variable_declaration
+      case 49: // variable_declaration
         value.move< VariableDeclaration* > (std::move (that.value));
         break;
 
@@ -1989,7 +1989,7 @@ switch (yytype)
       case 12: // "&&"
       case 13: // "%"
       case 45: // "number"
-      case 47: // integer_literal
+      case 54: // integer_literal
         value.move< int > (std::move (that.value));
         break;
 
@@ -2012,7 +2012,7 @@ switch (yytype)
   {
     switch (this->type_get ())
     {
-      case 54: // expr
+      case 53: // expr
         value.copy< Expression* > (YY_MOVE (that.value));
         break;
 
@@ -2020,23 +2020,23 @@ switch (yytype)
         value.copy< LocalVariableStatement* > (YY_MOVE (that.value));
         break;
 
-      case 49: // main_class
+      case 48: // main_class
         value.copy< MainClass* > (YY_MOVE (that.value));
         break;
 
-      case 48: // program
+      case 47: // program
         value.copy< Program* > (YY_MOVE (that.value));
         break;
 
-      case 52: // statement
+      case 50: // statement
         value.copy< Statement* > (YY_MOVE (that.value));
         break;
 
-      case 53: // statement_list
+      case 52: // statement_list
         value.copy< StatementList* > (YY_MOVE (that.value));
         break;
 
-      case 50: // variable_declaration
+      case 49: // variable_declaration
         value.copy< VariableDeclaration* > (YY_MOVE (that.value));
         break;
 
@@ -2052,7 +2052,7 @@ switch (yytype)
       case 12: // "&&"
       case 13: // "%"
       case 45: // "number"
-      case 47: // integer_literal
+      case 54: // integer_literal
         value.copy< int > (YY_MOVE (that.value));
         break;
 
@@ -2082,7 +2082,7 @@ switch (yytype)
     super_type::move (s);
     switch (this->type_get ())
     {
-      case 54: // expr
+      case 53: // expr
         value.move< Expression* > (YY_MOVE (s.value));
         break;
 
@@ -2090,23 +2090,23 @@ switch (yytype)
         value.move< LocalVariableStatement* > (YY_MOVE (s.value));
         break;
 
-      case 49: // main_class
+      case 48: // main_class
         value.move< MainClass* > (YY_MOVE (s.value));
         break;
 
-      case 48: // program
+      case 47: // program
         value.move< Program* > (YY_MOVE (s.value));
         break;
 
-      case 52: // statement
+      case 50: // statement
         value.move< Statement* > (YY_MOVE (s.value));
         break;
 
-      case 53: // statement_list
+      case 52: // statement_list
         value.move< StatementList* > (YY_MOVE (s.value));
         break;
 
-      case 50: // variable_declaration
+      case 49: // variable_declaration
         value.move< VariableDeclaration* > (YY_MOVE (s.value));
         break;
 
@@ -2122,7 +2122,7 @@ switch (yytype)
       case 12: // "&&"
       case 13: // "%"
       case 45: // "number"
-      case 47: // integer_literal
+      case 54: // integer_literal
         value.move< int > (YY_MOVE (s.value));
         break;
 

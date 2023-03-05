@@ -5,10 +5,7 @@ ClassDeclarationList::ClassDeclarationList(ClassDeclaration* class_decl) {
 }
 
 void ClassDeclarationList::Accept(Visitor* visitor) {
-  //in progress
-  return;
-
   for (ClassDeclaration* element : elements) {
-    visitor->Visit(element);
+    element->Accept(visitor);
   }
 }

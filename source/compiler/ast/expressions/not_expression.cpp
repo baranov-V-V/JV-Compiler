@@ -7,5 +7,5 @@ NotExpression::~NotExpression() {
 }
 
 void NotExpression::Accept(Visitor* visitor) {
-  return;
+  visitor->Visit(this);
 }

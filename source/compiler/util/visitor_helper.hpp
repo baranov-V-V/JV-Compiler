@@ -5,7 +5,5 @@
 template<typename T>
 class VisitorHelper {
  public:
-  virtual T Visit(AstNode* ast_node) = 0;
- protected:
-  T tos_value;
+  virtual T Accept(AstNode* ast_node) = 0;
 };

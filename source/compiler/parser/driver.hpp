@@ -11,16 +11,18 @@ class Program;
 class Driver {
  public:
   Driver();
+  ~Driver();
 
   void SetProgram(Program* program);
+  void DeleteProgram();
 
-  void Parse(std::string file);
+  void Parse(const std::string& f);
   
   void ScanBegin();
   void ScanEnd();
 
   void PrintTree(const std::string& filename) const;
-  int Run() const;
+  void Run() const;
 
   void SetTraceScan(bool trace);
   void SetTraceParse(bool trace);

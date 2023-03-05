@@ -17,7 +17,6 @@
 %option yyclass="Scanner"
 
 %{
-  // A number symbol corresponding to the value in S.
   yy::parser::symbol_type make_NUMBER(
     const std::string &s,
     const yy::parser::location_type& loc
@@ -29,14 +28,12 @@ int   [0-9]+
 blank [ \t\r]
 
 %{
-  // Code run each time a pattern is matched.
   # define YY_USER_ACTION  loc.columns (yyleng);
 %}
+
 %%
 %{
-  // A handy shortcut to the location held by the driver.
   yy::location& loc = driver.location;
-  // Code run each time yylex is called.
   loc.step();
 %}
 
@@ -82,12 +79,12 @@ blank [ \t\r]
 "bool"      return yy::parser::make_BOOL        (loc);
 "void"      return yy::parser::make_VOID        (loc);
 "main"      return yy::parser::make_MAIN        (loc);
-"print"     return yy::parser::make_PRINT       (loc);
+"println"   return yy::parser::make_PRINT       (loc);
 "length"    return yy::parser::make_LENGTH      (loc);
 {int}       return make_NUMBER(yytext, loc);
 {id}        return yy::parser::make_IDENTIFIER(yytext, loc);
 .          {
-                throw yy::parser::syntax_error(loc, "invalid character: " + std::string(yytext));
+              throw yy::parser::syntax_error(loc, "invalid character: " + std::string(yytext));
            }
 <<EOF>>    return yy::parser::make_END (loc);
 %%

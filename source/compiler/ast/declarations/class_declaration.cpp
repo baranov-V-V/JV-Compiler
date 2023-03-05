@@ -9,6 +9,5 @@ ClassDeclaration::~ClassDeclaration() {
 }
 
 void ClassDeclaration::Accept(Visitor* visitor) {
-  return;
   visitor->Visit(this);
 }

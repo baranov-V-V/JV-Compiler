@@ -15,6 +15,7 @@ BISON_TARGET(
   Parser
   ${MINI_COMPILER_SOURCE_DIR}/parser/parser.y
   ${CODEGEN_DIR}/parser.cpp
+  COMPILE_FLAGS -v
   DEFINES_FILE ${CODEGEN_DIR}/parser.hpp
 )
 
@@ -46,5 +47,10 @@ target_include_directories(compiler
 target_include_directories(compiler PRIVATE 
   source/compiler
 )
+
+
+enable_testing()
+add_subdirectory(third_party)
+add_subdirectory(test)
 
 add_subdirectory(source)

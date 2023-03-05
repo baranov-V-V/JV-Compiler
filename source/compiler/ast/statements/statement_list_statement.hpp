@@ -5,10 +5,10 @@
 #include "compiler/ast/statements/statement.hpp"
 #include "compiler/visitors/visitor.hpp"
 
-class StatementListNode: public Statement {
+class StatementListStatement: public Statement {
  public:
-  StatementListNode(StatementList* statement_list);
-  virtual ~StatementListNode() = default;
+  StatementListStatement(StatementList* statement_list);
+  virtual ~StatementListStatement() = default;
   
   virtual void Accept(Visitor* visitor) override;
 

@@ -8,5 +8,5 @@ PrintStatement::~PrintStatement() {
 }
 
 void PrintStatement::Accept(Visitor* visitor) {
-  return;
+  visitor->Visit(this);
 }
