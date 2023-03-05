@@ -25,5 +25,5 @@ source/compiler/parser/parser.output
 
 # FLEX FILES
 
-source/compiler/scanner/scanner.cpp
+source/compiler/parser/scanner.cpp
 
