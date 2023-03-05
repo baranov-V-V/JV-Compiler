@@ -1,7 +1,7 @@
 #pragma once
 
 enum BinOperation {  
-  PLUS,
+  PLUS = 0,
   MINUS,
   MUL,
   DIV,
@@ -12,4 +12,18 @@ enum BinOperation {
   OR,
   AND,
   PERCENT
+};
+
+static const char* bin_ops[] = {
+  "+",
+  "-",
+  "*",
+  "\\",
+  "==",
+  "!=",
+  "<",
+  ">",
+  "||",
+  "&&",
+  "%"
 };

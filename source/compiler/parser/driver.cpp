@@ -1,7 +1,7 @@
 #include "driver.hpp"
 
 #include "compiler/visitors/interpreter.hpp"
-#include "compiler/visitors/print_visitor.hpp"
+#include "compiler/visitors/file_print_visitor.hpp"
 
 #include "compiler/ast/program/program.hpp"
 
@@ -48,7 +48,8 @@ void Driver::PrintTree(const std::string& filename) const {
   if (program == nullptr) {
     return;
   }
-  assert("not yet");
+  FilePrintVisitor visitor;
+  visitor.Print(filename, program);
 }
 
 void Driver::Run() const {

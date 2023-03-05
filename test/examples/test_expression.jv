@@ -10,6 +10,7 @@ class A {
     println(b);
     println(c);
 
-    a1 = (5 + b) * c
+    a1 = (5 + b) * c;
+    println(a1);
   }
 }

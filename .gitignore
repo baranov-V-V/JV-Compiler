@@ -10,11 +10,11 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
-build/**
+build
 
 # VS-CODE FILES
 
-.vscode/**
+.vscode
 
 # BISON FILES
 
