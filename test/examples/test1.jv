@@ -1,0 +1,7 @@
+class A {
+  public static void main() {
+    int a;
+    a = 3 + 2;
+    println(a);
+  }
+}
