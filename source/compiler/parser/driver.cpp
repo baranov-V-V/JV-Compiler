@@ -6,7 +6,7 @@
 #include "compiler/ast/program/program.hpp"
 
 Driver::Driver() : trace_parsing(false), trace_scanning(false), 
-  scanner(*this), parser(scanner, *this) {
+  scanner(*this), parser(scanner, *this), program(nullptr) {
 }
 
 Driver::~Driver() {

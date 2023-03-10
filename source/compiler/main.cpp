@@ -2,9 +2,11 @@
 #include <string>
 #include <fstream>
 #include "compiler/parser/driver.hpp"
+#include "compiler/core/compiler.hpp"
 #include <filesystem>
 
 int main(int argc, char** argv) {
+  /*
   Driver driver;
   std::string filename;
   bool need_print = false;
@@ -30,6 +32,10 @@ int main(int argc, char** argv) {
   }
   
   driver.Run();
+  */
   
+  Compiler compiler;
+  compiler.Compile(argc, argv);
+
   return 0;
 }
