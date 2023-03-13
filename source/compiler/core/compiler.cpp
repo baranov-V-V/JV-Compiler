@@ -7,12 +7,18 @@ void Compiler::Compile(int argc, char** argv) {
   ParseArgs(argc, argv);
 }
 
-void Compiler::ParseArgs(int argc, char**argv) {
+void Compiler::ParseArgs(int argc, char** argv) {
+  compiler_flags.InitFlags();
+  compiler_flags.ReadFromCommandLine(argc, argv);
+  compiler_flags.Apply(driver);
+  /*
   llvm::cl::OptionCategory TestOptionCat ("Test Options", "These options are to be used when running tests");
 
   enum OptLevel {
     g, O1, O2, O3
   };
+
+  llvm::cl::opt<std::string> OutputFilenameee("oo", llvm::cl::desc("Specify output filename"), llvm::cl::value_desc("filename"));
 
   llvm::cl::opt<OptLevel> OptimizationLevel(llvm::cl::desc("Choose optimization level:"),
     llvm::cl::values(
@@ -40,6 +46,6 @@ void Compiler::ParseArgs(int argc, char**argv) {
   assert(hack.count("color") > 0);
   hack["color"]->setHiddenFlag(llvm::cl::Hidden);
   //hack["color"]->setCategory(TestOptionCat);
-
-  llvm::cl::ParseCommandLineOptions(argc, argv, "This is a small program compiler");
+  */
+  //llvm::cl::ParseCommandLineOptions(argc, argv, "This is a small program compiler");
 }

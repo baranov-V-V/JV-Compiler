@@ -3,60 +3,97 @@
 #include <filesystem>
 
 #include "compiler/parser/driver.hpp"
+#include "llvm/Support/CommandLine.h"
+
+class CompilerFlag;
+
+class CompilerFlags {
+ public:
+  CompilerFlags() = default;
+  ~CompilerFlags();
+
+  void InitFlags();
+  void ReadFromCommandLine(int argc, char** argv);
+  void Apply(const Driver& driver);
+
+ private:
+  std::vector<CompilerFlag*> flags;
+};
 
 class CompilerFlag {
  public:
   CompilerFlag() = default;
   virtual ~CompilerFlag() = default;
 
-  virtual void Set(const Driver& driver) const = 0;
+  CompilerFlag(const CompilerFlag&) = delete;
+
+  virtual void Apply(const Driver& driver) const = 0;
 };
 
-class ParseTraseFlag : public CompilerFlag {
+class TraseParseFlag : public CompilerFlag {
  public:
-  ParseTraseFlag() = default;
-  virtual ~ParseTraseFlag() = default;
+  TraseParseFlag();
+  virtual ~TraseParseFlag() = default;
 
-  virtual void Set(const Driver& driver) const override;
+  //TraseParseFlag(const TraseParseFlag&) = delete;
+
+  virtual void Apply(const Driver& driver) const override;
+
+ private:
+  llvm::cl::opt<bool> trace;
 };
 
-class ParseScanFlag : public CompilerFlag {
+class TraseScanFlag : public CompilerFlag {
  public:
-  ParseScanFlag() = default;
-  virtual ~ParseScanFlag() = default;
+  TraseScanFlag();
+  virtual ~TraseScanFlag() = default;
 
-  virtual void Set(const Driver& driver) const override;
+  virtual void Apply(const Driver& driver) const override;
+
+ private:
+  llvm::cl::opt<bool> trace;
 };
 
 class AstDumpTxtFlag : public CompilerFlag {
  public:
-  AstDumpTxtFlag(const std::filesystem::path& path);
+  AstDumpTxtFlag();
   virtual ~AstDumpTxtFlag() = default;
 
-  virtual void Set(const Driver& driver) const override;
+  virtual void Apply(const Driver& driver) const override;
  
  private:
-  const std::filesystem::path path;
+  llvm::cl::opt<std::string> filename;  
 };
 
 class AstDumpPngFlag : public CompilerFlag {
  public:
-  AstDumpPngFlag(const std::filesystem::path& path);
+  AstDumpPngFlag();
   virtual ~AstDumpPngFlag() = default;
 
-  virtual void Set(const Driver& driver) const override;
+  virtual void Apply(const Driver& driver) const override;
  
  private:
-  const std::filesystem::path path;
+  llvm::cl::opt<std::string> filename;
 };
 
 class CompileOutputFlag : public CompilerFlag {
  public:
-  CompileOutputFlag(const std::filesystem::path& path);
+  CompileOutputFlag();
   virtual ~CompileOutputFlag() = default;
 
-  virtual void Set(const Driver& driver) const override;
+  virtual void Apply(const Driver& driver) const override;
  
  private:
-  const std::filesystem::path path;
+  llvm::cl::opt<std::string> output_filename;
+};
+
+class CompileInputFlag : public CompilerFlag {
+ public:
+  CompileInputFlag();
+  virtual ~CompileInputFlag() = default;
+
+  virtual void Apply(const Driver& driver) const override;
+ 
+ private:
+  llvm::cl::opt<std::string> filename;
 };

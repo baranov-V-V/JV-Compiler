@@ -16,5 +16,5 @@ class Compiler {
 
   void ParseArgs(int argc, char** argv);
 
-  std::vector<CompilerFlag> flags;
+  CompilerFlags compiler_flags;
 };
