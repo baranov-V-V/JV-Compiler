@@ -11,7 +11,7 @@ class FilePrintVisitor: public PrintVisitor {
   FilePrintVisitor() = default;
   virtual ~FilePrintVisitor() override = default;
 
-  virtual void Print(const std::string& filename, Program* program) override;
+  virtual void Print(const std::filesystem::path& filename, Program* program) override;
 
   virtual void Visit(Program* program) override;
   virtual void Visit(MainClass* main_class) override;

@@ -27,3 +27,8 @@ source/compiler/parser/parser.output
 
 source/compiler/parser/scanner.cpp
 
+# TEST FILES
+
+llvm_tree.cpp
+
+

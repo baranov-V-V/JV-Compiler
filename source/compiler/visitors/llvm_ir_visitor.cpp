@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-void LLVMIRVisitor::Run(Program* program) {
+void LLVMIRVisitor::TranslateToIR(Program* program) {
   table.Clear();
   stack.Clear();
   Visit(program);
@@ -38,12 +38,15 @@ void LLVMIRVisitor::Visit(MethodDeclaration* method_declaration) {
 }
 
 void LLVMIRVisitor::Visit(VariableDeclaration* variable_declaration) {
+  /*
   table.Insert(variable_declaration->identifier, 0);
+  */
 }
 
 void LLVMIRVisitor::Visit(BinOpExpression* expression) {
-  int lhs = Accept(expression->lhs);
-  int rhs = Accept(expression->rhs);
+  /*
+  llvm::Value* lhs = Accept(expression->lhs);
+  llvm::Value* rhs = Accept(expression->rhs);
 
   int result = 0;
   switch(expression->operation) {
@@ -62,48 +65,55 @@ void LLVMIRVisitor::Visit(BinOpExpression* expression) {
   }
 
   stack.Put(result);
+  */
 }
 
 void LLVMIRVisitor::Visit(TrueExpression* expression) {
-  stack.Put(1);
+  //stack.Put(1);
 }
 
 void LLVMIRVisitor::Visit(FalseExpression* expression) {
-  stack.Put(0);
+  //stack.Put(0);
 }
 
 void LLVMIRVisitor::Visit(IdentifierExpression* expression) {
-  stack.Put(table.Get(expression->identifier));
+  //stack.Put(table.Get(expression->identifier));
 }
 
 void LLVMIRVisitor::Visit(IntegerExpression* expression) {
-  stack.Put(expression->value);
+  //stack.Put(expression->value);
 }
 
 void LLVMIRVisitor::Visit(NotExpression* expression) {
-  stack.Put(!Accept(expression->expression));
+  //stack.Put(!Accept(expression->expression));
 }
 
 void LLVMIRVisitor::Visit(AssignmentStatement* statement) {
-  table.Update(statement->identifier, Accept(statement->expression));
+  //table.Update(statement->identifier, Accept(statement->expression));
 }
 
 void LLVMIRVisitor::Visit(IfElseStatement* statement) {
+  /*
   if (Accept(statement->cond_expression)) {
     statement->statement_true->Accept(this);
   } else {
     statement->statement_false->Accept(this);
   }
+  */
 }
 
 void LLVMIRVisitor::Visit(IfStatement* statement) {
+  /*
   if (Accept(statement->cond_expression)) {
     statement->statement_true->Accept(this);
   }
+  */
 }
 
 void LLVMIRVisitor::Visit(PrintStatement* statement) {
+  /*
   std::cout << Accept(statement->expression) << std::endl;
+  */
 }
 
 void LLVMIRVisitor::Visit(ReturnStatement* statement) {
@@ -112,9 +122,11 @@ void LLVMIRVisitor::Visit(ReturnStatement* statement) {
 }
 
 void LLVMIRVisitor::Visit(WhileStatement* statement) {
+  /*
   while (Accept(statement->cond_expression)) {
     statement->statement->Accept(this);
   }
+  */
 }
 
 void LLVMIRVisitor::Visit(StatementList* statement) {
@@ -129,7 +141,7 @@ void LLVMIRVisitor::Visit(StatementListStatement* statement) {
   statement->statement_list->Accept(this);
 }
 
-int LLVMIRVisitor::Accept(AstNode* ast_node) {
+llvm::Value* LLVMIRVisitor::Accept(AstNode* ast_node) {
   ast_node->Accept(this);
   return stack.TopAndPop();
 }

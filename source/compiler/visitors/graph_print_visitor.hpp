@@ -1,20 +1,20 @@
 #pragma once
 
-#include "compiler/visitors/visitor.hpp"
-#include "compiler/util/program_stack.hpp"
-#include "compiler/util/symbol_table.hpp"
-#include "compiler/util/visitor_helper.hpp"
+#include "print_visitor.hpp"
+#include "compiler/ast/forward_declaration.hpp"
 
-#include <unordered_map>
+#include <fstream>
+#include <filesystem>
 #include <string>
-#include <deque>
 
-class Interpreter : public Visitor, public VisitorHelper<int> {
+#include "fmt/os.h"
+
+class GraphPrintVisitor : public PrintVisitor {
  public:
-  Interpreter() = default;
-  virtual ~Interpreter() override = default;
-    
-  void Run(Program* program);
+  GraphPrintVisitor() = default;
+  virtual ~GraphPrintVisitor() override = default;
+
+  virtual void Print(const std::filesystem::path& filename, Program* program) override;
 
   virtual void Visit(Program* program) override;
   virtual void Visit(MainClass* main_class) override;
@@ -40,10 +40,8 @@ class Interpreter : public Visitor, public VisitorHelper<int> {
   virtual void Visit(WhileStatement* statement) override;
   virtual void Visit(StatementList* statement) override;
   virtual void Visit(LocalVariableStatement* statement) override;
-  virtual void Visit(StatementListStatement* expression) override;
-  
-  virtual int Accept(AstNode* ast_node) override;
+  virtual void Visit(StatementListStatement* statement) override;
+
  private:
-  SymbolTable<int> table;
-  ProgramStack<int> stack;
+  fmt::ostream stream;
 };

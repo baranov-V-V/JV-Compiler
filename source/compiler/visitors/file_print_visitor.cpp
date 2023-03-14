@@ -5,7 +5,7 @@
 #define EXECUTE_TABBED(code) PrintTabs(); code
 #define VISIT_TABBED(code) ++tabs_count; code --tabs_count;
 
-void FilePrintVisitor::Print(const std::string& filename, Program* program) {
+void FilePrintVisitor::Print(const std::filesystem::path& filename, Program* program) {
   tabs_count = 0;
   stream.open(filename);
   Visit(program);

@@ -5,16 +5,28 @@
 #include "compiler/util/symbol_table.hpp"
 #include "compiler/util/visitor_helper.hpp"
 
+#include "llvm/ADT/APFloat.h"
+#include "llvm/ADT/STLExtras.h"
+#include "llvm/IR/BasicBlock.h"
+#include "llvm/IR/Constants.h"
+#include "llvm/IR/DerivedTypes.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/Module.h"
+#include "llvm/IR/Type.h"
+#include "llvm/IR/Verifier.h"
+
 #include <unordered_map>
 #include <string>
 #include <deque>
 
-class LLVMIRVisitor : public Visitor, public VisitorHelper<int> {
+class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
  public:
   LLVMIRVisitor() = default;
   virtual ~LLVMIRVisitor() override = default;
     
-  void Run(Program* program);
+  void TranslateToIR(Program* program);
 
   virtual void Visit(Program* program) override;
   virtual void Visit(MainClass* main_class) override;
@@ -42,8 +54,8 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<int> {
   virtual void Visit(LocalVariableStatement* statement) override;
   virtual void Visit(StatementListStatement* expression) override;
   
-  virtual int Accept(AstNode* ast_node) override;
+  virtual llvm::Value* Accept(AstNode* ast_node) override;
  private:
-  SymbolTable table;
-  ProgramStack stack;
+  SymbolTable<llvm::Value*> table;
+  ProgramStack<llvm::Value*> stack;
 };

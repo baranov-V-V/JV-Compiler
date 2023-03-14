@@ -57,7 +57,12 @@ target_include_directories(compiler PRIVATE
 )
 
 llvm_map_components_to_libnames(llvm_libs support core irreader)
-target_link_libraries(compiler ${llvm_libs})
+target_link_libraries(compiler 
+  PUBLIC
+    ${llvm_libs}
+    spdlog
+    fmt
+)
 
 enable_testing()
 add_subdirectory(third_party)

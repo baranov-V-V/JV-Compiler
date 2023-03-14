@@ -5,6 +5,8 @@
 #include "compiler/core/compiler.hpp"
 #include <filesystem>
 
+#include "fmt/os.h"
+
 int main(int argc, char** argv) {
   /*
   Driver driver;
@@ -34,8 +36,18 @@ int main(int argc, char** argv) {
   driver.Run();
   */
   
+  /*
   Compiler compiler;
   compiler.Compile(argc, argv);
+  */
+
+  /*
+  std::filesystem::create_directories("lol/kek"); 
+  fmt::ostream stream = fmt::output_file("lol/kek/test.txt");
+  stream.print("test {}\n", 3);
+  stream.print("more test {}\n", 42);
+  stream.close();
+  */
 
   return 0;
 }
