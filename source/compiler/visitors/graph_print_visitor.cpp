@@ -1,23 +1,28 @@
+#include "compiler/core/logger.hpp"
+
 #include "graph_print_visitor.hpp"
 #include "compiler/ast/ast.hpp"
+
 #include <iostream>
 
 //path = file.png
 void GraphPrintVisitor::Print(const std::filesystem::path& filename,
                               Program* program) {
+
   std::filesystem::path dot_file(filename);
   dot_file.replace_extension("dot");
   std::string command = "dot -Tpng " + dot_file.string() + " -o " + filename.string(); 
   
-  //std::cout << "dot file :" << dot_file.string() << std::endl;
-  //std::cout << "png file :" << filename.string() << std::endl;
+  LOG_DEBUG("dot file : {}", dot_file.string());
+  LOG_DEBUG("png file : {}", filename.string());
   
   std::filesystem::create_directories(dot_file.parent_path()); 
   //stream = fmt::output_file(dot_file.c_str());
+  fict_node_no = 10000;
   Visit(program);
   stream.close();
 
-  //std::cerr << "graphing done with code: " << system(command.c_str());
+  LOG_INFO("graphing done with code: {}", system(command.c_str()));
 }
 
 void GraphPrintVisitor::Visit(Program* program) {
@@ -36,43 +41,173 @@ void GraphPrintVisitor::Visit(MainClass* main_class) {
 }
 
 void GraphPrintVisitor::Visit(ClassDeclaration* class_declaration) {
-  //class_declaration->class_name
+  return;
 }
 
-void GraphPrintVisitor::Visit(ClassDeclarationList* class_declaration_list) {}
+void GraphPrintVisitor::Visit(ClassDeclarationList* class_declaration_list) {
+  return;
+}
 
-void GraphPrintVisitor::Visit(DeclarationList* declaration_list) {}
+void GraphPrintVisitor::Visit(DeclarationList* declaration_list) {
+
+}
 
 void GraphPrintVisitor::Visit(MethodDeclaration* method_declaration) {}
 
 void GraphPrintVisitor::Visit(VariableDeclaration* variable_declaration) {}
 
-void GraphPrintVisitor::Visit(BinOpExpression* expression) {}
+void GraphPrintVisitor::Visit(BinOpExpression* expression) {
+  stream.print("\tnode{} [label =\"<first> {}\", color=\"grey14\", fillcolor=\"gray38\"]\n", bin_ops[(int) expression->operation], reinterpret_cast<void*>(expression));
+  expression->lhs->Accept(this);
+  expression->rhs->Accept(this);
+  stream.print("\t\tnode{}:sw -> node{} [color=\"navy\"];\n", reinterpret_cast<void*>(expression), reinterpret_cast<void*>(expression->lhs));
+  stream.print("\t\tnode{}:se -> node{} [color=\"navy\"];\n", reinterpret_cast<void*>(expression), reinterpret_cast<void*>(expression->rhs));
+}
 
-void GraphPrintVisitor::Visit(TrueExpression* expression) {}
+void GraphPrintVisitor::Visit(TrueExpression* expression) {
+  stream.print("\tnode{} [label =\"<first> False\", color=\"grey14\", fillcolor=\"olivedrab3\"]\n", reinterpret_cast<void*>(expression));
+}
 
-void GraphPrintVisitor::Visit(FalseExpression* expression) {}
+void GraphPrintVisitor::Visit(FalseExpression* expression) {
+  stream.print("\tnode{} [label =\"<first> True\", color=\"grey14\", fillcolor=\"orangered2\"]\n", reinterpret_cast<void*>(expression));
+}
 
-void GraphPrintVisitor::Visit(IdentifierExpression* expression) {}
+void GraphPrintVisitor::Visit(IdentifierExpression* expression) {
+  stream.print("\tnode{} [label =\"<first> [int] {}\", color=\"grey14\", fillcolor=\"lightyellow\"]\n", reinterpret_cast<void*>(expression), expression->identifier);
+}
 
-void GraphPrintVisitor::Visit(IntegerExpression* expression) {}
+void GraphPrintVisitor::Visit(IntegerExpression* expression) {
+  stream.print("\tnode{} [label =\"<first> [int] {}\", color=\"grey14\", fillcolor=\"skyblue1\"]\n", reinterpret_cast<void*>(expression), expression->value);
+}
 
-void GraphPrintVisitor::Visit(NotExpression* expression) {}
+void GraphPrintVisitor::Visit(NotExpression* expression) {
+  
+}
 
-void GraphPrintVisitor::Visit(AssignmentStatement* statement) {}
+void GraphPrintVisitor::Visit(AssignmentStatement* statement) {
+  stream.print("\tnode{} [label =\"<first> Assignment \", color=\"grey14\", fillcolor=\"gray38\"]\n",
+    (void*) statement
+  );
+  stream.print("\tnode{} [label =\"<first> [Id] {} \", color=\"grey14\", fillcolor=\"gray38\"]\n",\
+    (void*) &statement->identifier, statement->identifier
+  );
+  statement->expression->Accept(this);
+  stream.print("\t\tnode{}:sw -> node{} [color=\"navy\"];\n",
+    (void*) statement, (void*) &statement->identifier
+  );
+  stream.print("\t\tnode{}:se -> node{} [color=\"navy\"];\n",
+    (void*) statement, (void*) &statement->expression
+  );
+}
 
-void GraphPrintVisitor::Visit(IfElseStatement* statement) {}
+void GraphPrintVisitor::Visit(IfElseStatement* statement) {
+  stream.print("\tnode{} [label =\"<first> IfElse \", color=\"grey14\", fillcolor=\"gray38\"]\n",
+    (void*) statement
+  );
+  statement->cond_expression->Accept(this);
+  statement->statement_true->Accept(this);
+  statement->statement_false->Accept(this);
+  stream.print("\t\tnode{}:s -> node{} [color=\"navy\" label = \"cond\"];\n",
+    (void*) statement, (void*) statement->cond_expression
+  );
+  stream.print("\t\tnode{}:sw -> node{} [color=\"navy\" label = \"true\"];\n",
+    (void*) statement, (void*) statement->statement_true
+  );
+  stream.print("\t\tnode{}:se -> node{} [color=\"navy\" label = \"false\"];\n",
+    (void*) statement, (void*) statement->statement_false
+  );
+}
 
-void GraphPrintVisitor::Visit(IfStatement* statement) {}
+void GraphPrintVisitor::Visit(IfStatement* statement) {
+  stream.print("\tnode{} [label =\"<first> If \", color=\"grey14\", fillcolor=\"gray38\"]\n",
+    (void*) statement
+  );
+  statement->cond_expression->Accept(this);
+  statement->statement_true->Accept(this);
+  stream.print("\t\tnode{}:s -> node{} [color=\"navy\" label = \"cond\"];\n",
+    (void*) statement, (void*) statement->cond_expression
+  );
+  stream.print("\t\tnode{}:sw -> node{} [color=\"navy\" label = \"true\"];\n",
+    (void*) statement, (void*) statement->statement_true
+  );
+}
 
-void GraphPrintVisitor::Visit(PrintStatement* statement) {}
+void GraphPrintVisitor::Visit(PrintStatement* statement) {
+  stream.print("\tnode{} [label =\"<first> Print \", color=\"grey14\", fillcolor=\"gray38\"]\n",
+    (void*) statement
+  );
+  statement->expression->Accept(this);
+  stream.print("\t\tnode{}:s -> node{} [color=\"navy\"];\n",
+    (void*) statement, (void*) statement->expression
+  );
+}
 
-void GraphPrintVisitor::Visit(ReturnStatement* statement) {}
+void GraphPrintVisitor::Visit(ReturnStatement* statement) {
+  stream.print("\tnode{} [label =\"<first> Return \", color=\"grey14\", fillcolor=\"gray38\"]\n",
+    (void*) statement
+  );
+  statement->expression->Accept(this);
+  stream.print("\t\tnode{}:s -> node{} [color=\"navy\"];\n",
+    (void*) statement, (void*) statement->expression
+  );
+}
 
-void GraphPrintVisitor::Visit(WhileStatement* statement) {}
+void GraphPrintVisitor::Visit(WhileStatement* statement) {
+  stream.print("\tnode{} [label =\"<first> While \", color=\"grey14\", fillcolor=\"gray38\"]\n",
+    (void*) statement
+  );
+  statement->cond_expression->Accept(this);
+  statement->statement->Accept(this);
+  stream.print("\t\tnode{}:se -> node{} [color=\"navy\" label = \"cond\"];\n",
+    (void*) statement, (void*) statement->cond_expression
+  );
+  stream.print("\t\tnode{}:sw -> node{} [color=\"navy\" label = \"stmt\"];\n",
+    (void*) statement, (void*) statement->statement
+  );
+}
 
-void GraphPrintVisitor::Visit(StatementList* statement) {}
+void GraphPrintVisitor::Visit(StatementList* statement) {
+  stream.print("\tnode{} [label =\"<first> StmtList \", color=\"grey14\", fillcolor=\"gray38\"]\n",
+    (void*) statement
+  );
+  
+  int curr_no = fict_node_no;
+  MakeFictListNodes(statement->elements.size());
+  
+  if (curr_no = fict_node_no) {
+    stream.print("\tnode{} [label =\"<first> Empty \", color=\"grey14\", fillcolor=\"gray38\"]\n",
+      fict_node_no
+    );
+    ++fict_node_no;
+    return;
+  }
 
-void GraphPrintVisitor::Visit(LocalVariableStatement* statement) {}
+  
 
-void GraphPrintVisitor::Visit(StatementListStatement* statement) {}
+
+}
+
+void GraphPrintVisitor::Visit(LocalVariableStatement* statement) {
+  stream.print("\tnode{} [label =\"<first> Local Var Decl |<second> [Id] {}\", color=\"grey14\", fillcolor=\"gray38\"]\n",
+    (void*) statement, statement->variable_declaration->identifier
+  );
+}
+
+void GraphPrintVisitor::Visit(StatementListStatement* statement) {
+  stream.print("\tnode{} [label =\"<first> StmtListStmt \", color=\"grey14\", fillcolor=\"gray38\"]\n",
+    (void*) statement
+  );
+  Visit(statement->statement_list);
+  stream.print("\t\tnode{}:s -> node{} [color=\"navy\"];\n",
+    (void*) statement, (void*) statement->statement_list
+  );
+}
+
+void GraphPrintVisitor::MakeFictListNodes(int count) {
+  for (int i = 0; i < count; ++i) {
+    stream.print("\tnode{} [label =\"<first> Fict \", color=\"grey14\", fillcolor=\"gray38\"]\n",
+      fict_node_no
+    );
+    ++fict_node_no;
+  }
+}

@@ -3,11 +3,11 @@
 #include "print_visitor.hpp"
 #include "compiler/ast/forward_declaration.hpp"
 
+#include "fmt/os.h"
+
 #include <fstream>
 #include <filesystem>
 #include <string>
-
-#include "fmt/os.h"
 
 class GraphPrintVisitor : public PrintVisitor {
  public:
@@ -44,4 +44,7 @@ class GraphPrintVisitor : public PrintVisitor {
 
  private:
   fmt::ostream stream;
+
+  void MakeFictListNodes(int count);
+  int fict_node_no;
 };

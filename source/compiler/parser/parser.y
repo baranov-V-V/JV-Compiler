@@ -202,6 +202,8 @@ statement_list: statement
   { $$ = new StatementList($1); }
               | statement_list statement 
   { $$ = $1; $$->Add($2); }
+              |
+  { /*empty*/ }
 ;
 
 expr: "(" expr ")"

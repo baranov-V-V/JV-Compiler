@@ -1,28 +1,24 @@
 #pragma once
 
-#include <iostream>
-
 #include "spdlog/spdlog.h"
+#include "fmt/core.h"
 
-void log() {
-  std::cout << fmt::format("formatted str {}\n", 42);
-  spdlog::info("Welcome to spdlog!");
-  spdlog::error("Some error message with arg: {}", 1);
-  
-  spdlog::warn("Easy padding in numbers like {:08d}", 12);
-  spdlog::critical("Support for int: {0:d};  hex: {0:x};  oct: {0:o}; bin: {0:b}", 42);
-  spdlog::info("Support for floats {:03.2f}", 1.23456);
-  spdlog::info("Positional args are {1} {0}..", "too", "supported");
-  spdlog::info("{:<30}", "left aligned");
-  
-  spdlog::set_level(spdlog::level::debug); // Set global log level to debug
-  spdlog::debug("This message should be displayed..");    
-  
-  // change log pattern
-  spdlog::set_pattern("[%H:%M:%S %z] [%n] [%^---%L---%$] [thread %t] %v");
-  
-  // Compile time log levels
-  // define SPDLOG_ACTIVE_LEVEL to desired level
-  SPDLOG_TRACE("Some trace message with param {}", 42);
-  SPDLOG_DEBUG("Some debug message");
-}
+enum LOG_LEVEL : int {
+  OFF = 0,
+  TRACE,
+  DEBUG,
+  INFO,
+  WARN,
+  ERROR,
+  CRITICAL,
+  N_LEVELS
+};
+
+void SET_LEVEL(LOG_LEVEL level);
+
+#define LOG_TRACE(...)    spdlog::trace(__VA_ARGS__);
+#define LOG_DEBUG(...)    spdlog::debug(__VA_ARGS__);
+#define LOG_INFO(...)     spdlog::info(__VA_ARGS__);
+#define LOG_WARN(...)     spdlog::warn(__VA_ARGS__);
+#define LOG_ERROR(...)    spdlog::error(__VA_ARGS__);
+#define LOG_CRITICAL(...) spdlog::critical(__VA_ARGS__);

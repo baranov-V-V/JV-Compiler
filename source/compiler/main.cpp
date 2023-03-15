@@ -52,7 +52,5 @@ int main(int argc, char** argv) {
   stream.close();
   */
 
-  log();
-
   return 0;
 }
