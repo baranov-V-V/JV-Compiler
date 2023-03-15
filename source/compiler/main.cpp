@@ -5,7 +5,10 @@
 #include "compiler/core/compiler.hpp"
 #include <filesystem>
 
+#include "compiler/core/logger.hpp"
+
 #include "fmt/os.h"
+
 
 int main(int argc, char** argv) {
   /*
@@ -48,6 +51,8 @@ int main(int argc, char** argv) {
   stream.print("more test {}\n", 42);
   stream.close();
   */
+
+  log();
 
   return 0;
 }
