@@ -55,7 +55,15 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
   virtual void Visit(StatementListStatement* expression) override;
   
   virtual llvm::Value* Accept(AstNode* ast_node) override;
+
  private:
   SymbolTable<llvm::Value*> table;
   ProgramStack<llvm::Value*> stack;
+  
+  llvm::LLVMContext* context;
+  llvm::IRBuilder<>* builder;
+  llvm::Module* module;
+  
+  void InitializeLLVM(const std::string& module_name);
+  void TerminateLLVM();
 };
