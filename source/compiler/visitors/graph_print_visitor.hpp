@@ -43,7 +43,7 @@ class GraphPrintVisitor : public PrintVisitor {
   virtual void Visit(StatementListStatement* statement) override;
 
  private:
-  fmt::ostream stream;
+  fmt::ostream* stream;
 
   void MakeFictListNodes(int count);
   int fict_node_no;

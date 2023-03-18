@@ -2,10 +2,10 @@
 
 #include <filesystem>
 
-#include "compiler/parser/driver.hpp"
 #include "llvm/Support/CommandLine.h"
 
 class CompilerFlag;
+class Compiler;
 
 class CompilerFlags {
  public:
@@ -14,7 +14,7 @@ class CompilerFlags {
 
   void InitFlags();
   void ReadFromCommandLine(int argc, char** argv);
-  void Apply(const Driver& driver);
+  void Apply(const Compiler& compiler);
 
  private:
   std::vector<CompilerFlag*> flags;
@@ -27,7 +27,7 @@ class CompilerFlag {
 
   CompilerFlag(const CompilerFlag&) = delete;
 
-  virtual void Apply(const Driver& driver) const = 0;
+  virtual void Apply(const Compiler& compiler) const = 0;
 };
 
 class TraseParseFlag : public CompilerFlag {
@@ -37,7 +37,7 @@ class TraseParseFlag : public CompilerFlag {
 
   //TraseParseFlag(const TraseParseFlag&) = delete;
 
-  virtual void Apply(const Driver& driver) const override;
+  virtual void Apply(const Compiler& compiler) const override;
 
  private:
   llvm::cl::opt<bool> trace;
@@ -48,7 +48,7 @@ class TraseScanFlag : public CompilerFlag {
   TraseScanFlag();
   virtual ~TraseScanFlag() = default;
 
-  virtual void Apply(const Driver& driver) const override;
+  virtual void Apply(const Compiler& compiler) const override;
 
  private:
   llvm::cl::opt<bool> trace;
@@ -59,7 +59,7 @@ class AstDumpTxtFlag : public CompilerFlag {
   AstDumpTxtFlag();
   virtual ~AstDumpTxtFlag() = default;
 
-  virtual void Apply(const Driver& driver) const override;
+  virtual void Apply(const Compiler& compiler) const override;
  
  private:
   llvm::cl::opt<std::string> filename;  
@@ -70,7 +70,7 @@ class AstDumpPngFlag : public CompilerFlag {
   AstDumpPngFlag();
   virtual ~AstDumpPngFlag() = default;
 
-  virtual void Apply(const Driver& driver) const override;
+  virtual void Apply(const Compiler& compiler) const override;
  
  private:
   llvm::cl::opt<std::string> filename;
@@ -81,7 +81,7 @@ class CompileOutputFlag : public CompilerFlag {
   CompileOutputFlag();
   virtual ~CompileOutputFlag() = default;
 
-  virtual void Apply(const Driver& driver) const override;
+  virtual void Apply(const Compiler& compiler) const override;
  
  private:
   llvm::cl::opt<std::string> output_filename;
@@ -92,7 +92,7 @@ class CompileInputFlag : public CompilerFlag {
   CompileInputFlag();
   virtual ~CompileInputFlag() = default;
 
-  virtual void Apply(const Driver& driver) const override;
+  virtual void Apply(const Compiler& compiler) const override;
  
  private:
   llvm::cl::opt<std::string> filename;

@@ -7,12 +7,16 @@
 
 #include <iostream>
 
-void LLVMIRVisitor::TranslateToIR(Program* program) {
+void LLVMIRVisitor::TranslateToIR(Program* program, const std::filesystem::path& path) {
   table.Clear();
   stack.Clear();
-  InitializeLLVM("file1");
+  InitializeLLVM(path.string());
   Visit(program);
   llvm::verifyModule(*module);
+  std::error_code error_code;
+  llvm::raw_fd_ostream ll("test.ll", error_code);
+  module->print(ll, nullptr);
+  module->print(llvm::errs(), nullptr);
   TerminateLLVM();
 }
 
@@ -130,6 +134,12 @@ void LLVMIRVisitor::Visit(IdentifierExpression* expression) {
 }
 
 void LLVMIRVisitor::Visit(IntegerExpression* expression) {
+  /*
+  return ConstantFP::get(*TheContext, APFloat(Val));
+  
+  llvm::ConstantInt::get()
+  */
+
   llvm::AllocaInst* alloca = builder->CreateAlloca(builder->getInt32Ty());
   llvm::Value* value = builder->getInt32(expression->value);
   builder->CreateStore(value, alloca);
@@ -137,30 +147,95 @@ void LLVMIRVisitor::Visit(IntegerExpression* expression) {
 }
 
 void LLVMIRVisitor::Visit(NotExpression* expression) {
-  builder->CreateFNeg
-  //stack.Put(!Accept(expression->expression));
+  //llvm::AllocaInst* alloca = builder->CreateAlloca(builder->getInt1Ty());
+  llvm::Value* true_val = builder->getInt1(true);
+  //builder->CreateStore(value, alloca);
+  //stack.Put(alloca);
+  llvm::Value* val = Accept(expression->expression);
+  stack.Put(builder->CreateXor(val, true_val));
 }
 
 void LLVMIRVisitor::Visit(AssignmentStatement* statement) {
-  //table.Update(statement->identifier, Accept(statement->expression));
+  llvm::Value* expr = Accept(statement->expression);
+  llvm::LoadInst* load_expr = builder->CreateLoad(builder->getInt32Ty(), expr);
+  llvm::Value* var = table.Get(statement->identifier);
+  builder->CreateStore(load_expr, var);
 }
 
 void LLVMIRVisitor::Visit(IfElseStatement* statement) {
-  /*
-  if (Accept(statement->cond_expression)) {
-    statement->statement_true->Accept(this);
-  } else {
-    statement->statement_false->Accept(this);
-  }
-  */
+  llvm::Value* cond_value = Accept(statement->cond_expression);
+
+  // Convert condition to a bool by comparing non-equal to 0.0.
+  cond_value = builder->CreateICmpEQ(cond_value, llvm::ConstantInt::getTrue(*context), "ifcond");
+
+  llvm::Function* function = builder->GetInsertBlock()->getParent();
+
+  // Create blocks for the then and else cases.  Insert the 'then' block at the
+  // end of the function.
+  llvm::BasicBlock* then_block  = llvm::BasicBlock::Create(*context, "then", function);
+  llvm::BasicBlock* else_block  = llvm::BasicBlock::Create(*context, "else");
+  llvm::BasicBlock* merge_block = llvm::BasicBlock::Create(*context, "ifcontinue");
+
+  builder->CreateCondBr(cond_value, then_block, else_block);
+
+  // Emit then value.
+  builder->SetInsertPoint(then_block);
+  llvm::Value* then_value = Accept(statement->statement_true);
+  builder->CreateBr(merge_block);
+
+  // Codegen of 'Then' can change the current block, update ThenBB for the PHI.
+  then_block = builder->GetInsertBlock();
+
+  // Emit else block.
+  function->getBasicBlockList().push_back(else_block); // emit else block
+  builder->SetInsertPoint(else_block);
+
+  llvm::Value* else_value = Accept(statement->statement_false);
+
+  builder->CreateBr(merge_block);
+  // Codegen of 'Else' can change the current block, update ElseBB for the PHI.
+  else_block = builder->GetInsertBlock();
+
+  // Emit merge block.
+  function->getBasicBlockList().push_back(merge_block);
+  builder->SetInsertPoint(merge_block);
+  llvm::PHINode* phi_node = builder->CreatePHI(llvm::Type::getInt32Ty(*context), 2, "iftmp");
+
+  phi_node->addIncoming(then_value, then_block);
+  phi_node->addIncoming(else_value, else_block);
+  stack.Put(phi_node);
 }
 
 void LLVMIRVisitor::Visit(IfStatement* statement) {
-  /*
-  if (Accept(statement->cond_expression)) {
-    statement->statement_true->Accept(this);
-  }
-  */
+  llvm::Value* cond_value = Accept(statement->cond_expression);
+
+  // Convert condition to a bool by comparing non-equal to 0.0.
+  cond_value = builder->CreateICmpEQ(cond_value, llvm::ConstantInt::getTrue(*context), "ifcond");
+
+  llvm::Function* function = builder->GetInsertBlock()->getParent();
+
+  // Create blocks for the then and else cases.  Insert the 'then' block at the
+  // end of the function.
+  llvm::BasicBlock* then_block  = llvm::BasicBlock::Create(*context, "then", function);
+  llvm::BasicBlock* else_block  = llvm::BasicBlock::Create(*context, "else");
+  llvm::BasicBlock* merge_block = llvm::BasicBlock::Create(*context, "ifcontinue");
+
+  builder->CreateCondBr(cond_value, then_block, else_block);
+
+  // Emit then value.
+  builder->SetInsertPoint(then_block);
+  llvm::Value* then_value = Accept(statement->statement_true);
+  builder->CreateBr(merge_block);
+
+  // Codegen of 'Then' can change the current block, update ThenBB for the PHI.
+  then_block = builder->GetInsertBlock();
+  // Emit merge block.
+  function->getBasicBlockList().push_back(merge_block);
+  builder->SetInsertPoint(merge_block);
+  llvm::PHINode* phi_node = builder->CreatePHI(llvm::Type::getInt32Ty(*context), 1, "iftmp");
+
+  phi_node->addIncoming(then_value, then_block);
+  stack.Put(phi_node);
 }
 
 void LLVMIRVisitor::Visit(PrintStatement* statement) {
@@ -200,11 +275,32 @@ void LLVMIRVisitor::Visit(ReturnStatement* statement) {
 }
 
 void LLVMIRVisitor::Visit(WhileStatement* statement) {
+  llvm::Value* cond_value = Accept(statement->cond_expression);
+// create the new basic block that will be the body of our while statement
+  llvm::Function* function = builder->GetInsertBlock()->getParent();
+
+  llvm::BasicBlock* while_body  = llvm::BasicBlock::Create(*context, "while", function);
+  llvm::BasicBlock* while_merge  = llvm::BasicBlock::Create(*context, "merge");
+  function->getBasicBlockList().push_back(while_merge);
+  builder->CreateCondBr(cond_value, while_body, while_merge);
+
+  // and make sure all statements in the while go into our while statement
+  builder->SetInsertPoint(while_body);
+
+  // visit the body of the while now
+  statement->statement->Accept(this);
+  
   /*
-  while (Accept(statement->cond_expression)) {
-    statement->statement->Accept(this);
-  }
+    change for non cond jump
   */
+  // we now need to conditionally loop back to the body of the while loop if
+  // the condition (which we are re-evaluating) is still true, otherwise we
+  // branch to the merge point
+  builder->CreateCondBr(Accept(statement->cond_expression), while_body, while_merge);
+
+  // and lastly, we want all new statements after the while to go into the
+  // merge case
+  builder->SetInsertPoint(while_merge);
 }
 
 void LLVMIRVisitor::Visit(StatementList* statement) {

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <fstream>
+#include <filesystem>
 
 #include "scanner.hpp"
 #include "parser.hpp"
@@ -16,13 +17,16 @@ class Driver {
   void SetProgram(Program* program);
   void DeleteProgram();
 
-  void Parse(const std::string& f);
+  void Parse(const std::filesystem::path& f);
   
   void ScanBegin();
   void ScanEnd();
 
-  void PrintTree(const std::string& filename) const;
+  void PrintTreeTxt(const std::filesystem::path& filepath) const;
+  void PrintTreePng(const std::filesystem::path& filepath) const;
+  
   void Run() const;
+  void IrGen(const std::filesystem::path& filepath);
 
   void SetTraceScan(bool trace);
   void SetTraceParse(bool trace);
@@ -39,5 +43,5 @@ class Driver {
   bool trace_scanning;
   yy::location location;
   
-  std::string file;
+  std::string file_in;
 };

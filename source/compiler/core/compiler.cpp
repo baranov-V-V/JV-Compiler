@@ -1,51 +1,51 @@
 #include <string>
 
+#include "compiler/core/logger.hpp"
+
 #include "compiler.hpp"
+#include "compiler/parser/driver.hpp"
 #include "llvm/Support/CommandLine.h"
 
 void Compiler::Compile(int argc, char** argv) {
   ParseArgs(argc, argv);
+  driver.Parse(file_in);
+
+  if (!dump_png.empty()) {
+    driver.PrintTreePng(dump_png);
+  }
+  if (!dump_png.empty()) {
+    driver.PrintTreePng(dump_png);
+  }
+
+  std::filesystem::path ir_path(file_out);
+  std::filesystem::path obj_path(file_out);
+  ir_path.replace_extension(".ll");
+  obj_path.replace_extension(".o");
+  driver.IrGen(ir_path);
+  
+  /*
+  $ llc -filetype=obj hello-world.ll -o hello-world.o
+  $ clang hello-world.o -o hello-world
+  */
+  std::string llc_command = "llc -filetype=obj " + ir_path.native() + " -o " + obj_path.native();
+  std::string clang_command = "clang " + obj_path.native() + " -o " + file_out.native();
+
+  LOG_DEBUG("llc compile command {}", llc_command);
+  LOG_DEBUG("clang compile command {}", clang_command);
+
+  int llc_errcode = std::system(llc_command.c_str());
+  int clang_errcode = std::system(llc_command.c_str());
+
+  LOG_DEBUG("llc errcode {}", llc_errcode);
+  LOG_DEBUG("clang errcode  {}", clang_errcode);
+}
+
+const Driver& Compiler::GetDriver() const {
+  return driver;
 }
 
 void Compiler::ParseArgs(int argc, char** argv) {
   compiler_flags.InitFlags();
   compiler_flags.ReadFromCommandLine(argc, argv);
-  compiler_flags.Apply(driver);
-  /*
-  llvm::cl::OptionCategory TestOptionCat ("Test Options", "These options are to be used when running tests");
-
-  enum OptLevel {
-    g, O1, O2, O3
-  };
-
-  llvm::cl::opt<std::string> OutputFilenameee("oo", llvm::cl::desc("Specify output filename"), llvm::cl::value_desc("filename"));
-
-  llvm::cl::opt<OptLevel> OptimizationLevel(llvm::cl::desc("Choose optimization level:"),
-    llvm::cl::values(
-      clEnumVal(g , "No optimizations, enable debugging"),
-      clEnumVal(O1, "Enable trivial optimizations"),
-      clEnumVal(O2, "Enable default optimizations"),
-      clEnumVal(O3, "Enable expensive optimizations")),
-    llvm::cl::cat(TestOptionCat)
-    );
-
-  llvm::cl::opt<std::string> OutputFilename("o", llvm::cl::desc("Specify output filename"), llvm::cl::value_desc("filename"));
-  
-  llvm::cl::opt<std::string> variable("v", llvm::cl::desc("I don't do anything"),
-    llvm::cl::value_desc("a string"),
-    llvm::cl::init("default-string")
-    );
-
-  llvm::cl::extrahelp("\nThis is more help!\n");
-  llvm::cl::extrahelp("And even more!\n");
-
-  //Modify options we don't have direct access to
-  llvm::StringMap<llvm::cl::Option*> &hack = llvm::cl::getRegisteredOptions();
-
-  //Unhide really useful option and put it in a different category
-  assert(hack.count("color") > 0);
-  hack["color"]->setHiddenFlag(llvm::cl::Hidden);
-  //hack["color"]->setCategory(TestOptionCat);
-  */
-  //llvm::cl::ParseCommandLineOptions(argc, argv, "This is a small program compiler");
+  compiler_flags.Apply(*this);
 }

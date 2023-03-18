@@ -16,9 +16,11 @@
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Type.h"
 #include "llvm/IR/Verifier.h"
+#include "llvm-c/Core.h"
 
 #include <unordered_map>
 #include <string>
+#include <filesystem>
 #include <deque>
 
 class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
@@ -26,7 +28,7 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
   LLVMIRVisitor() = default;
   virtual ~LLVMIRVisitor() override = default;
     
-  void TranslateToIR(Program* program);
+  void TranslateToIR(Program* program, const std::filesystem::path& path);
 
   virtual void Visit(Program* program) override;
   virtual void Visit(MainClass* main_class) override;
