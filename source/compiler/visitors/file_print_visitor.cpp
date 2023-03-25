@@ -58,7 +58,7 @@ void FilePrintVisitor::Visit(BinOpExpression* expression) {
   PRINT_TABBED("Bin Op Expr")
   VISIT_TABBED(
     expression->lhs->Accept(this);
-    PRINT_TABBED(bin_ops[(int) expression->operation])
+    PRINT_TABBED(GetBinOp(expression->operation))
     expression->rhs->Accept(this);
   )
 }
@@ -164,6 +164,33 @@ void FilePrintVisitor::PrintTabs() {
   for (int i = 0; i < tabs_count; ++i) {
     stream << "\t";
   };
+}
+
+void FilePrintVisitor::Visit(LogicOpExpression* expression) {
+  PRINT_TABBED("Logic Op Expr")
+  VISIT_TABBED(
+      expression->lhs->Accept(this);
+      PRINT_TABBED(GetLogicStrOp(expression->operation))
+      expression->rhs->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(CompareOpExpression* expression) {
+  PRINT_TABBED("Compare Op Expr")
+  VISIT_TABBED(
+      expression->lhs->Accept(this);
+      PRINT_TABBED(GetCompareStrOp(expression->operation))
+      expression->rhs->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(MathOpExpression* expression) {
+  PRINT_TABBED("Math Op Expr")
+  VISIT_TABBED(
+      expression->lhs->Accept(this);
+      PRINT_TABBED(GetMathStrOp(expression->operation))
+      expression->rhs->Accept(this);
+  )
 }
 
 #undef PRINT_TABBED

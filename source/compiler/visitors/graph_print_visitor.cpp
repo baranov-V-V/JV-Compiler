@@ -60,7 +60,7 @@ void GraphPrintVisitor::Visit(MethodDeclaration* method_declaration) {}
 void GraphPrintVisitor::Visit(VariableDeclaration* variable_declaration) {}
 
 void GraphPrintVisitor::Visit(BinOpExpression* expression) {
-  stream->print("\tnode{} [label =\"<first> {}\", color=\"grey14\", fillcolor=\"gray38\"]\n", bin_ops[(int) expression->operation], reinterpret_cast<void*>(expression));
+  stream->print("\tnode{} [label =\"<first> {}\", color=\"grey14\", fillcolor=\"gray38\"]\n", GetBinOp(expression->operation), reinterpret_cast<void*>(expression));
   expression->lhs->Accept(this);
   expression->rhs->Accept(this);
   stream->print("\t\tnode{}:sw -> node{} [color=\"navy\"];\n", reinterpret_cast<void*>(expression), reinterpret_cast<void*>(expression->lhs));
@@ -213,4 +213,16 @@ void GraphPrintVisitor::MakeFictListNodes(int count) {
     );
     ++fict_node_no;
   }
+}
+
+void GraphPrintVisitor::Visit(LogicOpExpression* expression) {
+
+}
+
+void GraphPrintVisitor::Visit(CompareOpExpression* expression) {
+
+}
+
+void GraphPrintVisitor::Visit(MathOpExpression* expression) {
+
 }
