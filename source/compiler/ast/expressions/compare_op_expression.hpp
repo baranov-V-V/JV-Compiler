@@ -1,7 +1,7 @@
 #pragma
 
 #include "ast/expressions/expression.hpp"
-#include "ast/core/compare_operation.hpp"
+#include "ast/core/binary_operations.hpp"
 
 class CompareOpExpression : public Expression {
  public:

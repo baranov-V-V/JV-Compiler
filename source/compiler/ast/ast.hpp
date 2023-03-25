@@ -3,9 +3,6 @@
 #include "compiler/ast/core/ast_node.hpp"
 #include "compiler/ast/core/basic_list.hpp"
 #include "compiler/ast/core/binary_operations.hpp"
-#include "compiler/ast/core/logic_operations.hpp"
-#include "compiler/ast/core/math_operations.hpp"
-#include "compiler/ast/core/compare_operation.hpp"
 
 #include "compiler/ast/declarations/class_declaration_list.hpp"
 #include "compiler/ast/declarations/class_declaration.hpp"

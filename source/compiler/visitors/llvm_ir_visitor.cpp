@@ -135,10 +135,6 @@ void LLVMIRVisitor::Visit(BinOpExpression* expression) {
     case BinOperation::GREATER:
       load_lhs = builder->CreateLoad(builder->getInt32Ty(), lhs);
       load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
-
-      LOG_DEBUG("load_lhs_type: {}, load_rhs_type: {}", (void*) load_lhs->getType(), (void*) load_rhs->getType());
-      LOG_DEBUG("load_lhs_type_id: {}, load_rhs_type_id: {}", (void*) load_lhs->getType()->getTypeID(), (void*) load_rhs->getType()->getTypeID());
-
       result = builder->CreateICmpSGT(load_lhs, load_rhs, "cmp_gt");
       break;
 
@@ -436,13 +432,132 @@ void LLVMIRVisitor::TerminateLLVM() {
 }
 
 void LLVMIRVisitor::Visit(LogicOpExpression* expression) {
+  LOG_DEBUG("In LogicOp")
 
+  llvm::Value* lhs = Accept(expression->lhs);
+  llvm::Value* rhs = Accept(expression->rhs);
+
+  LOG_DEBUG("lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetLogicStrOp(expression->operation),
+            rhs->getType()->getTypeID())
+
+  llvm::Value* result = nullptr;
+
+  switch(expression->operation) {
+    case LogicOperation::OR:
+      result = builder->CreateOr(lhs, rhs, "tmp_or");
+      break;
+
+    case LogicOperation::AND:
+      result = builder->CreateAnd(lhs, rhs, "tmp_or");
+      break;
+
+    default:
+      LOG_CRITICAL("uknown logic op: {}", (int) expression->operation);
+      break;
+  }
+
+  //?
+
+  stack.Put(alloca_result);
 }
 
 void LLVMIRVisitor::Visit(CompareOpExpression* expression) {
+  LOG_DEBUG("In CompOp")
 
+  llvm::Value* lhs = Accept(expression->lhs);
+  llvm::Value* rhs = Accept(expression->rhs);
+
+  LOG_DEBUG("lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetBinOp(expression->operation),
+            rhs->getType()->getTypeID())
+
+  llvm::Value* result = nullptr;
+  llvm::LoadInst* load_lhs = nullptr;
+  llvm::LoadInst* load_rhs = nullptr;
+  //LOG_DEBUG("lhs_type: {}, rhs_type: {}", (void*) lhs->getType(), (void*) rhs->getType());
+
+  switch(expression->operation) {
+    case CompareOperation::EQUAL:
+      result = builder->CreateICmpEQ(lhs, rhs, "tmp_eq");
+      break;
+
+    case CompareOperation::NEQUAL:
+      result = builder->CreateICmpNE(lhs, rhs, "tmp_ne");
+      break;
+
+    case CompareOperation::LESS:
+      result = builder->CreateICmpSLT(lhs, rhs, "tmp_lt");
+      break;
+
+    case CompareOperation::GREATER:
+      load_lhs = builder->CreateLoad(builder->getInt32Ty(), lhs);
+      load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
+      result = builder->CreateICmpSGT(load_lhs, load_rhs, "cmp_gt");
+      break;
+
+    default:
+      LOG_CRITICAL("uknown compare op: {}", (int) expression->operation);
+      break;
+  }
+
+  llvm::AllocaInst* alloca_result = builder->CreateAlloca(builder->getInt32Ty());
+  builder->CreateStore(result, alloca_result);
+
+  stack.Put(alloca_result);
 }
 
 void LLVMIRVisitor::Visit(MathOpExpression* expression) {
+  LOG_DEBUG("In MathOp")
 
+  llvm::Value* lhs = Accept(expression->lhs);
+  llvm::Value* rhs = Accept(expression->rhs);
+
+  LOG_DEBUG("IN BinOp lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetBinOp(expression->operation),
+            rhs->getType()->getTypeID());
+
+  llvm::Value* result = nullptr;
+  llvm::LoadInst* load_lhs = nullptr;
+  llvm::LoadInst* load_rhs = nullptr;
+  //LOG_DEBUG("lhs_type: {}, rhs_type: {}", (void*) lhs->getType(), (void*) rhs->getType());
+
+  switch(expression->operation) {
+    case MathOperation::PLUS:
+      load_lhs = builder->CreateLoad(builder->getInt32Ty(), lhs);
+      load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
+      //llvm::LoadInst* load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
+      result = builder->CreateAdd(load_lhs, load_rhs, "addtmp");
+      break;
+
+    case MathOperation::MINUS:
+      load_lhs = builder->CreateLoad(builder->getInt32Ty(), lhs);
+      load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
+      result = builder->CreateSub(load_lhs, load_rhs, "subtmp");
+      break;
+
+    case MathOperation::MUL:
+      load_lhs = builder->CreateLoad(builder->getInt32Ty(), lhs);
+      load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
+      result = builder->CreateMul(load_lhs, load_rhs, "multmp");
+      break;
+
+    case MathOperation::DIV:
+      load_lhs = builder->CreateLoad(builder->getInt32Ty(), lhs);
+      load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
+      result = builder->CreateFDiv(load_lhs, load_rhs, "divtmp");
+      break;
+
+    case MathOperation::PERCENT:
+      load_lhs = builder->CreateLoad(builder->getInt32Ty(), lhs);
+      load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
+      result = builder->CreateSRem(load_lhs, load_rhs, "tmp_rem");
+      break;
+
+    default:
+      LOG_CRITICAL("uknown math op: {}", (int) expression->operation);
+      break;
+  }
+
+  llvm::AllocaInst* alloca_result = builder->CreateAlloca(builder->getInt32Ty());
+  builder->CreateStore(result, alloca_result);
+
+  stack.Put(alloca_result);
 }

@@ -3,7 +3,7 @@
 #include "compiler/ast/core/ast_node.hpp"
 #include "compiler/ast/expressions/expression.hpp"
 #include "compiler/visitors/visitor.hpp"
-#include "ast/core/logic_operations.hpp"
+#include "ast/core/binary_operations.hpp"
 
 class LogicOpExpression : public Expression {
  public:
