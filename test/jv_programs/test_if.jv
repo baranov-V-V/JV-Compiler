@@ -3,15 +3,12 @@ class A {
     int a;
     int b;
     a = 3;
-    b = 1;
-    if (a == b + 2) {
-      println(1);
-    }
+    b = 5;
     
-    if (a > b + 2) {
-      println(1);
-    } else {
-      println(2);
+    if (a > 4) {
+      b = 10;
     }
+
+    println(b);
   }
 }

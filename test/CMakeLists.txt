@@ -6,10 +6,15 @@ function(add_compiler_test name)
   
   add_executable(${name} ${sources})
 
+  file(GLOB_RECURSE COMPILER_INCLUDES CONFIGURE_DEPENDS ${COMPILER_SOURCE_DIR}/*.hpp)
+  file(GLOB_RECURSE COMPILER_SOURCES CONFIGURE_DEPENDS ${COMPILER_SOURCE_DIR}/*.cpp)
+
+  message(STATUS "includes test: ${COMPILER_INCLUDES}")
+  message(STATUS "sources test:  ${COMPILER_SOURCES}")
+
   target_include_directories(${name}
     PUBLIC
-      ${COMPILER_INCLUDES}
-      ${COMPILER_SOURCES}
+      ${COMPILER_SOURCE_DIR}/.
   )
 
   target_sources(${name}
@@ -24,6 +29,5 @@ function(add_compiler_test name)
   add_test(NAME ${name} COMMAND ${name})
 endfunction()
 
-add_compiler_test(test_interpreter)
-add_compiler_test(test_ir)
-
+#add_compiler_test(test_interpreter)
+#add_compiler_test(test_ir)

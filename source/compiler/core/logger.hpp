@@ -14,11 +14,13 @@ enum LOG_LEVEL : int {
   N_LEVELS
 };
 
-void SET_LEVEL(LOG_LEVEL level);
+void SetLogLevel(LOG_LEVEL level);
 
-#define LOG_TRACE(...)    spdlog::trace(__VA_ARGS__);
-#define LOG_DEBUG(...)    spdlog::debug(__VA_ARGS__);
-#define LOG_INFO(...)     spdlog::info(__VA_ARGS__);
-#define LOG_WARN(...)     spdlog::warn(__VA_ARGS__);
-#define LOG_ERROR(...)    spdlog::error(__VA_ARGS__);
-#define LOG_CRITICAL(...) spdlog::critical(__VA_ARGS__);
+#define SET_LOG_LEVEL(level)  SetLogLevel(level);
+
+#define LOG_TRACE(...)    spdlog::log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::trace, __VA_ARGS__);
+#define LOG_DEBUG(...)    spdlog::log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::debug, __VA_ARGS__);
+#define LOG_INFO(...)     spdlog::log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::info, __VA_ARGS__);
+#define LOG_WARN(...)     spdlog::log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::warn, __VA_ARGS__);
+#define LOG_ERROR(...)    spdlog::log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::error, __VA_ARGS__);
+#define LOG_CRITICAL(...) spdlog::log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::critical, __VA_ARGS__);

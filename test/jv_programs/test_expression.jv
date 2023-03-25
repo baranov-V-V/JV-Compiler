@@ -6,7 +6,8 @@ class A {
     a1 = 3;
     b = a1 + 2;
     c = a1 + b + 3 * 2;
-    println(a1);
+
+    println(a1 + 5);
     println(b);
     println(c);
 

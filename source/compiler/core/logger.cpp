@@ -1,6 +1,6 @@
 #include "logger.hpp"
 
-void SET_LEVEL(LOG_LEVEL level) {
+void SetLogLevel(LOG_LEVEL level) {
   switch (level) {
     case OFF:
       spdlog::set_level(spdlog::level::off);

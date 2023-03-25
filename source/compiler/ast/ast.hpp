@@ -3,6 +3,9 @@
 #include "compiler/ast/core/ast_node.hpp"
 #include "compiler/ast/core/basic_list.hpp"
 #include "compiler/ast/core/binary_operations.hpp"
+#include "compiler/ast/core/logic_operations.hpp"
+#include "compiler/ast/core/math_operations.hpp"
+#include "compiler/ast/core/compare_operation.hpp"
 
 #include "compiler/ast/declarations/class_declaration_list.hpp"
 #include "compiler/ast/declarations/class_declaration.hpp"
@@ -12,6 +15,9 @@
 #include "compiler/ast/declarations/variable_declaration.hpp"
 
 #include "compiler/ast/expressions/binary_op_expression.hpp"
+#include "compiler/ast/expressions/math_op_expression.hpp"
+#include "compiler/ast/expressions/logic_op_expression.hpp"
+#include "compiler/ast/expressions/compare_op_expression.hpp"
 #include "compiler/ast/expressions/bool_expression.hpp"
 #include "compiler/ast/expressions/identifier_expression.hpp"
 #include "compiler/ast/expressions/integer_expression.hpp"

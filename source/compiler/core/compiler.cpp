@@ -8,6 +8,7 @@
 
 void Compiler::Compile(int argc, char** argv) {
   ParseArgs(argc, argv);
+
   driver.Parse(file_in);
 
   if (!dump_png.empty()) {
@@ -28,24 +29,46 @@ void Compiler::Compile(int argc, char** argv) {
   $ clang hello-world.o -o hello-world
   */
   std::string llc_command = "llc -filetype=obj " + ir_path.native() + " -o " + obj_path.native();
-  std::string clang_command = "clang " + obj_path.native() + " -o " + file_out.native();
+  std::string clang_command = "clang++ " + obj_path.native() + " -o " + file_out.native();
 
-  LOG_DEBUG("llc compile command {}", llc_command);
-  LOG_DEBUG("clang compile command {}", clang_command);
+  LOG_DEBUG("llc compile command \"{}\"", llc_command);
+  LOG_DEBUG("clang compile command \"{}\"", clang_command);
 
   int llc_errcode = std::system(llc_command.c_str());
-  int clang_errcode = std::system(llc_command.c_str());
+  int clang_errcode = std::system(clang_command.c_str());
 
-  LOG_DEBUG("llc errcode {}", llc_errcode);
-  LOG_DEBUG("clang errcode  {}", clang_errcode);
+  LOG_DEBUG("llc errcode: {}", llc_errcode);
+  LOG_DEBUG("clang errcode:  {}", clang_errcode);
 }
 
-const Driver& Compiler::GetDriver() const {
+Driver& Compiler::GetDriver() {
   return driver;
+}
+
+const Driver& Compiler::GetDriver() const { return driver; }
+
+void Compiler::SetFileOut(const std::filesystem::path& file_out) {
+  this->file_out = file_out;
+}
+
+void Compiler::SetFileIn(const std::filesystem::path& file_in) {
+  this->file_in = file_in;
+}
+
+void Compiler::SetDumpTxt(const std::filesystem::path& dump_txt) {
+  this->dump_txt = dump_txt;
+}
+
+void Compiler::SetDumpPng(const std::filesystem::path& dump_png) {
+  this->dump_png = dump_png;
 }
 
 void Compiler::ParseArgs(int argc, char** argv) {
   compiler_flags.InitFlags();
   compiler_flags.ReadFromCommandLine(argc, argv);
-  compiler_flags.Apply(*this);
+  compiler_flags.Apply(this);
+}
+
+void Compiler::SetDebugLevel(LOG_LEVEL level) const {
+  SET_LOG_LEVEL(level)
 }

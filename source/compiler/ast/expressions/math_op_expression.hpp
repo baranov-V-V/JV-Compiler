@@ -1,5 +1,17 @@
-//
-// Created by viktor on 25.03.23.
-//
-
 #pragma once
+
+#include "ast/core/ast_node.hpp"
+#include "ast/expressions/expression.hpp"
+#include "ast/core/math_operations.hpp"
+
+class MathOpExpression : public Expression {
+ public:
+  MathOpExpression(Expression* lhs, MathOperation operation, Expression* rhs);
+  ~MathOpExpression() override = default;
+
+  void Accept(Visitor* visitor) override;
+
+  Expression* lhs;
+  MathOperation operation;
+  Expression* rhs;
+};

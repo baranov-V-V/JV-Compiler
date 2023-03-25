@@ -26,7 +26,11 @@ void Driver::DeleteProgram() {
 }
 
 void Driver::Parse(const std::filesystem::path& f) {
-  file_in = f.native();
+  if (f.empty()) {
+    LOG_CRITICAL("No file [f]")
+  }
+
+  this->file_in = f.native();
   location.initialize(&file_in);
   
   ScanBegin();

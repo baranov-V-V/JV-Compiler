@@ -2,6 +2,7 @@
 
 #include <filesystem>
 
+#include "compiler/core/logger.hpp"
 #include "llvm/Support/CommandLine.h"
 
 class CompilerFlag;
@@ -14,7 +15,7 @@ class CompilerFlags {
 
   void InitFlags();
   void ReadFromCommandLine(int argc, char** argv);
-  void Apply(const Compiler& compiler);
+  void Apply(Compiler* compiler);
 
  private:
   std::vector<CompilerFlag*> flags;
@@ -27,17 +28,15 @@ class CompilerFlag {
 
   CompilerFlag(const CompilerFlag&) = delete;
 
-  virtual void Apply(const Compiler& compiler) const = 0;
+  virtual void Apply(Compiler* compiler) const = 0;
 };
 
 class TraseParseFlag : public CompilerFlag {
  public:
   TraseParseFlag();
-  virtual ~TraseParseFlag() = default;
+  ~TraseParseFlag() override = default;
 
-  //TraseParseFlag(const TraseParseFlag&) = delete;
-
-  virtual void Apply(const Compiler& compiler) const override;
+  void Apply(Compiler* compiler) const override;
 
  private:
   llvm::cl::opt<bool> trace;
@@ -46,9 +45,9 @@ class TraseParseFlag : public CompilerFlag {
 class TraseScanFlag : public CompilerFlag {
  public:
   TraseScanFlag();
-  virtual ~TraseScanFlag() = default;
+  ~TraseScanFlag() override = default;
 
-  virtual void Apply(const Compiler& compiler) const override;
+  void Apply(Compiler* compiler) const override;
 
  private:
   llvm::cl::opt<bool> trace;
@@ -57,9 +56,9 @@ class TraseScanFlag : public CompilerFlag {
 class AstDumpTxtFlag : public CompilerFlag {
  public:
   AstDumpTxtFlag();
-  virtual ~AstDumpTxtFlag() = default;
+  ~AstDumpTxtFlag() override = default;
 
-  virtual void Apply(const Compiler& compiler) const override;
+  void Apply(Compiler* compiler) const override;
  
  private:
   llvm::cl::opt<std::string> filename;  
@@ -68,9 +67,9 @@ class AstDumpTxtFlag : public CompilerFlag {
 class AstDumpPngFlag : public CompilerFlag {
  public:
   AstDumpPngFlag();
-  virtual ~AstDumpPngFlag() = default;
+  ~AstDumpPngFlag() override = default;
 
-  virtual void Apply(const Compiler& compiler) const override;
+  void Apply(Compiler* compiler) const override;
  
  private:
   llvm::cl::opt<std::string> filename;
@@ -79,9 +78,9 @@ class AstDumpPngFlag : public CompilerFlag {
 class CompileOutputFlag : public CompilerFlag {
  public:
   CompileOutputFlag();
-  virtual ~CompileOutputFlag() = default;
+  ~CompileOutputFlag() override = default;
 
-  virtual void Apply(const Compiler& compiler) const override;
+  void Apply(Compiler* compiler) const override;
  
  private:
   llvm::cl::opt<std::string> output_filename;
@@ -90,10 +89,21 @@ class CompileOutputFlag : public CompilerFlag {
 class CompileInputFlag : public CompilerFlag {
  public:
   CompileInputFlag();
-  virtual ~CompileInputFlag() = default;
+  ~CompileInputFlag() override = default;
 
-  virtual void Apply(const Compiler& compiler) const override;
+  void Apply(Compiler* compiler) const override;
  
  private:
   llvm::cl::opt<std::string> filename;
+};
+
+class CompilerDebugLevelFlag : public CompilerFlag {
+ public:
+  CompilerDebugLevelFlag();
+  ~CompilerDebugLevelFlag() override = default;
+
+  void Apply(Compiler* compiler) const override;
+
+ private:
+  llvm::cl::opt<LOG_LEVEL> debug_level;
 };

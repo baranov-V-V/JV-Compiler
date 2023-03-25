@@ -1,14 +1,16 @@
-//
-// Created by viktor on 25.03.23.
-//
+#pragma
 
-#ifndef COMPILER_COMPARE_OP_EXPRESSION_HPP
-#define COMPILER_COMPARE_OP_EXPRESSION_HPP
+#include "ast/expressions/expression.hpp"
+#include "ast/core/compare_operation.hpp"
 
+class CompareOpExpression : public Expression {
+ public:
+  CompareOpExpression(Expression* lhs, CompareOperation operation, Expression* rhs);
+  ~CompareOpExpression() override = default;
+  void Accept(Visitor* visitor) override;
 
-class CompareOpExpression {
-
+  Expression* lhs;
+  CompareOperation operation;
+  Expression* rhs;
 };
 
-
-#endif //COMPILER_COMPARE_OP_EXPRESSION_HPP
