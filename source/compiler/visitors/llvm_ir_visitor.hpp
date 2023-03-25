@@ -26,46 +26,49 @@
 class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
  public:
   LLVMIRVisitor() = default;
-  virtual ~LLVMIRVisitor() override = default;
-    
+  ~LLVMIRVisitor() override = default;
+
   void TranslateToIR(Program* program, const std::filesystem::path& path);
 
-  virtual void Visit(Program* program) override;
-  virtual void Visit(MainClass* main_class) override;
-  
-  virtual void Visit(ClassDeclaration* class_declaration) override;
-  virtual void Visit(ClassDeclarationList* class_declaration_list) override;
-  virtual void Visit(DeclarationList* declaration_list) override;
-  virtual void Visit(MethodDeclaration* method_declaration) override;
-  virtual void Visit(VariableDeclaration* variable_declaration) override;
-  
-  virtual void Visit(BinOpExpression* expression) override;
-  virtual void Visit(TrueExpression* expression) override;
-  virtual void Visit(FalseExpression* expression) override;
-  virtual void Visit(IdentifierExpression* expression) override;
-  virtual void Visit(IntegerExpression* expression) override;
-  virtual void Visit(NotExpression* expression) override;
+  void Visit(Program* program) override;
+  void Visit(MainClass* main_class) override;
 
-  virtual void Visit(AssignmentStatement* statement) override;
-  virtual void Visit(IfElseStatement* statement) override;
-  virtual void Visit(IfStatement* statement) override;
-  virtual void Visit(PrintStatement* statement) override;
-  virtual void Visit(ReturnStatement* statement) override;
-  virtual void Visit(WhileStatement* statement) override;
-  virtual void Visit(StatementList* statement) override;
-  virtual void Visit(LocalVariableStatement* statement) override;
-  virtual void Visit(StatementListStatement* expression) override;
-  
-  virtual llvm::Value* Accept(AstNode* ast_node) override;
+  void Visit(ClassDeclaration* class_declaration) override;
+  void Visit(ClassDeclarationList* class_declaration_list) override;
+  void Visit(DeclarationList* declaration_list) override;
+  void Visit(MethodDeclaration* method_declaration) override;
+  void Visit(VariableDeclaration* variable_declaration) override;
+
+  void Visit(BinOpExpression* expression) override;
+  void Visit(LogicOpExpression* expression) override;
+  void Visit(CompareOpExpression* expression) override;
+  void Visit(MathOpExpression* expression) override;
+  void Visit(TrueExpression* expression) override;
+  void Visit(FalseExpression* expression) override;
+  void Visit(IdentifierExpression* expression) override;
+  void Visit(IntegerExpression* expression) override;
+  void Visit(NotExpression* expression) override;
+
+  void Visit(AssignmentStatement* statement) override;
+  void Visit(IfElseStatement* statement) override;
+  void Visit(IfStatement* statement) override;
+  void Visit(PrintStatement* statement) override;
+  void Visit(ReturnStatement* statement) override;
+  void Visit(WhileStatement* statement) override;
+  void Visit(StatementList* statement) override;
+  void Visit(LocalVariableStatement* statement) override;
+  void Visit(StatementListStatement* expression) override;
+
+  llvm::Value* Accept(AstNode* ast_node) override;
 
  private:
   SymbolTable<llvm::Value*> table;
   ProgramStack<llvm::Value*> stack;
-  
+
   llvm::LLVMContext* context;
   llvm::IRBuilder<>* builder;
   llvm::Module* module;
-  
+
   void InitializeLLVM(const std::string& module_name);
   void TerminateLLVM();
 };
