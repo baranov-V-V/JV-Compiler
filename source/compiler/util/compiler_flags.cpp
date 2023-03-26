@@ -1,7 +1,6 @@
 #include "compiler_flags.hpp"
 #include "compiler/core/compiler.hpp"
 
-#include <iostream>
 #include <optional>
 
 TraseParseFlag::TraseParseFlag() :
@@ -19,7 +18,7 @@ void TraseScanFlag::Apply(Compiler* compiler) const {
 }
 
 AstDumpTxtFlag::AstDumpTxtFlag() : 
-  filename("dmp_txt", llvm::cl::desc("Specify dump output filename"), llvm::cl::value_desc("filename"),
+  filename("dump-txt", llvm::cl::desc("Specify dump output filename"), llvm::cl::value_desc("filename"),
             llvm::cl::init("")) {}
 
 void AstDumpTxtFlag::Apply(Compiler* compiler) const {
@@ -28,10 +27,13 @@ void AstDumpTxtFlag::Apply(Compiler* compiler) const {
 }
 
 AstDumpPngFlag::AstDumpPngFlag() :
-  filename("dmp_png", llvm::cl::desc("Specify dump output filename"), llvm::cl::value_desc("filename"),
+  filename("dump-pic", llvm::cl::desc("Specify dump output filename"), llvm::cl::value_desc("filename"),
            llvm::cl::init("")) {}
 
 void AstDumpPngFlag::Apply(Compiler* compiler) const {
+  if (!filename.getValue().empty()) {
+    COMPILER_ERROR("this flag is not yet supported")
+  }
   compiler->SetDumpPng(filename.getValue());
 }
 
@@ -84,6 +86,7 @@ void CompilerFlags::PreprocessFlags() {
   Map["color"]->setHiddenFlag(llvm::cl::OptionHidden::Hidden);
   Map["help"]->setDescription("Display available options");
   Map["help-list"]->setDescription("Display list of available options");
+  Map["dump-pic"]->setHiddenFlag(llvm::cl::OptionHidden::Hidden);
 }
 
 void CompilerDebugLevelFlag::Apply(Compiler* compiler) const {
@@ -91,7 +94,7 @@ void CompilerDebugLevelFlag::Apply(Compiler* compiler) const {
 }
 
 CompilerDebugLevelFlag::CompilerDebugLevelFlag() :
-  debug_level("debug_level", llvm::cl::desc("Choose debug level:"),
+  debug_level("debug-level", llvm::cl::desc("Choose debug level:"),
               llvm::cl::init(CRITICAL),
               llvm::cl::values(
                   clEnumVal(OFF, "No debug"),
@@ -99,7 +102,8 @@ CompilerDebugLevelFlag::CompilerDebugLevelFlag() :
                   clEnumVal(DEBUG, "Enable debug level information"),
                   clEnumVal(INFO, "Enable info level information"),
                   clEnumVal(WARN, "Enable warn level information"),
-                  clEnumVal(ERROR, "Enable error level information"))) {
+                  clEnumVal(ERROR, "Enable error level information"),
+                  clEnumVal(CRITICAL, "Enable critical level information"))) {
 }
 
 void CompilerEmitLLVM::Apply(Compiler* compiler) const {

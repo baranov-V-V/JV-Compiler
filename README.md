@@ -4,7 +4,8 @@ Small Java-like language made for learning purposes.
 
 ## Installation
 
-Use install script to install flex, bison and submodules.
+You need to have C++ compiler with c++20 support and CMAKE version 3.16.\
+Use install script to install flex, bison and submodules. After that use build script build project.
 
 ```Shell
 $ git clone https://github.com/baranov-V-V/JV-Compiler.git
@@ -16,17 +17,21 @@ $
 
 ## Usage
 
-Use run script to compile and execute programs
+Use `./jvc` to compile and execute programs
 
-The list of possible flags:
+List of basic flags:
 
-* `-d (--dump)` creates text dump of program.
-* `-s (--scan)` enables flex scanner debug messages.
-* `-p (--parse)` enables bison parser debug messages.
+* `-o <filename>` creates text dump of program.
+* `--emit-llvm` shows llvm ir representation of program.
+* `--debug-level <debug_level>` enables debug messages of sertan level, critical level is default.
+* `--dump-txt <filename>` creates text dump of program abstract syntax tree
+* `--version` shows version of the compiler
+
+For more flags info use `./jvc --help`
 
 Example:
 
 ```Shell
-$ ./run.sh -d test/examples/test_while.jv
+$ ./jvc test/jv_programs/test_while.jv -o buzz.out
 $
 ```
