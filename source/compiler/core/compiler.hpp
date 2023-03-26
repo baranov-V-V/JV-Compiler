@@ -23,11 +23,17 @@ class Compiler {
 
   void SetDebugLevel(LOG_LEVEL level) const;
 
+  void NeedEmitLLVM(bool need_emit);
+
+  static const char* GetVersion();
+
  private:
   std::filesystem::path file_out;
   std::filesystem::path file_in;
   std::filesystem::path dump_txt;
   std::filesystem::path dump_png;
+
+  bool need_emit;
 
   Driver driver;
   CompilerFlags compiler_flags;

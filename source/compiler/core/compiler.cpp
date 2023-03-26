@@ -5,6 +5,7 @@
 #include "compiler.hpp"
 #include "compiler/parser/driver.hpp"
 #include "llvm/Support/CommandLine.h"
+#include "exceptions/compilation_exception.hpp"
 
 void Compiler::Compile(int argc, char** argv) {
   ParseArgs(argc, argv);
@@ -18,16 +19,21 @@ void Compiler::Compile(int argc, char** argv) {
     driver.PrintTreePng(dump_png);
   }
 
-  std::filesystem::path ir_path(file_out);
-  std::filesystem::path obj_path(file_out);
-  ir_path.replace_extension(".ll");
-  obj_path.replace_extension(".o");
+  std::filesystem::path tmp_dir = file_in.parent_path().append("tmp");
+  if (!std::filesystem::exists(tmp_dir)) {
+    if (!std::filesystem::create_directory(tmp_dir)) {
+      LOG_CRITICAL("could not create tmp directory: {}", tmp_dir.native());
+    }
+  }
+
+  std::filesystem::path comp_path(file_in.parent_path());
+  std::filesystem::path ir_path(tmp_dir);
+  std::filesystem::path obj_path(tmp_dir);
+  ir_path /= file_in.stem().replace_extension(".ll");
+  obj_path /= file_in.stem().replace_extension(".o");
+
   driver.IrGen(ir_path);
-  
-  /*
-  $ llc -filetype=obj hello-world.ll -o hello-world.o
-  $ clang hello-world.o -o hello-world
-  */
+
   std::string llc_command = "llc -filetype=obj " + ir_path.native() + " -o " + obj_path.native();
   std::string clang_command = "clang++ " + obj_path.native() + " -o " + file_out.native();
 
@@ -39,6 +45,16 @@ void Compiler::Compile(int argc, char** argv) {
 
   LOG_DEBUG("llc errcode: {}", llc_errcode);
   LOG_DEBUG("clang errcode:  {}", clang_errcode);
+
+  if (need_emit) {
+
+    //std::filesystem::rename(ir_path, file_out.parent_path());
+    std::string mv_command = "mv " + ir_path.native() + " .";
+    LOG_DEBUG("mv command: {}", mv_command);
+    std::system(mv_command.c_str());
+  }
+
+  std::filesystem::remove_all(tmp_dir);
 }
 
 Driver& Compiler::GetDriver() {
@@ -64,11 +80,24 @@ void Compiler::SetDumpPng(const std::filesystem::path& dump_png) {
 }
 
 void Compiler::ParseArgs(int argc, char** argv) {
+  if (argc < 2) {
+    COMPILER_ERROR("no input files\ncompilation terminated.\n")
+  }
+
   compiler_flags.InitFlags();
+  compiler_flags.PreprocessFlags();
   compiler_flags.ReadFromCommandLine(argc, argv);
   compiler_flags.Apply(this);
 }
 
 void Compiler::SetDebugLevel(LOG_LEVEL level) const {
   SET_LOG_LEVEL(level)
+}
+
+void Compiler::NeedEmitLLVM(bool need_emit) {
+  this->need_emit = need_emit;
+}
+
+const char* Compiler::GetVersion() {
+  return "jvc (JV-Complier) version 1.0-SNAPSHOT (x86_64)" ;
 }

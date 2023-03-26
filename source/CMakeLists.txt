@@ -1,7 +1,7 @@
 file(GLOB_RECURSE COMPILER_INCLUDES CONFIGURE_DEPENDS ${COMPILER_SOURCE_DIR}/*.hpp)
 file(GLOB_RECURSE COMPILER_SOURCES CONFIGURE_DEPENDS ${COMPILER_SOURCE_DIR}/*.cpp)
 
-target_include_directories(compiler
+target_include_directories(jvc
   PUBLIC
     .
 )
@@ -9,7 +9,7 @@ target_include_directories(compiler
 #message(STATUS "includes src: ${COMPILER_INCLUDES}")
 #message(STATUS "sources src:  ${COMPILER_SOURCES}")
 
-target_sources(compiler
+target_sources(jvc
   PUBLIC
     ${COMPILER_INCLUDES}
   PRIVATE

@@ -12,13 +12,16 @@ void LLVMIRVisitor::TranslateToIR(Program* program, const std::filesystem::path&
 
   table.Clear();
   stack.Clear();
+
   InitializeLLVM(path.string());
+
   Visit(program);
   llvm::verifyModule(*module);
+
   std::error_code error_code;
-  llvm::raw_fd_ostream ll("a.ll", error_code);
-  module->print(ll, nullptr);
-  module->print(llvm::errs(), nullptr);
+  llvm::raw_fd_ostream ostream(path.native(), error_code);
+  module->print(ostream, nullptr);
+
   TerminateLLVM();
 }
 
@@ -166,24 +169,25 @@ void LLVMIRVisitor::Visit(BinOpExpression* expression) {
 void LLVMIRVisitor::Visit(TrueExpression* expression) {
   LOG_DEBUG("In True Expression")
 
-  llvm::AllocaInst* alloca = builder->CreateAlloca(builder->getInt1Ty());
-  llvm::Value* value = builder->getInt1(true);
-  builder->CreateStore(value, alloca);
+  llvm::AllocaInst* alloca = builder->CreateAlloca(builder->getInt8Ty());
+  llvm::Value* value = builder->getInt8(1);
+  builder->CreateAlignedStore(value, alloca, 1);
   stack.Put(alloca);
 }
 
 void LLVMIRVisitor::Visit(FalseExpression* expression) {
   LOG_DEBUG("In False Expression")
 
-  llvm::AllocaInst* alloca = builder->CreateAlloca(builder->getInt1Ty());
-  llvm::Value* value = builder->getInt1(false);
-  builder->CreateStore(value, alloca);
+  llvm::AllocaInst* alloca = builder->CreateAlloca(builder->getInt8Ty());
+  llvm::Value* value = builder->getInt8(0);
+  builder->CreateAlignedStore(value, alloca, 1);
   stack.Put(alloca);
 }
 
 void LLVMIRVisitor::Visit(IdentifierExpression* expression) {
   LOG_DEBUG("In Identifier Expression: {}", expression->identifier)
-  stack.Put(table.Get(expression->identifier));
+  stack.GetData().push_back(table.Get(expression->identifier));
+  //stack.Put(table.Get(expression->identifier));
 }
 
 void LLVMIRVisitor::Visit(IntegerExpression* expression) {
@@ -200,19 +204,22 @@ void LLVMIRVisitor::Visit(IntegerExpression* expression) {
   llvm::Value* value = builder->getInt32(expression->value);
   builder->CreateStore(value, alloca);
 
-  stack.Put(alloca);
+  //stack.Put(alloca);
+  stack.GetData().push_back(alloca);
 }
 
 void LLVMIRVisitor::Visit(NotExpression* expression) {
   LOG_DEBUG("In Not Expression")
 
   //llvm::AllocaInst* alloca = builder->CreateAlloca(builder->getInt1Ty());
-  llvm::Value* true_val = builder->getInt1(true);
+  //llvm::Value* true_val = builder->getInt1(true);
   //builder->CreateStore(value, alloca);
   //stack.Put(alloca);
   llvm::Value* val = Accept(expression->expression);
 
-  stack.Put(builder->CreateXor(val, true_val));
+  llvm::Value* result = builder->CreateNot(val, "not");
+  stack.Put(result);
+  //stack.Put(builder->CreateXor(val, true_val));
 }
 
 void LLVMIRVisitor::Visit(AssignmentStatement* statement) {
@@ -227,13 +234,14 @@ void LLVMIRVisitor::Visit(AssignmentStatement* statement) {
 }
 
 void LLVMIRVisitor::Visit(IfElseStatement* statement) {
-  LOG_DEBUG("In If Statement")
+  LOG_DEBUG("In IfElse Statement")
   stack.Pop();
 
-  llvm::Value* cond_value = Accept(statement->cond_expression);
+  llvm::Value* cond_value = builder->CreateAlignedLoad(builder->getInt8Ty(), Accept(statement->cond_expression), true);
+  llvm::Value* bool_cond_value = builder->CreateIntCast(cond_value, builder->getInt1Ty(), true);
 
   // Convert condition to a bool by comparing non-equal to 0.0.
-  cond_value = builder->CreateICmpEQ(cond_value, llvm::ConstantInt::getTrue(*context), "ifcond");
+  cond_value = builder->CreateICmpEQ(bool_cond_value, llvm::ConstantInt::getTrue(*context), "ifcond");
 
   llvm::Function* function = builder->GetInsertBlock()->getParent();
 
@@ -266,19 +274,24 @@ void LLVMIRVisitor::Visit(IfElseStatement* statement) {
   // Emit merge block.
   function->getBasicBlockList().push_back(merge_block);
   builder->SetInsertPoint(merge_block);
-  llvm::PHINode* phi_node = builder->CreatePHI(then_block->getType(), 2, "iftmp");
 
-  phi_node->addIncoming(then_value, then_block);
-  phi_node->addIncoming(else_value, else_block);
-  stack.Put(phi_node);
+  stack.Put(merge_block);
+  //LOG_DEBUG("then_value: {}", then_value->getType()->getTypeID());
+  //LOG_DEBUG("else_value: {}", else_value->getType()->getTypeID());
+
+  //llvm::PHINode* phi_node = builder->CreatePHI(then_value->getType(), 2, "iftmp");
+
+  //phi_node->addIncoming(then_value, then_block);
+  //phi_node->addIncoming(else_value, else_block);
+  //stack.Put(phi_node);
 }
 
 void LLVMIRVisitor::Visit(IfStatement* statement) {
   LOG_DEBUG("In If Statement")
   stack.Pop();
 
-  llvm::Value* cond_value = Accept(statement->cond_expression);
-
+  llvm::Value* cond_value = builder->CreateAlignedLoad(builder->getInt8Ty(), Accept(statement->cond_expression), true);
+  llvm::Value* bool_cond_value = builder->CreateIntCast(cond_value, builder->getInt1Ty(), true);
   // Convert condition to a bool by comparing non-equal to 0.0.
   //cond_value = builder->CreateICmpEQ(cond_value, llvm::ConstantInt::getTrue(*context), "ifcond");
 
@@ -290,7 +303,7 @@ void LLVMIRVisitor::Visit(IfStatement* statement) {
   llvm::BasicBlock* else_block  = llvm::BasicBlock::Create(*context, "else");
   llvm::BasicBlock* merge_block = llvm::BasicBlock::Create(*context, "ifcontinue");
 
-  builder->CreateCondBr(cond_value, then_block, else_block);
+  builder->CreateCondBr(bool_cond_value, then_block, else_block);
 
   // Emit then value.
   builder->SetInsertPoint(then_block);
@@ -299,17 +312,22 @@ void LLVMIRVisitor::Visit(IfStatement* statement) {
   llvm::Value* then_value = Accept(statement->statement_true);
   builder->CreateBr(merge_block);
 
+  function->getBasicBlockList().push_back(else_block); // emit else block
+  builder->SetInsertPoint(else_block);
+  builder->CreateBr(merge_block);
+
   // Codegen of 'Then' can change the current block, update ThenBB for the PHI.
   then_block = builder->GetInsertBlock();
   // Emit merge block.
   function->getBasicBlockList().push_back(merge_block);
   builder->SetInsertPoint(merge_block);
 
+  stack.Put(merge_block);
   //llvm::PHINode* phi_node = builder->CreatePHI(llvm::Type::getInt32Ty(*context), 1, "iftmp");
-  llvm::PHINode* phi_node = builder->CreatePHI(then_block->getType(), 1, "iftmp");
+  //llvm::PHINode* phi_node = builder->CreatePHI(then_value->getType(), 1, "iftmp");
 
-  phi_node->addIncoming(then_value, then_block);
-  stack.Put(phi_node);
+  //phi_node->addIncoming(then_value, then_block);
+  //stack.Put(phi_node);
 }
 
 void LLVMIRVisitor::Visit(PrintStatement* statement) {
@@ -361,35 +379,48 @@ void LLVMIRVisitor::Visit(WhileStatement* statement) {
   LOG_DEBUG("In While Statement")
   stack.Pop();
 
-  llvm::Value* cond_value = Accept(statement->cond_expression);
-  // create the new basic block that will be the body of our while statement
+  //builder->CreateAlloca(builder->getInt1Ty(), llvm::ConstantInt::getTrue(*context), "nop");
+  //builder->CreateAdd(llvm::ConstantInt::getTrue(*context), llvm::ConstantInt::getTrue(*context), "nop");
+
   llvm::Function* function = builder->GetInsertBlock()->getParent();
 
-  llvm::BasicBlock* while_body  = llvm::BasicBlock::Create(*context, "while", function);
+  // Create blocks for the then and else cases.  Insert the 'then' block at the
+  // end of the function.
+  llvm::BasicBlock* while_cond = llvm::BasicBlock::Create(*context, "prewhile");
+  llvm::BasicBlock* while_body  = llvm::BasicBlock::Create(*context, "while");
   llvm::BasicBlock* while_merge  = llvm::BasicBlock::Create(*context, "merge");
+  function->getBasicBlockList().push_back(while_cond);
+  function->getBasicBlockList().push_back(while_body);
   function->getBasicBlockList().push_back(while_merge);
-  builder->CreateCondBr(cond_value, while_body, while_merge);
 
-  // and make sure all statements in the while go into our while statement
+  builder->CreateBr(while_cond);
+
+  builder->SetInsertPoint(while_cond);
+
+  llvm::Value* cond_value = builder->CreateAlignedLoad(builder->getInt8Ty(), Accept(statement->cond_expression), true);
+  llvm::Value* bool_cond_value = builder->CreateIntCast(cond_value, builder->getInt1Ty(), true);
+
+  builder->CreateCondBr(bool_cond_value, while_body, while_merge);
+
   builder->SetInsertPoint(while_body);
 
-  // visit the body of the while now
   statement->statement->Accept(this);
   stack.Pop();
-  
+
   /*
     change for non cond jump
   */
   // we now need to conditionally loop back to the body of the while loop if
   // the condition (which we are re-evaluating) is still true, otherwise we
   // branch to the merge point
-  llvm::Value* cond_br = builder->CreateCondBr(Accept(statement->cond_expression), while_body, while_merge);
+  builder->CreateBr(while_cond);
+  //llvm::Value* cond_br = builder->CreateCondBr(Accept(statement->cond_expression), while_body, while_merge);
 
   // and lastly, we want all new statements after the while to go into the
   // merge case
   builder->SetInsertPoint(while_merge);
 
-  stack.Put(cond_br);
+  stack.Put(while_merge);
 }
 
 void LLVMIRVisitor::Visit(StatementList* statement) {
@@ -440,15 +471,17 @@ void LLVMIRVisitor::Visit(LogicOpExpression* expression) {
   LOG_DEBUG("lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetLogicStrOp(expression->operation),
             rhs->getType()->getTypeID())
 
+  llvm::LoadInst* load_lhs = builder->CreateLoad(builder->getInt8Ty(), lhs);
+  llvm::LoadInst* load_rhs = builder->CreateLoad(builder->getInt8Ty(), rhs);
   llvm::Value* result = nullptr;
 
   switch(expression->operation) {
     case LogicOperation::OR:
-      result = builder->CreateOr(lhs, rhs, "tmp_or");
+      result = builder->CreateOr(load_lhs, load_rhs, "tmp_or");
       break;
 
     case LogicOperation::AND:
-      result = builder->CreateAnd(lhs, rhs, "tmp_or");
+      result = builder->CreateAnd(load_lhs, load_rhs, "tmp_or");
       break;
 
     default:
@@ -456,7 +489,8 @@ void LLVMIRVisitor::Visit(LogicOpExpression* expression) {
       break;
   }
 
-  //?
+  llvm::AllocaInst* alloca_result = builder->CreateAlloca(builder->getInt8Ty());
+  builder->CreateAlignedStore(result, alloca_result, 1);
 
   stack.Put(alloca_result);
 }
@@ -467,31 +501,29 @@ void LLVMIRVisitor::Visit(CompareOpExpression* expression) {
   llvm::Value* lhs = Accept(expression->lhs);
   llvm::Value* rhs = Accept(expression->rhs);
 
-  LOG_DEBUG("lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetBinOp(expression->operation),
+  LOG_DEBUG("lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetCompareStrOp(expression->operation),
             rhs->getType()->getTypeID())
 
   llvm::Value* result = nullptr;
-  llvm::LoadInst* load_lhs = nullptr;
-  llvm::LoadInst* load_rhs = nullptr;
-  //LOG_DEBUG("lhs_type: {}, rhs_type: {}", (void*) lhs->getType(), (void*) rhs->getType());
+
+  llvm::Value* casted_lhs = builder->CreateIntCast(builder->CreateAlignedLoad(builder->getInt32Ty(), lhs, 4), builder->getInt32Ty(), true);
+  llvm::Value* casted_rhs = builder->CreateIntCast(builder->CreateAlignedLoad(builder->getInt32Ty(), rhs, 4), builder->getInt32Ty(), true);
 
   switch(expression->operation) {
     case CompareOperation::EQUAL:
-      result = builder->CreateICmpEQ(lhs, rhs, "tmp_eq");
+      result = builder->CreateICmpEQ(casted_lhs, casted_rhs, "tmp_eq");
       break;
 
     case CompareOperation::NEQUAL:
-      result = builder->CreateICmpNE(lhs, rhs, "tmp_ne");
+      result = builder->CreateICmpNE(casted_lhs, casted_rhs, "tmp_ne");
       break;
 
     case CompareOperation::LESS:
-      result = builder->CreateICmpSLT(lhs, rhs, "tmp_lt");
+      result = builder->CreateICmpSLT(casted_lhs, casted_rhs, "tmp_lt");
       break;
 
     case CompareOperation::GREATER:
-      load_lhs = builder->CreateLoad(builder->getInt32Ty(), lhs);
-      load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
-      result = builder->CreateICmpSGT(load_lhs, load_rhs, "cmp_gt");
+      result = builder->CreateICmpSGT(casted_lhs, casted_rhs, "cmp_gt");
       break;
 
     default:
@@ -499,8 +531,8 @@ void LLVMIRVisitor::Visit(CompareOpExpression* expression) {
       break;
   }
 
-  llvm::AllocaInst* alloca_result = builder->CreateAlloca(builder->getInt32Ty());
-  builder->CreateStore(result, alloca_result);
+  llvm::AllocaInst* alloca_result = builder->CreateAlloca(builder->getInt8Ty());
+  builder->CreateStore(builder->CreateIntCast(result, builder->getInt8Ty(), true), alloca_result);
 
   stack.Put(alloca_result);
 }
@@ -511,43 +543,33 @@ void LLVMIRVisitor::Visit(MathOpExpression* expression) {
   llvm::Value* lhs = Accept(expression->lhs);
   llvm::Value* rhs = Accept(expression->rhs);
 
-  LOG_DEBUG("IN BinOp lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetBinOp(expression->operation),
+  LOG_DEBUG("IN BinOp lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetMathStrOp(expression->operation),
             rhs->getType()->getTypeID());
 
   llvm::Value* result = nullptr;
-  llvm::LoadInst* load_lhs = nullptr;
-  llvm::LoadInst* load_rhs = nullptr;
+  llvm::Value* load_lhs = builder->CreateAlignedLoad(builder->getInt32Ty(), lhs, 4);
+  llvm::Value* load_rhs = builder->CreateAlignedLoad(builder->getInt32Ty(), rhs, 4);
   //LOG_DEBUG("lhs_type: {}, rhs_type: {}", (void*) lhs->getType(), (void*) rhs->getType());
 
   switch(expression->operation) {
     case MathOperation::PLUS:
-      load_lhs = builder->CreateLoad(builder->getInt32Ty(), lhs);
-      load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
       //llvm::LoadInst* load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
       result = builder->CreateAdd(load_lhs, load_rhs, "addtmp");
       break;
 
     case MathOperation::MINUS:
-      load_lhs = builder->CreateLoad(builder->getInt32Ty(), lhs);
-      load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
       result = builder->CreateSub(load_lhs, load_rhs, "subtmp");
       break;
 
     case MathOperation::MUL:
-      load_lhs = builder->CreateLoad(builder->getInt32Ty(), lhs);
-      load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
       result = builder->CreateMul(load_lhs, load_rhs, "multmp");
       break;
 
     case MathOperation::DIV:
-      load_lhs = builder->CreateLoad(builder->getInt32Ty(), lhs);
-      load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
-      result = builder->CreateFDiv(load_lhs, load_rhs, "divtmp");
+      result = builder->CreateSDiv(load_lhs, load_rhs, "divtmp");
       break;
 
     case MathOperation::PERCENT:
-      load_lhs = builder->CreateLoad(builder->getInt32Ty(), lhs);
-      load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
       result = builder->CreateSRem(load_lhs, load_rhs, "tmp_rem");
       break;
 

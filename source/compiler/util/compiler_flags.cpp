@@ -2,6 +2,7 @@
 #include "compiler/core/compiler.hpp"
 
 #include <iostream>
+#include <optional>
 
 TraseParseFlag::TraseParseFlag() :
   trace("p", llvm::cl::desc("Enable tracing of parser part"), llvm::cl::init(false)) {}
@@ -18,14 +19,17 @@ void TraseScanFlag::Apply(Compiler* compiler) const {
 }
 
 AstDumpTxtFlag::AstDumpTxtFlag() : 
-  filename("dmp_txt", llvm::cl::desc("Specify dump output filename"), llvm::cl::value_desc("filename"), llvm::cl::init("")) {}
+  filename("dmp_txt", llvm::cl::desc("Specify dump output filename"), llvm::cl::value_desc("filename"),
+            llvm::cl::init("")) {}
 
 void AstDumpTxtFlag::Apply(Compiler* compiler) const {
+  //LOG_DEBUG("ast dump val: {}", filename.getValue())
   compiler->SetDumpTxt(filename.getValue());
 }
 
 AstDumpPngFlag::AstDumpPngFlag() :
-  filename("dmp_png", llvm::cl::desc("Specify dump output filename"), llvm::cl::value_desc("filename"), llvm::cl::init("")) {}
+  filename("dmp_png", llvm::cl::desc("Specify dump output filename"), llvm::cl::value_desc("filename"),
+           llvm::cl::init("")) {}
 
 void AstDumpPngFlag::Apply(Compiler* compiler) const {
   compiler->SetDumpPng(filename.getValue());
@@ -52,13 +56,14 @@ CompilerFlags::~CompilerFlags() {
 }
 
 void CompilerFlags::InitFlags() {
+  flags.push_back(new CompilerDebugLevelFlag());
   flags.push_back(new CompileInputFlag());
   flags.push_back(new TraseParseFlag());
   flags.push_back(new TraseScanFlag());
   flags.push_back(new AstDumpTxtFlag());
   flags.push_back(new AstDumpPngFlag());
   flags.push_back(new CompileOutputFlag());
-  flags.push_back(new CompilerDebugLevelFlag());
+  flags.push_back(new CompilerEmitLLVM());
 }
 
 void CompilerFlags::ReadFromCommandLine(int argc, char** argv) {
@@ -69,6 +74,16 @@ void CompilerFlags::Apply(Compiler* compiler) {
   for (const CompilerFlag* flag : flags) {
     flag->Apply(compiler);
   }
+}
+
+void CompilerFlags::PreprocessFlags() {
+  llvm::StringMap<llvm::cl::Option*> &Map = llvm::cl::getRegisteredOptions();
+
+  llvm::cl::SetVersionPrinter([](llvm::raw_ostream& ostream)->void { ostream << Compiler::GetVersion() << "\n\n"; });
+
+  Map["color"]->setHiddenFlag(llvm::cl::OptionHidden::Hidden);
+  Map["help"]->setDescription("Display available options");
+  Map["help-list"]->setDescription("Display list of available options");
 }
 
 void CompilerDebugLevelFlag::Apply(Compiler* compiler) const {
@@ -86,3 +101,10 @@ CompilerDebugLevelFlag::CompilerDebugLevelFlag() :
                   clEnumVal(WARN, "Enable warn level information"),
                   clEnumVal(ERROR, "Enable error level information"))) {
 }
+
+void CompilerEmitLLVM::Apply(Compiler* compiler) const {
+  compiler->NeedEmitLLVM(emit);
+}
+
+CompilerEmitLLVM::CompilerEmitLLVM() : emit("emit-llvm", llvm::cl::desc("Show llvm ir representation"),
+                                            llvm::cl::init(false)) {}

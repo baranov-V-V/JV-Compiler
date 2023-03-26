@@ -3,3 +3,5 @@
 
 
 Builder.CreateIntCast - полезное!
+
+fmt print для цветных выводов в консоль

@@ -7,6 +7,7 @@
 #include "compiler/visitors/llvm_ir_visitor.hpp"
 
 #include "compiler/ast/program/program.hpp"
+#include "exceptions/compilation_exception.hpp"
 #include <cstdio>
 
 Driver::Driver() : trace_parsing(false), trace_scanning(false), 
@@ -26,8 +27,10 @@ void Driver::DeleteProgram() {
 }
 
 void Driver::Parse(const std::filesystem::path& f) {
-  if (f.empty()) {
-    LOG_CRITICAL("No file [f]")
+  LOG_DEBUG("parse file: {}", f.native())
+
+  if (!std::filesystem::exists(f)) {
+    COMPILER_ERROR("{}: No such file or directory\n", f.native())
   }
 
   this->file_in = f.native();
@@ -36,17 +39,22 @@ void Driver::Parse(const std::filesystem::path& f) {
   ScanBegin();
   parser.set_debug_level(trace_parsing);
   int res = parser();
+  LOG_DEBUG("Parsed with code: {}", res);
   ScanEnd();
+
+  if (program == nullptr) {
+    LOG_CRITICAL("No program pointer after parsing")
+  }
 }
 
 void Driver::ScanBegin() {
   scanner.set_debug(trace_scanning);
-  if (file_in.empty()) {
-    LOG_CRITICAL("No file in ScanBegin")
-  } else {
-    stream.open(file_in);
-    scanner.yyrestart(&stream);
+
+  stream.open(file_in);
+  if (!stream.good()) {
+    LOG_CRITICAL("stream is not good");
   }
+  scanner.yyrestart(&stream);
 }
 
 void Driver::ScanEnd() {
@@ -54,10 +62,6 @@ void Driver::ScanEnd() {
 }
 
 void Driver::PrintTreeTxt(const std::filesystem::path& filepath) const {
-  if (program == nullptr) {
-    LOG_CRITICAL("No program pointer in PrintTree")
-    return;
-  }
   FilePrintVisitor visitor;
   visitor.Print(filepath, program);
 }
@@ -65,7 +69,6 @@ void Driver::PrintTreeTxt(const std::filesystem::path& filepath) const {
 void Driver::PrintTreePng(const std::filesystem::path& filepath) const {
   if (program == nullptr) {
     LOG_CRITICAL("No program pointer in PrintTree")
-    return;
   }
   GraphPrintVisitor visitor;
   visitor.Print(filepath, program);
@@ -77,10 +80,9 @@ void Driver::Run() const {
 }
 
 void Driver::IrGen(const std::filesystem::path& filepath) {
-  LLVMIRVisitor visitor{};
+  LLVMIRVisitor visitor;
   if (program == nullptr) {
     LOG_CRITICAL("No program pointer in IrGen")
-    return;
   }
   visitor.TranslateToIR(program, filepath);
 }

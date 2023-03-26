@@ -14,6 +14,7 @@ class CompilerFlags {
   ~CompilerFlags();
 
   void InitFlags();
+  void PreprocessFlags();
   void ReadFromCommandLine(int argc, char** argv);
   void Apply(Compiler* compiler);
 
@@ -106,4 +107,15 @@ class CompilerDebugLevelFlag : public CompilerFlag {
 
  private:
   llvm::cl::opt<LOG_LEVEL> debug_level;
+};
+
+class CompilerEmitLLVM : public CompilerFlag {
+ public:
+  CompilerEmitLLVM();
+  ~CompilerEmitLLVM() override = default;
+
+  void Apply(Compiler* compiler) const override;
+
+ private:
+  llvm::cl::opt<bool> emit;
 };

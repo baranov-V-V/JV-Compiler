@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(COMPILER)
+project(JV-COMPILER)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 99)
@@ -43,20 +43,19 @@ FLEX_TARGET(
 
 ADD_FLEX_BISON_DEPENDENCY(Scanner Parser)
 
-add_executable(
-  compiler
+add_executable(jvc
   ${COMPILER_SOURCE_DIR}/main.cpp
   ${BISON_Parser_OUTPUTS}
   ${FLEX_Scanner_OUTPUTS}
 )
 
-target_include_directories(compiler PRIVATE 
+target_include_directories(jvc PRIVATE
   source/compiler
 )
 
 llvm_map_components_to_libnames(llvm_libs support core irreader)
 
-target_link_libraries(compiler 
+target_link_libraries(jvc
   PUBLIC
     ${llvm_libs}
     fmt
