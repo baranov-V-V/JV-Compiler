@@ -8,7 +8,7 @@
 class LogicOpExpression : public Expression {
  public:
   LogicOpExpression(Expression* lhs, LogicOperation operation, Expression* rhs);
-  ~LogicOpExpression() override = default;
+  ~LogicOpExpression() override;
 
   void Accept(Visitor* visitor) override;
 

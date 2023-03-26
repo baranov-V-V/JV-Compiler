@@ -7,7 +7,7 @@
 class MathOpExpression : public Expression {
  public:
   MathOpExpression(Expression* lhs, MathOperation operation, Expression* rhs);
-  ~MathOpExpression() override = default;
+  ~MathOpExpression() override;
 
   void Accept(Visitor* visitor) override;
 

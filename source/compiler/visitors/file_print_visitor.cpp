@@ -54,15 +54,6 @@ void FilePrintVisitor::Visit(VariableDeclaration* variable_declaration) {
   )
 }
 
-void FilePrintVisitor::Visit(BinOpExpression* expression) {
-  PRINT_TABBED("Bin Op Expr")
-  VISIT_TABBED(
-    expression->lhs->Accept(this);
-    PRINT_TABBED(GetBinOp(expression->operation))
-    expression->rhs->Accept(this);
-  )
-}
-
 void FilePrintVisitor::Visit(TrueExpression* expression) {
   PRINT_TABBED("True Expr")
 }

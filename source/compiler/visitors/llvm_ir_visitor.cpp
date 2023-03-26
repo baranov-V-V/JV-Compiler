@@ -1,8 +1,6 @@
 #include "compiler/core/logger.hpp"
 
 #include "llvm_ir_visitor.hpp"
-#include "compiler/exceptions/redeclaration_exception.hpp"
-#include "compiler/exceptions/undeclared_variable_exception.hpp"
 #include "compiler/ast/ast.hpp"
 
 #include <iostream>
@@ -79,12 +77,21 @@ void LLVMIRVisitor::Visit(VariableDeclaration* variable_declaration) {
   llvm::Function* function = builder->GetInsertBlock()->getParent();
   llvm::BasicBlock& block = function->getEntryBlock();
 
-  // Insert var decl to the beginning
   llvm::IRBuilder<> tmp(&block, block.begin());
   llvm::Value* variable = tmp.CreateAlloca(builder->getInt32Ty(), nullptr, variable_declaration->identifier);
   table.Insert(variable_declaration->identifier, variable);
 }
 
+void LLVMIRVisitor::Visit(TrueExpression* expression) {
+  LOG_DEBUG("In True Expression")
+
+  llvm::AllocaInst* alloca = builder->CreateAlloca(builder->getInt8Ty());
+  llvm::Value* value = builder->getInt8(1);
+  builder->CreateAlignedStore(value, alloca, 1);
+  stack.Put(alloca);
+}
+
+/*
 void LLVMIRVisitor::Visit(BinOpExpression* expression) {
   llvm::Value* lhs = Accept(expression->lhs);
   llvm::Value* rhs = Accept(expression->rhs);
@@ -95,13 +102,11 @@ void LLVMIRVisitor::Visit(BinOpExpression* expression) {
 
   LOG_DEBUG("IN BinOp lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetBinOp(expression->operation),
             rhs->getType()->getTypeID())
-  //LOG_DEBUG("lhs_type: {}, rhs_type: {}", (void*) lhs->getType(), (void*) rhs->getType());
 
   switch(expression->operation) {
     case BinOperation::PLUS:
       load_lhs = builder->CreateLoad(builder->getInt32Ty(), lhs);
       load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
-      //llvm::LoadInst* load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
       result = builder->CreateAdd(load_lhs, load_rhs, "addtmp");
       break;
 
@@ -155,8 +160,8 @@ void LLVMIRVisitor::Visit(BinOpExpression* expression) {
       result = builder->CreateSRem(load_lhs, load_rhs, "tmp_rem");
       break;
 
-    default: 
-      LOG_CRITICAL("uknown binary op: {}", (int) expression->operation);
+    default:
+    LOG_CRITICAL("uknown binary op: {}", (int) expression->operation);
       break;
   }
 
@@ -165,15 +170,7 @@ void LLVMIRVisitor::Visit(BinOpExpression* expression) {
 
   stack.Put(alloca_result);
 }
-
-void LLVMIRVisitor::Visit(TrueExpression* expression) {
-  LOG_DEBUG("In True Expression")
-
-  llvm::AllocaInst* alloca = builder->CreateAlloca(builder->getInt8Ty());
-  llvm::Value* value = builder->getInt8(1);
-  builder->CreateAlignedStore(value, alloca, 1);
-  stack.Put(alloca);
-}
+ */
 
 void LLVMIRVisitor::Visit(FalseExpression* expression) {
   LOG_DEBUG("In False Expression")
@@ -186,26 +183,19 @@ void LLVMIRVisitor::Visit(FalseExpression* expression) {
 
 void LLVMIRVisitor::Visit(IdentifierExpression* expression) {
   LOG_DEBUG("In Identifier Expression: {}", expression->identifier)
-  stack.GetData().push_back(table.Get(expression->identifier));
-  //stack.Put(table.Get(expression->identifier));
+  //stack.GetData().push_back(table.Get(expression->identifier));
+  stack.Put(table.Get(expression->identifier));
 }
 
 void LLVMIRVisitor::Visit(IntegerExpression* expression) {
   LOG_DEBUG("In Integer Expression: {}", expression->value)
-  /*
-  return ConstantFP::get(*TheContext, APFloat(Val));
-  
-  llvm::ConstantInt::get()
-  */
-
-  //stack.Put(llvm::ConstantInt::get(builder->getInt32Ty(), expression->value, true));
 
   llvm::AllocaInst* alloca = builder->CreateAlloca(builder->getInt32Ty());
   llvm::Value* value = builder->getInt32(expression->value);
   builder->CreateStore(value, alloca);
 
-  //stack.Put(alloca);
-  stack.GetData().push_back(alloca);
+  stack.Put(alloca);
+  //stack.GetData().push_back(alloca);
 }
 
 void LLVMIRVisitor::Visit(NotExpression* expression) {
@@ -240,38 +230,31 @@ void LLVMIRVisitor::Visit(IfElseStatement* statement) {
   llvm::Value* cond_value = builder->CreateAlignedLoad(builder->getInt8Ty(), Accept(statement->cond_expression), true);
   llvm::Value* bool_cond_value = builder->CreateIntCast(cond_value, builder->getInt1Ty(), true);
 
-  // Convert condition to a bool by comparing non-equal to 0.0.
   cond_value = builder->CreateICmpEQ(bool_cond_value, llvm::ConstantInt::getTrue(*context), "ifcond");
 
   llvm::Function* function = builder->GetInsertBlock()->getParent();
 
-  // Create blocks for the then and else cases.  Insert the 'then' block at the
-  // end of the function.
   llvm::BasicBlock* then_block  = llvm::BasicBlock::Create(*context, "then", function);
   llvm::BasicBlock* else_block  = llvm::BasicBlock::Create(*context, "else");
   llvm::BasicBlock* merge_block = llvm::BasicBlock::Create(*context, "ifcontinue");
 
   builder->CreateCondBr(cond_value, then_block, else_block);
 
-  // Emit then value.
   builder->SetInsertPoint(then_block);
-  llvm::Value* then_value = Accept(statement->statement_true);
+  Accept(statement->statement_true);
   builder->CreateBr(merge_block);
 
-  // Codegen of 'Then' can change the current block, update ThenBB for the PHI.
   then_block = builder->GetInsertBlock();
 
-  // Emit else block.
-  function->getBasicBlockList().push_back(else_block); // emit else block
+  function->getBasicBlockList().push_back(else_block);
   builder->SetInsertPoint(else_block);
 
-  llvm::Value* else_value = Accept(statement->statement_false);
+  Accept(statement->statement_false);
 
   builder->CreateBr(merge_block);
-  // Codegen of 'Else' can change the current block, update ElseBB for the PHI.
+
   else_block = builder->GetInsertBlock();
 
-  // Emit merge block.
   function->getBasicBlockList().push_back(merge_block);
   builder->SetInsertPoint(merge_block);
 
@@ -292,33 +275,25 @@ void LLVMIRVisitor::Visit(IfStatement* statement) {
 
   llvm::Value* cond_value = builder->CreateAlignedLoad(builder->getInt8Ty(), Accept(statement->cond_expression), true);
   llvm::Value* bool_cond_value = builder->CreateIntCast(cond_value, builder->getInt1Ty(), true);
-  // Convert condition to a bool by comparing non-equal to 0.0.
-  //cond_value = builder->CreateICmpEQ(cond_value, llvm::ConstantInt::getTrue(*context), "ifcond");
 
   llvm::Function* function = builder->GetInsertBlock()->getParent();
 
-  // Create blocks for the then and else cases.  Insert the 'then' block at the
-  // end of the function.
   llvm::BasicBlock* then_block  = llvm::BasicBlock::Create(*context, "then", function);
   llvm::BasicBlock* else_block  = llvm::BasicBlock::Create(*context, "else");
   llvm::BasicBlock* merge_block = llvm::BasicBlock::Create(*context, "ifcontinue");
 
   builder->CreateCondBr(bool_cond_value, then_block, else_block);
 
-  // Emit then value.
   builder->SetInsertPoint(then_block);
-  //llvm::Value* then_value = &then_block->back();
-  //llvm::Value* then_value = Accept(statement->statement_true);
   llvm::Value* then_value = Accept(statement->statement_true);
   builder->CreateBr(merge_block);
 
-  function->getBasicBlockList().push_back(else_block); // emit else block
+  function->getBasicBlockList().push_back(else_block);
   builder->SetInsertPoint(else_block);
   builder->CreateBr(merge_block);
 
-  // Codegen of 'Then' can change the current block, update ThenBB for the PHI.
   then_block = builder->GetInsertBlock();
-  // Emit merge block.
+
   function->getBasicBlockList().push_back(merge_block);
   builder->SetInsertPoint(merge_block);
 
@@ -486,7 +461,6 @@ void LLVMIRVisitor::Visit(LogicOpExpression* expression) {
 
     default:
       LOG_CRITICAL("uknown logic op: {}", (int) expression->operation);
-      break;
   }
 
   llvm::AllocaInst* alloca_result = builder->CreateAlloca(builder->getInt8Ty());
@@ -528,7 +502,6 @@ void LLVMIRVisitor::Visit(CompareOpExpression* expression) {
 
     default:
       LOG_CRITICAL("uknown compare op: {}", (int) expression->operation);
-      break;
   }
 
   llvm::AllocaInst* alloca_result = builder->CreateAlloca(builder->getInt8Ty());
@@ -549,11 +522,9 @@ void LLVMIRVisitor::Visit(MathOpExpression* expression) {
   llvm::Value* result = nullptr;
   llvm::Value* load_lhs = builder->CreateAlignedLoad(builder->getInt32Ty(), lhs, 4);
   llvm::Value* load_rhs = builder->CreateAlignedLoad(builder->getInt32Ty(), rhs, 4);
-  //LOG_DEBUG("lhs_type: {}, rhs_type: {}", (void*) lhs->getType(), (void*) rhs->getType());
 
   switch(expression->operation) {
     case MathOperation::PLUS:
-      //llvm::LoadInst* load_rhs = builder->CreateLoad(builder->getInt32Ty(), rhs);
       result = builder->CreateAdd(load_lhs, load_rhs, "addtmp");
       break;
 
@@ -575,7 +546,6 @@ void LLVMIRVisitor::Visit(MathOpExpression* expression) {
 
     default:
       LOG_CRITICAL("uknown math op: {}", (int) expression->operation);
-      break;
   }
 
   llvm::AllocaInst* alloca_result = builder->CreateAlloca(builder->getInt32Ty());

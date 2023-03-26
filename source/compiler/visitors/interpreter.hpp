@@ -24,8 +24,7 @@ class Interpreter : public Visitor, public VisitorHelper<int> {
   virtual void Visit(DeclarationList* declaration_list) override;
   virtual void Visit(MethodDeclaration* method_declaration) override;
   virtual void Visit(VariableDeclaration* variable_declaration) override;
-  
-  void Visit(BinOpExpression* expression) override;
+
   void Visit(LogicOpExpression* expression) override;
   void Visit(CompareOpExpression* expression) override;
   void Visit(MathOpExpression* expression) override;

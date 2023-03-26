@@ -6,3 +6,8 @@ LogicOpExpression::LogicOpExpression(Expression* lhs, LogicOperation operation, 
 void LogicOpExpression::Accept(Visitor* visitor) {
   visitor->Visit(this);
 }
+
+LogicOpExpression::~LogicOpExpression() {
+  delete lhs;
+  delete rhs;
+}

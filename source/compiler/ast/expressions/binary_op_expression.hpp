@@ -4,10 +4,10 @@
 #include "compiler/ast/core/binary_operations.hpp"
 #include "compiler/visitors/visitor.hpp"
 
-class BinOpExpression: public Expression {
+class [[deprecated]] BinOpExpression: public Expression {
  public:
   BinOpExpression(Expression* lhs, BinOperation op, Expression* rhs);
-  virtual ~BinOpExpression();
+  ~BinOpExpression() override;
 
   void Accept(Visitor* visitor) override;
 

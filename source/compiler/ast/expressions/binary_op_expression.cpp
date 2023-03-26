@@ -10,5 +10,5 @@ BinOpExpression::~BinOpExpression() {
 }
 
 void BinOpExpression::Accept(Visitor* visitor) {
-  visitor->Visit(this);
+  //visitor->Visit(this);
 }

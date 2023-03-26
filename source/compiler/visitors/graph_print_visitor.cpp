@@ -59,6 +59,7 @@ void GraphPrintVisitor::Visit(MethodDeclaration* method_declaration) {}
 
 void GraphPrintVisitor::Visit(VariableDeclaration* variable_declaration) {}
 
+/*
 void GraphPrintVisitor::Visit(BinOpExpression* expression) {
   stream->print("\tnode{} [label =\"<first> {}\", color=\"grey14\", fillcolor=\"gray38\"]\n", GetBinOp(expression->operation), reinterpret_cast<void*>(expression));
   expression->lhs->Accept(this);
@@ -66,6 +67,7 @@ void GraphPrintVisitor::Visit(BinOpExpression* expression) {
   stream->print("\t\tnode{}:sw -> node{} [color=\"navy\"];\n", reinterpret_cast<void*>(expression), reinterpret_cast<void*>(expression->lhs));
   stream->print("\t\tnode{}:se -> node{} [color=\"navy\"];\n", reinterpret_cast<void*>(expression), reinterpret_cast<void*>(expression->rhs));
 }
+*/
 
 void GraphPrintVisitor::Visit(TrueExpression* expression) {
   stream->print("\tnode{} [label =\"<first> False\", color=\"grey14\", fillcolor=\"olivedrab3\"]\n", reinterpret_cast<void*>(expression));

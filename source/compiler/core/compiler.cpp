@@ -3,8 +3,6 @@
 #include "compiler/core/logger.hpp"
 
 #include "compiler.hpp"
-#include "compiler/parser/driver.hpp"
-#include "llvm/Support/CommandLine.h"
 #include "exceptions/compilation_exception.hpp"
 
 void Compiler::Compile(int argc, char** argv) {

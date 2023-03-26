@@ -36,7 +36,6 @@ fmt::print(__VA_ARGS__);  \
 throw CompilationException();
 
 
-
 #define COMPILER_WARNING(...) \
 fmt::print("jvc: ");          \
 fmt::print(fmt::emphasis::bold | fmt::fg(fmt::color::medium_purple), "warning: "); \

@@ -6,3 +6,8 @@ void MathOpExpression::Accept(Visitor* visitor) {
 
 MathOpExpression::MathOpExpression(Expression* lhs, MathOperation operation, Expression* rhs) :
   lhs(lhs), rhs(rhs), operation(operation) {}
+
+MathOpExpression::~MathOpExpression() {
+  delete lhs;
+  delete rhs;
+}
