@@ -19,3 +19,5 @@ bool Type::operator==(const Type& other) const {
 bool Type::operator!=(const Type& other) const {
   return id != other.id;
 }
+
+Type::Type(Type::TypeID id) : id(id) {}

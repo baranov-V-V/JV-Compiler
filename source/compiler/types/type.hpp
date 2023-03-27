@@ -1,19 +1,10 @@
 #pragma once
 
+#include <memory>
+
 class Type {
  public:
-  Type() = default;
-
-  Type(const Type&) = delete;
-  Type operator=(const Type&) = delete;
-
-  Type(Type&&) = default;
-
-  bool IsInteger() const;
-  bool IsClass() const;
-  bool IsArray() const;
-
-  enum TypeID {
+  enum class TypeID {
     VoidTy = 0,
     IntTy,
     FloatTy,
@@ -22,9 +13,18 @@ class Type {
     MethodTy,
   };
 
+  explicit Type(TypeID id);
+
+  bool IsInteger() const;
+  bool IsClass() const;
+  bool IsArray() const;
+
   bool operator==(const Type& other) const;
   bool operator!=(const Type& other) const;
 
  private:
   TypeID id;
 };
+
+template <typename Type>
+using SharedPtr = std::shared_ptr<Type>;

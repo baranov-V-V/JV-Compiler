@@ -9,10 +9,11 @@ class TypeFactory {
  public:
   TypeFactory() = delete;
   
-  static Type GetVoidTy();
-  static Type GetIntTy();
-  static Type GetFloatTy();
-  static MethodType GetMethodTy();
-  static ArrayType GetArrayTy();
-  static ClassType GetClassTy();
+  static SharedPtr<Type> GetVoidTy();
+  static SharedPtr<Type> GetIntTy();
+  static SharedPtr<Type> GetFloatTy();
+  static SharedPtr<MethodType> GetMethodTy();
+  static SharedPtr<MethodType> GetMethodTy(const std::vector<ArgEntry>& args, const SharedPtr<Type>& return_type);
+  static SharedPtr<ArrayType> GetArrayTy();
+  static SharedPtr<ClassType> GetClassTy();
 };

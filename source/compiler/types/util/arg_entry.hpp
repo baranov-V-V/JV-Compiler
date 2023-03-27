@@ -1,11 +1,13 @@
 #pragma once
 
-#include
+#include <memory>
+#include "types/type.hpp"
+#include "util/symbol.hpp"
 
 class ArgEntry {
  public:
-  ArgEntry();
-  
- private:
-  S
+  ArgEntry(const SharedPtr<Type>& type, const Symbol& symbol);
+
+  SharedPtr<Type> type;
+  Symbol symbol;
 };

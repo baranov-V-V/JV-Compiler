@@ -3,18 +3,21 @@
 #include <vector>
 
 #include "type.hpp"
+#include "util/arg_entry.hpp"
 
 class MethodType : public Type {
  public:
   MethodType();
+  MethodType(const std::vector<ArgEntry>& args, const SharedPtr<Type>& return_type);
 
-  int GetArgsNum() const;
-  Type GetReturnType() const;
+  [[nodiscard]] const std::vector<ArgEntry>& GetArgs() const;
+  void AddArg(const ArgEntry& arg_entry);
+
+  [[nodiscard]] SharedPtr<Type> GetReturnType() const;
+  [[nodiscard]] int GetArgsNum() const;
 
  private:
-  
-  std::vector<Type> arg_types;
-  std::vector<Symbol> arg_names;
-
-  bool is_main = false;
+  std::vector<ArgEntry> args;
+  SharedPtr<Type> return_type;
+  //bool is_main = false;
 };
