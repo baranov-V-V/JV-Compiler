@@ -62,7 +62,7 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
   llvm::Value* Accept(AstNode* ast_node) override;
 
  private:
-  SymbolTable<llvm::Value*> table;
+  SymbolTable<std::string, llvm::Value*> table;
   ProgramStack<llvm::Value*> stack;
 
   llvm::LLVMContext* context;
