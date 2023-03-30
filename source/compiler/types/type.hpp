@@ -7,6 +7,7 @@ class Type {
   enum class TypeID {
     VoidTy = 0,
     IntTy,
+    BoolTy,
     FloatTy,
     ClassTy,
     ArrayTy,

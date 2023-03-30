@@ -118,6 +118,7 @@
   PRINT "println"
   INT "int"
   BOOL "bool"
+  FLOAT "float"
   VOID "void"
   <std::string> IDENTIFIER "identifier"
   <int> NUMBER "number"
@@ -125,16 +126,19 @@
 
 %nterm <Program*> program
 %nterm <MainClass*> main_class
-%nterm <ClassDeclarationList*> class_declaration_list
 %nterm <ClassDeclaration*> class_declaration
-%nterm <DeclarationList*> declaration_list
+%nterm <ClassDeclarationList*> class_declaration_list
 %nterm <Declaration*> declaration
+%nterm <DeclarationList*> declaration_list
+%nterm <MethodDeclaration*> method_declaration
 %nterm <VariableDeclaration*> variable_declaration
+
+%nterm <Expression*> expr
+
 %nterm <Statement*> statement
 %nterm <LocalVariableStatement*> local_variable_statement
 %nterm <StatementList*> statement_list
 %nterm <StatementListStatement*> statement_list_statement
-%nterm <Expression*> expr
 %nterm <int> integer_literal
 
 %left "&&" "||";
@@ -149,6 +153,8 @@
 
 program : main_class 
   { $$ = new Program($1); driver.SetProgram($$); }
+        | main_class class_declaration_list
+  { $$ = new Program($1, $2); driver.SetProgram($$); }
 ;
 
 main_class: "class" "identifier" "{" "public" "static" "void" "main" "(" ")" "{" statement_list "}" "}"
@@ -173,12 +179,65 @@ declaration_list : declaration
   { $$ = $1; $$->Add($2); }
 ;
 
-declaration: variable_declaration
+declaration : variable_declaration
+  { $$ = $1; }
+            | method_declaration
   { $$ = $1; }
 ;
 
-variable_declaration: "int" "identifier" ";"
-  { $$ = new VariableDeclaration($2); }
+variable_declaration: type "identifier" ";"
+  { $$ = new VariableDeclaration($1, Symbol($2)); }
+;
+
+method_declaration: type "identifier" "(" comma_formals_list ")" "{" statement_list "}"
+  { $$ = new MethodDeclaration(Symbol($2), TypeFactory::GetMethodTy($4, $1), $3, $7); }
+;
+
+comma_formals_list: formals
+  { $$ = std::vector<ArgEntry>(); $$.push_back($1); }
+                  | comma_formals_list "," formals
+ { $$ = $1; $$.push_back($3); }
+;
+
+formals: type "identifier" { $$ = ArgEntry($1, Symbol($2)); }
+;
+
+type: simple_type { $$ = $1; }
+    | array_type  { $$ = $1;  }
+;
+
+array_type: simple_type "[" "]"
+  { $$ = TypeFactory::GetArrayTy($1); }
+;
+
+simple_type: "int"
+  { $$ = TypeFactory::GetIntTy(); }
+           | "bool"
+  { $$ = TypeFactory::GetBoolTy(); }
+           | "void"
+  { $$ = TypeFactory::GetVoidTy(); }
+           | "float"
+  { $$ = TypeFactory::GetFloatTy(); }
+           | "identifier"
+  { $$ = TypeFactory::GetClassTy(Symbol($1)); }
+;
+
+args_list : "(" ")"
+  { $$ = std::pair<std::vector<Type>, std::vector<std::string>>(); }
+          | "(" comma_formals_list ")"
+  { $$ = $2; }
+;
+
+comma_formals_list: formals
+  { $$ = std::pair<std::vector<Type>, std::vector<std::string>>();
+    $$.first.push_back($1.first);
+    $$.second.push_back($1.second);
+  }
+                  | comma_formals_list "," formals
+  { $$ = $1; $$.first.push_back($3.first); $$.second.push_back($3.second); }
+;
+
+formals: type "identifier" { $$ = ArgEntry(TypeFactory::, $2); }
 ;
 
 statement: local_variable_statement
@@ -193,8 +252,20 @@ statement: local_variable_statement
   { $$ = new WhileStatement($3, $5); }
          | "println" "(" expr ")" ";"
   { $$ = new PrintStatement($3); }
-         | "identifier" "=" expr ";"
+         | lvalue "=" expr ";"
   { $$ = new AssignmentStatement($1, $3); }
+  	 | method_call ";"
+  { $$ = new MethodCallStatement($1); }
+  	 | "return" expr ";"
+  { $$ = new ReturnStatement($2); }
+  	 | lvalue "=" expr ";"
+  { $$ = new AssignmentStatement($1, $3); }
+;
+
+lvalue: "identifier"
+  { $$ = new IdentifierLValue(Symbol($1));}
+      | "identifier" "[" expr "]"
+  { $$ = new ArrayLValue(Symbol($1), $3);}
 ;
 
 local_variable_statement: variable_declaration
@@ -243,10 +314,34 @@ expr: "(" expr ")"
   { $$ = new FalseExpression(); }
       | "!" expr
   { $$ = new NotExpression($2); }
+      | expr "[" expr "]"
+  { $$ = new ArrayIdxExpression($1, $3); }
+      | expr "." "length"
+  { $$ = new LengthExpression($1); }
+      | "new" simple_type "[" expr "]"
+  { $$ = new NewArrayExpression($2, $4); }
+      | "new" "identifier" "(" ")"
+  { $$ = new NewClassExpression(TypeFactory::GetClassTy(Symbol($2))); }
+      | this
+  { $$ = new ThisExpression(); }
+      | method_call
+  { $$ = new MethodCallExpression($1); }
+
+method_call: expr "." "identifier" "(" comma_expr_list ")"
+  { $$ = new MethodCall($3, $1, $5); }
+           | expr "." "identifier" "(" ")"
+  { $$ = new MethodCall($3, $1, new CommaExpressionList()); }
+;
+
+comma_expr_list: expr
+  { $$ = new CommaExpressionList($1); }
+               | comma_expr_list "," expr
+  { $$ = $1; $$->Add($3); }
+;
 
 integer_literal : "number" 
   { $$ = $1; }
-        | "-" "number" 
+        	| "-" "number"
   { $$ = -$2; };
 
 %%

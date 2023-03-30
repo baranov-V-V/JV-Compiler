@@ -7,8 +7,8 @@
 class ClassDeclarationList: public BasicList<ClassDeclaration> {
  public:
   ClassDeclarationList() = default;
-  ClassDeclarationList(ClassDeclaration* class_decl);
-  virtual ~ClassDeclarationList() = default;
+  explicit ClassDeclarationList(ClassDeclaration* class_decl);
+  ~ClassDeclarationList() override = default;
 
-  virtual void Accept(Visitor* visitor) override;
+  void Accept(Visitor* visitor) override;
 };

@@ -7,8 +7,8 @@
 class StatementList: public BasicList<Statement> {
  public:
   StatementList() = default;
-  StatementList(Statement* statement);
-  virtual ~StatementList() = default;
+  explicit StatementList(Statement* statement);
+  ~StatementList() override = default;
   
-  virtual void Accept(Visitor* visitor) override;
+  void Accept(Visitor* visitor) override;
 };

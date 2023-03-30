@@ -1,4 +1,6 @@
 #include "declaration.hpp"
 
-Declaration::Declaration(const std::string& identifier) :
-  identifier(identifier) {}
+#include <utility>
+
+Declaration::Declaration(Symbol identifier) :
+  identifier(std::move(identifier)) {}

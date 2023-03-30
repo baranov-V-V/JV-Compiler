@@ -1,7 +1,7 @@
 #include "declaration_list.hpp"
 
-DeclarationList::DeclarationList(Declaration* decaration) {
-  elements.push_back(decaration);
+DeclarationList::DeclarationList(Declaration* declaration) {
+  elements.push_back(declaration);
 }
 
 void DeclarationList::Accept(Visitor* visitor) {

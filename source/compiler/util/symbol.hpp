@@ -5,6 +5,7 @@
 
 class Symbol {
  public:
+  explicit Symbol(const std::string& name);
   Symbol(const std::string& name, yy::location location);
 
   bool operator==(const Symbol& other) const;
@@ -13,9 +14,6 @@ class Symbol {
   bool operator==(const std::string& other) const;
   bool operator!=(const std::string& other) const;
 
-  [[nodiscard]] const std::string& GetName() const;
-
- private:
   std::string name;
   yy::location location;
 };

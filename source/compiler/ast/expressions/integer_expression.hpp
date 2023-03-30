@@ -5,10 +5,10 @@
 
 class IntegerExpression: public Expression { 
  public:
-  IntegerExpression(int value);
-  virtual ~IntegerExpression() = default;
+  explicit IntegerExpression(int value);
+  ~IntegerExpression() override = default;
 
-  virtual void Accept(Visitor* visitor) override;
+  void Accept(Visitor* visitor) override;
 
   int value;
 };

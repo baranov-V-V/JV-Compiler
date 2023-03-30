@@ -1,20 +1,27 @@
 #pragma once
 
+#include <initializer_list>
+
 #include "type.hpp"
 #include "method_type.hpp"
+
 
 class ClassType : public Type {
  public:
   ClassType();
-  ClassType(const std::vector<ArgEntry>& args, const SharedPtr<Type>& return_type);
+  ClassType(std::initializer_list<SharedPtr<MethodType>> methods, std::initializer_list<SharedPtr<Type>> fields);
+  ClassType(const std::vector<SharedPtr<MethodType>>& methods, const std::vector<SharedPtr<Type>>& fields);
 
-  [[nodiscard]] const std::vector<ArgEntry>& GetArgs() const;
-  void AddArg(const ArgEntry& arg_entry);
+  [[nodiscard]] const SharedPtr<MethodType>& GetMethodType(int idx) const;
+  [[nodiscard]] int GetMethodsNum() const;
+  void AddMethodType(const SharedPtr<MethodType>& method_type);
 
-  [[nodiscard]] SharedPtr<Type> GetReturnType() const;
-  [[nodiscard]] int GetArgsNum() const;
+  [[nodiscard]] const SharedPtr<Type>& GetFieldType(int idx) const;
+  [[nodiscard]] int GetFieldsNum() const;
+  void AddFieldType(const SharedPtr<Type>& field_type);
 
  private:
   std::vector<SharedPtr<MethodType>> methods;
   std::vector<SharedPtr<Type>> fields;
+  Symbol name;
 };

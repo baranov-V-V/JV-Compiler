@@ -4,13 +4,14 @@
 
 #include "compiler/ast/core/ast_node.hpp"
 #include "compiler/visitors/visitor.hpp"
+#include "util/symbol.hpp"
 
 class Declaration: public AstNode {
  public:
-  Declaration(const std::string& identifier);
-  virtual ~Declaration() = default;
+  explicit Declaration(Symbol identifier);
+  ~Declaration() override = default;
 
-  virtual void Accept(Visitor* visitor) = 0;
+  void Accept(Visitor* visitor) override = 0;
 
-  std::string identifier;
+  Symbol identifier;
 };

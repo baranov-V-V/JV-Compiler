@@ -39,7 +39,6 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
   void Visit(MethodDeclaration* method_declaration) override;
   void Visit(VariableDeclaration* variable_declaration) override;
 
-  //void Visit(BinOpExpression* expression) override;
   void Visit(LogicOpExpression* expression) override;
   void Visit(CompareOpExpression* expression) override;
   void Visit(MathOpExpression* expression) override;

@@ -6,7 +6,7 @@
 class Expression: public AstNode {
  public:
   Expression() = default;
-  virtual ~Expression() = default;
+  ~Expression() override = default;
   
-  virtual void Accept(Visitor* visitor) = 0;
+  virtual void Accept(Visitor* visitor) override = 0;
 };

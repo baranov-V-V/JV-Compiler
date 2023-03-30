@@ -5,14 +5,16 @@
 
 #include "compiler/ast/declarations/declaration_list.hpp"
 #include "compiler/visitors/visitor.hpp"
+#include "compiler/types/class_type.hpp"
 
 class ClassDeclaration: public AstNode {
  public:
-  ClassDeclaration(const std::string& class_name, DeclarationList* decl_list);
+  ClassDeclaration(SharedPtr<ClassType> class_type, DeclarationList* decl_list);
   virtual ~ClassDeclaration();
 
   virtual void Accept(Visitor* visitor) override;
 
-  std::string class_name;
+  SharedPtr<ClassType> class_type;
+  //std::string class_name;
   DeclarationList* declaration_list;
 };
