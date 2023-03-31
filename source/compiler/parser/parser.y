@@ -21,7 +21,7 @@
 %code {
   #include "driver.hpp"
   #include "location.hh"
-
+  /*
   #include "../ast/core/ast_node.hpp"
   #include "../ast/core/basic_list.hpp"
   #include "../ast/core/binary_operations.hpp"
@@ -57,6 +57,7 @@
 
   #include "../ast/types/integer.hpp"
   #include "../ast/types/type.hpp"
+  */
 
   static yy::parser::symbol_type yylex(Scanner &scanner, Driver& driver) {
     return scanner.ScanToken();
@@ -122,6 +123,7 @@
   VOID "void"
   <std::string> IDENTIFIER "identifier"
   <int> NUMBER "number"
+  <float> FLOAT "float"
 
 
 %nterm <Program*> program
@@ -134,11 +136,21 @@
 %nterm <VariableDeclaration*> variable_declaration
 
 %nterm <Expression*> expr
+%nterm <CommaExpressionList*> comma_expr_list
+%nterm <ArgEntry> formals
+%nterm <std::vector<ArgEntry>> comma_formals_list
+
+%nterm <SharedPtr<Type>> type
+%nterm <SharedPtr<Type>> simple_type
+%nterm <SharedPtr<Type>> array_type
+
+%ntern <LValue*> lvalue
 
 %nterm <Statement*> statement
 %nterm <LocalVariableStatement*> local_variable_statement
 %nterm <StatementList*> statement_list
 %nterm <StatementListStatement*> statement_list_statement
+
 %nterm <int> integer_literal
 
 %left "&&" "||";
@@ -222,12 +234,6 @@ simple_type: "int"
   { $$ = TypeFactory::GetClassTy(Symbol($1)); }
 ;
 
-args_list : "(" ")"
-  { $$ = std::pair<std::vector<Type>, std::vector<std::string>>(); }
-          | "(" comma_formals_list ")"
-  { $$ = $2; }
-;
-
 comma_formals_list: formals
   { $$ = std::pair<std::vector<Type>, std::vector<std::string>>();
     $$.first.push_back($1.first);
@@ -237,7 +243,7 @@ comma_formals_list: formals
   { $$ = $1; $$.first.push_back($3.first); $$.second.push_back($3.second); }
 ;
 
-formals: type "identifier" { $$ = ArgEntry(TypeFactory::, $2); }
+formals: type "identifier" { $$ = ArgEntry($1, $2); }
 ;
 
 statement: local_variable_statement
@@ -284,11 +290,11 @@ expr: "(" expr ")"
   { $$ = $2; }
       | expr "+"    expr
   {$$ = new MathOpExpression($1, MathOperation::PLUS, $3);}
-      | expr "-"   expr
+      | expr "-"    expr
   {$$ = new MathOpExpression($1, MathOperation::MINUS, $3);}
       | expr "*"    expr
   {$$ = new MathOpExpression($1, MathOperation::MUL, $3);}
-      | expr "/"   expr
+      | expr "/"    expr
   {$$ = new MathOpExpression($1, MathOperation::DIV, $3);}
       | expr "=="   expr
   {$$ = new CompareOpExpression($1, CompareOperation::EQUAL, $3);}
@@ -302,7 +308,7 @@ expr: "(" expr ")"
   {$$ = new LogicOpExpression($1, LogicOperation::OR, $3);}
       | expr "&&"   expr
   {$$ = new LogicOpExpression($1, LogicOperation::AND, $3);}
-      | expr "%"   expr
+      | expr "%"    expr
   {$$ = new MathOpExpression($1, MathOperation::PERCENT, $3);}
       | "identifier"
   { $$ = new IdentifierExpression($1); }
