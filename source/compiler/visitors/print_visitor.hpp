@@ -15,7 +15,21 @@ class PrintVisitor: public Visitor {
 
   virtual void Visit(Program* program) = 0;
   virtual void Visit(MainClass* main_class) = 0;
-  
+
+  virtual void Visit(ArrayIdxExpression* expression) = 0;
+  virtual void Visit(LengthExpression* expression) = 0;
+  virtual void Visit(MethodCallExpression* expression) = 0;
+  virtual void Visit(NewArrayExpression* expression) = 0;
+  virtual void Visit(NewClassExpression* expression) = 0;
+  virtual void Visit(ThisExpression* expression) = 0;
+  virtual void Visit(CommaExpressionList* program) = 0;
+  virtual void Visit(MethodCall* program) = 0;
+  virtual void Visit(AssertStatement* statement) = 0;
+  virtual void Visit(MethodCallStatement* statement) = 0;
+  virtual void Visit(ArrayLValue* statement) = 0;
+  virtual void Visit(FieldLValue* statement) = 0;
+  virtual void Visit(IdentifierLValue* statement) = 0;
+
   virtual void Visit(ClassDeclaration* class_declaration) = 0;
   virtual void Visit(ClassDeclarationList* class_declaration_list) = 0;
   virtual void Visit(DeclarationList* declaration_list) = 0;

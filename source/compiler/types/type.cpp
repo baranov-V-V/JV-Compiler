@@ -21,3 +21,7 @@ bool Type::operator!=(const Type& other) const {
 }
 
 Type::Type(Type::TypeID id) : id(id) {}
+
+Type::TypeID Type::GetTypeId() const {
+  return id;
+}

@@ -9,9 +9,23 @@
 class FilePrintVisitor: public PrintVisitor {
  public:
   FilePrintVisitor() = default;
-  virtual ~FilePrintVisitor() override = default;
+  ~FilePrintVisitor() override = default;
 
-  virtual void Print(const std::filesystem::path& filename, Program* program) override;
+  void Print(const std::filesystem::path& filename, Program* program) override;
+
+  void Visit(ArrayIdxExpression* expression) override;
+  void Visit(LengthExpression* expression) override;
+  void Visit(MethodCallExpression* expression) override;
+  void Visit(NewArrayExpression* expression) override;
+  void Visit(NewClassExpression* expression) override;
+  void Visit(ThisExpression* expression) override;
+  void Visit(CommaExpressionList* program) override;
+  void Visit(MethodCall* program) override;
+  void Visit(AssertStatement* statement) override;
+  void Visit(MethodCallStatement* statement) override;
+  void Visit(ArrayLValue* statement) override;
+  void Visit(FieldLValue* statement) override;
+  void Visit(IdentifierLValue* statement) override;
 
   virtual void Visit(Program* program) override;
   virtual void Visit(MainClass* main_class) override;

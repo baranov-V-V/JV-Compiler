@@ -4,6 +4,7 @@
 #include "ast/core/basic_list.hpp"
 
 class CommaExpressionList : BasicList<Expression> {
+ public:
   CommaExpressionList() = default;
   explicit CommaExpressionList(Expression* expression);
   ~CommaExpressionList() override = default;

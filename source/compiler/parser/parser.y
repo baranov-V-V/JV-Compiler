@@ -9,7 +9,8 @@
 %code requires {
   #include <string>
   
-  #include "../ast/forward_declaration.hpp"
+  //#include "../ast/forward_declaration.hpp"
+  #include "compiler/ast/forward_declaration.hpp"
 
   class Scanner;
   class Driver;
@@ -59,15 +60,17 @@
   #include "../ast/types/type.hpp"
   */
 
+  #include "compiler/ast/ast.hpp"
+
   static yy::parser::symbol_type yylex(Scanner &scanner, Driver& driver) {
     return scanner.ScanToken();
   }
 }
 
-%lex-param { Scanner &scanner }
-%lex-param { Driver &driver }
-%parse-param { Scanner &scanner }
-%parse-param { Driver &driver }
+%lex-param { Scanner& scanner }
+%lex-param { Driver& driver }
+%parse-param { Scanner& scanner }
+%parse-param { Driver& driver }
 
 %locations
 

@@ -14,11 +14,13 @@ class Type {
     MethodTy,
   };
 
+  [[nodiscard]] TypeID GetTypeId() const;
+
   explicit Type(TypeID id);
 
-  bool IsInteger() const;
-  bool IsClass() const;
-  bool IsArray() const;
+  [[nodiscard]] bool IsInteger() const;
+  [[nodiscard]] bool IsClass() const;
+  [[nodiscard]] bool IsArray() const;
 
   bool operator==(const Type& other) const;
   bool operator!=(const Type& other) const;

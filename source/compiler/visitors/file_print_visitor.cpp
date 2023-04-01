@@ -178,10 +178,97 @@ void FilePrintVisitor::Visit(CompareOpExpression* expression) {
 void FilePrintVisitor::Visit(MathOpExpression* expression) {
   PRINT_TABBED("Math Op Expr")
   VISIT_TABBED(
-      expression->lhs->Accept(this);
-      PRINT_TABBED(GetMathStrOp(expression->operation))
-      expression->rhs->Accept(this);
+    expression->lhs->Accept(this);
+    PRINT_TABBED(GetMathStrOp(expression->operation))
+    expression->rhs->Accept(this);
   )
+}
+
+void FilePrintVisitor::Visit(ArrayIdxExpression* expression) {
+  PRINT_TABBED("ArrayIdxExpression")
+  VISIT_TABBED(
+    expression->expr->Accept(this);
+    expression->idx->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(LengthExpression* expression) {
+  PRINT_TABBED("LengthExpression")
+  VISIT_TABBED(
+    expression->identifier->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(MethodCallExpression* expression) {
+  PRINT_TABBED("MethodCallExpression")
+  VISIT_TABBED(
+    expression->call->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(NewArrayExpression* expression) {
+  PRINT_TABBED("NewArrayExpression")
+  VISIT_TABBED(
+    EXECUTE_TABBED(
+      stream << (int) expression->type.get()->GetTypeId() << std::endl;
+    )
+    expression->size->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(NewClassExpression* expression) {
+  PRINT_TABBED("NewClassExpression")
+  VISIT_TABBED(
+    EXECUTE_TABBED(
+       stream << expression->type.get()->GetClassName().name << std::endl;
+    )
+  )
+}
+
+void FilePrintVisitor::Visit(ThisExpression* expression) {
+  PRINT_TABBED("ThisExpression")
+}
+
+void FilePrintVisitor::Visit(CommaExpressionList* program) {
+  PRINT_TABBED("CommaExprList")
+  VISIT_TABBED(
+    program->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(AssertStatement* statement) {
+  PRINT_TABBED("Assert")
+  VISIT_TABBED(
+    statement->expression->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(MethodCallStatement* statement) {
+  PRINT_TABBED("MethodCallStatement")
+  VISIT_TABBED(
+    statement->call->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(MethodCall* program) {
+  PRINT_TABBED("MethodCall")
+  VISIT_TABBED(
+    program->caller->Accept(this);
+    EXECUTE_TABBED(stream << program->function_name.name << std::endl;)
+    program->expression_list->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(ArrayLValue* statement) {
+
+}
+
+void FilePrintVisitor::Visit(FieldLValue* statement) {
+
+}
+
+void FilePrintVisitor::Visit(IdentifierLValue* statement) {
+
 }
 
 #undef PRINT_TABBED

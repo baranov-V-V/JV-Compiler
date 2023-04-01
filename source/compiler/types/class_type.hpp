@@ -20,6 +20,8 @@ class ClassType : public Type {
   [[nodiscard]] int GetFieldsNum() const;
   void AddFieldType(const SharedPtr<Type>& field_type);
 
+  [[nodiscard]] const Symbol& GetClassName() const;
+
  private:
   std::vector<SharedPtr<MethodType>> methods;
   std::vector<SharedPtr<Type>> fields;

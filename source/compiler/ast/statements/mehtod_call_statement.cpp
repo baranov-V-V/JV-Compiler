@@ -1,11 +1,11 @@
 #include "mehtod_call_statement.hpp"
 
-void MehtodCallStatement::Accept(Visitor* visitor) {
+void MethodCallStatement::Accept(Visitor* visitor) {
   visitor->Visit(this);
 }
 
-MehtodCallStatement::MehtodCallStatement(MethodCall* call) : call(call) {}
+MethodCallStatement::MethodCallStatement(MethodCall* call) : call(call) {}
 
-MehtodCallStatement::~MehtodCallStatement() {
+MethodCallStatement::~MethodCallStatement() {
   delete call;
 }

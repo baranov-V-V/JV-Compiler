@@ -2,37 +2,50 @@
 
 class AstNode;
 
-class ClassDeclarationList;
 class ClassDeclaration;
+class ClassDeclarationList;
 class DeclarationList;
 class Declaration;
 class MethodDeclaration;
 class VariableDeclaration;
 
-class BinOpExpression;
-class LogicOpExpression;
-class MathOpExpression;
-class CompareOpExpression;
+class ArrayIdxExpression;
 class TrueExpression;
 class FalseExpression;
+class CompareOpExpression;
 class Expression;
+class FloatExpression;
 class IdentifierExpression;
 class IntegerExpression;
+class LengthExpression;
+class LogicOpExpression;
+class MathOpExpression;
+class MethodCallExpression;
+class NewArrayExpression;
+class NewClassExpression;
 class NotExpression;
+class ThisExpression;
+
+class CommaExpressionList;
+class MethodCall;
 
 class MainClass;
 class Program;
 
+class AssertStatement;
 class AssignmentStatement;
 class IfElseStatement;
 class IfStatement;
+class LocalVariableStatement;
+class MethodCallStatement;
 class PrintStatement;
 class ReturnStatement;
-class StatementList;
 class Statement;
-class WhileStatement;
-class LocalVariableStatement;
+class StatementList;
 class StatementListStatement;
+class WhileStatement;
 
-class Integer;
-class Type;
+class ArrayLValue;
+class FieldLValue;
+class IdentifierLValue;
+class LValue;

@@ -3,10 +3,10 @@
 #include "ast/functional/method_call.hpp"
 #include "ast/statements/statement.hpp"
 
-class MehtodCallStatement : public Statement {
+class MethodCallStatement : public Statement {
  public:
-  explicit MehtodCallStatement(MethodCall* call);
-  ~MehtodCallStatement() override;
+  explicit MethodCallStatement(MethodCall* call);
+  ~MethodCallStatement() override;
 
   void Accept(Visitor* visitor) override;
 
