@@ -34,18 +34,44 @@ class Interpreter : public Visitor, public VisitorHelper<int> {
   void Visit(IntegerExpression* expression) override;
   void Visit(NotExpression* expression) override;
 
-  virtual void Visit(AssignmentStatement* statement) override;
-  virtual void Visit(IfElseStatement* statement) override;
-  virtual void Visit(IfStatement* statement) override;
-  virtual void Visit(PrintStatement* statement) override;
-  virtual void Visit(ReturnStatement* statement) override;
-  virtual void Visit(WhileStatement* statement) override;
-  virtual void Visit(StatementList* statement) override;
-  virtual void Visit(LocalVariableStatement* statement) override;
-  virtual void Visit(StatementListStatement* expression) override;
-  
+  void Visit(AssignmentStatement* statement) override;
+  void Visit(IfElseStatement* statement) override;
+  void Visit(IfStatement* statement) override;
+  void Visit(PrintStatement* statement) override;
+  void Visit(ReturnStatement* statement) override;
+  void Visit(WhileStatement* statement) override;
+  void Visit(StatementList* statement) override;
+  void Visit(LocalVariableStatement* statement) override;
+  void Visit(StatementListStatement* expression) override;
+
+  void Visit(ArrayIdxExpression *expression) override;
+
+  void Visit(LengthExpression *expression) override;
+
+  void Visit(MethodCallExpression *expression) override;
+
+  void Visit(NewArrayExpression *expression) override;
+
+  void Visit(NewClassExpression *expression) override;
+
+  void Visit(ThisExpression *expression) override;
+
+  void Visit(CommaExpressionList *program) override;
+
+  void Visit(MethodCall *program) override;
+
+  void Visit(AssertStatement *statement) override;
+
+  void Visit(MethodCallStatement *statement) override;
+
+  void Visit(ArrayLValue *statement) override;
+
+  void Visit(FieldLValue *statement) override;
+
+  void Visit(IdentifierLValue *statement) override;
+
   virtual int Accept(AstNode* ast_node) override;
  private:
-  SymbolTable<int> table;
+  SymbolTable<std::string, int> table;
   ProgramStack<int> stack;
 };

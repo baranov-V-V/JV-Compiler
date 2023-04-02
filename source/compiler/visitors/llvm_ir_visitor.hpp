@@ -17,7 +17,6 @@
 #include "llvm/IR/Type.h"
 #include "llvm/IR/Verifier.h"
 #include "llvm-c/Core.h"
-
 #include <unordered_map>
 #include <string>
 #include <filesystem>
@@ -57,6 +56,20 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
   void Visit(StatementList* statement) override;
   void Visit(LocalVariableStatement* statement) override;
   void Visit(StatementListStatement* expression) override;
+
+  void Visit(ArrayIdxExpression *expression) override;
+  void Visit(LengthExpression *expression) override;
+  void Visit(MethodCallExpression *expression) override;
+  void Visit(NewArrayExpression *expression) override;
+  void Visit(NewClassExpression *expression) override;
+  void Visit(ThisExpression *expression) override;
+  void Visit(CommaExpressionList *program) override;
+  void Visit(MethodCall *program) override;
+  void Visit(AssertStatement *statement) override;
+  void Visit(MethodCallStatement *statement) override;
+  void Visit(ArrayLValue *statement) override;
+  void Visit(FieldLValue *statement) override;
+  void Visit(IdentifierLValue *statement) override;
 
   llvm::Value* Accept(AstNode* ast_node) override;
 

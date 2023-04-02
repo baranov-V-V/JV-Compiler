@@ -2,11 +2,9 @@
 
 #include <unordered_map>
 #include <vector>
-#include <concepts>
 
 #include "object.hpp"
 #include "types/array_type.hpp"
-
 
 template <typename  Obj>
 class Array : public Object {
@@ -14,7 +12,7 @@ class Array : public Object {
 
   [[nodiscard]] SharedPtr<Type> GetType() const override;
 
-  std::string ToString() const override;
+  [[nodiscard]] std::string ToString() const override;
 
   bool Equals(const Object* obj) override;
 
@@ -39,5 +37,4 @@ bool Array<Obj>::Equals(const Object* obj) {
     return false;
   }
   Array<Obj>* array = (Array<Obj>*)obj;
-
 }

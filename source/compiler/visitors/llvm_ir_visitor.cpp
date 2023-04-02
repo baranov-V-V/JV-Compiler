@@ -553,3 +553,55 @@ void LLVMIRVisitor::Visit(MathOpExpression* expression) {
 
   stack.Put(alloca_result);
 }
+
+void LLVMIRVisitor::Visit(ArrayIdxExpression *expression) {
+
+}
+
+void LLVMIRVisitor::Visit(LengthExpression *expression) {
+
+}
+
+void LLVMIRVisitor::Visit(MethodCallExpression *expression) {
+
+}
+
+void LLVMIRVisitor::Visit(NewArrayExpression *expression) {
+
+}
+
+void LLVMIRVisitor::Visit(NewClassExpression *expression) {
+
+}
+
+void LLVMIRVisitor::Visit(ThisExpression *expression) {
+
+}
+
+void LLVMIRVisitor::Visit(CommaExpressionList *program) {
+
+}
+
+void LLVMIRVisitor::Visit(MethodCall *program) {
+
+}
+
+void LLVMIRVisitor::Visit(AssertStatement *statement) {
+
+}
+
+void LLVMIRVisitor::Visit(MethodCallStatement *statement) {
+
+}
+
+void LLVMIRVisitor::Visit(ArrayLValue *statement) {
+
+}
+
+void LLVMIRVisitor::Visit(FieldLValue *statement) {
+
+}
+
+void LLVMIRVisitor::Visit(IdentifierLValue *statement) {
+
+}

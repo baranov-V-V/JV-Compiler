@@ -44,7 +44,21 @@ class GraphPrintVisitor : public PrintVisitor {
   virtual void Visit(LocalVariableStatement* statement) override;
   virtual void Visit(StatementListStatement* statement) override;
 
- private:
+  void Visit(ArrayIdxExpression *expression) override;
+  void Visit(LengthExpression *expression) override;
+  void Visit(MethodCallExpression *expression) override;
+  void Visit(NewArrayExpression *expression) override;
+  void Visit(NewClassExpression *expression) override;
+  void Visit(ThisExpression *expression) override;
+  void Visit(CommaExpressionList *program) override;
+  void Visit(MethodCall *program) override;
+  void Visit(AssertStatement *statement) override;
+  void Visit(MethodCallStatement *statement) override;
+  void Visit(ArrayLValue *statement) override;
+  void Visit(FieldLValue *statement) override;
+  void Visit(IdentifierLValue *statement) override;
+
+private:
   fmt::ostream* stream;
 
   void MakeFictListNodes(int count);

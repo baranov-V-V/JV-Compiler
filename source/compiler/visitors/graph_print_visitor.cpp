@@ -228,3 +228,55 @@ void GraphPrintVisitor::Visit(CompareOpExpression* expression) {
 void GraphPrintVisitor::Visit(MathOpExpression* expression) {
 
 }
+
+void GraphPrintVisitor::Visit(ArrayIdxExpression *expression) {
+
+}
+
+void GraphPrintVisitor::Visit(LengthExpression *expression) {
+
+}
+
+void GraphPrintVisitor::Visit(MethodCallExpression *expression) {
+
+}
+
+void GraphPrintVisitor::Visit(NewArrayExpression *expression) {
+
+}
+
+void GraphPrintVisitor::Visit(NewClassExpression *expression) {
+
+}
+
+void GraphPrintVisitor::Visit(ThisExpression *expression) {
+
+}
+
+void GraphPrintVisitor::Visit(CommaExpressionList *program) {
+
+}
+
+void GraphPrintVisitor::Visit(MethodCall *program) {
+
+}
+
+void GraphPrintVisitor::Visit(AssertStatement *statement) {
+
+}
+
+void GraphPrintVisitor::Visit(MethodCallStatement *statement) {
+
+}
+
+void GraphPrintVisitor::Visit(ArrayLValue *statement) {
+
+}
+
+void GraphPrintVisitor::Visit(FieldLValue *statement) {
+
+}
+
+void GraphPrintVisitor::Visit(IdentifierLValue *statement) {
+
+}

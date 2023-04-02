@@ -159,3 +159,55 @@ void Interpreter::Visit(MathOpExpression* expression) {
 
   stack.Put(result);
 }
+
+void Interpreter::Visit(ArrayIdxExpression *expression) {
+
+}
+
+void Interpreter::Visit(LengthExpression *expression) {
+
+}
+
+void Interpreter::Visit(MethodCallExpression *expression) {
+
+}
+
+void Interpreter::Visit(NewArrayExpression *expression) {
+
+}
+
+void Interpreter::Visit(NewClassExpression *expression) {
+
+}
+
+void Interpreter::Visit(ThisExpression *expression) {
+
+}
+
+void Interpreter::Visit(CommaExpressionList *program) {
+
+}
+
+void Interpreter::Visit(MethodCall *program) {
+
+}
+
+void Interpreter::Visit(AssertStatement *statement) {
+
+}
+
+void Interpreter::Visit(MethodCallStatement *statement) {
+
+}
+
+void Interpreter::Visit(ArrayLValue *statement) {
+
+}
+
+void Interpreter::Visit(FieldLValue *statement) {
+
+}
+
+void Interpreter::Visit(IdentifierLValue *statement) {
+
+}

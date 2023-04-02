@@ -45,15 +45,15 @@ class FilePrintVisitor: public PrintVisitor {
   void Visit(IntegerExpression* expression) override;
   void Visit(NotExpression* expression) override;
 
-  virtual void Visit(AssignmentStatement* statement) override;
-  virtual void Visit(IfElseStatement* statement) override;
-  virtual void Visit(IfStatement* statement) override;
-  virtual void Visit(PrintStatement* statement) override;
-  virtual void Visit(ReturnStatement* statement) override;
-  virtual void Visit(WhileStatement* statement) override;
-  virtual void Visit(StatementList* statement) override;
-  virtual void Visit(LocalVariableStatement* statement) override;
-  virtual void Visit(StatementListStatement* statement) override;
+  void Visit(AssignmentStatement* statement) override;
+  void Visit(IfElseStatement* statement) override;
+  void Visit(IfStatement* statement) override;
+  void Visit(PrintStatement* statement) override;
+  void Visit(ReturnStatement* statement) override;
+  void Visit(WhileStatement* statement) override;
+  void Visit(StatementList* statement) override;
+  void Visit(LocalVariableStatement* statement) override;
+  void Visit(StatementListStatement* statement) override;
  private:
   std::ofstream stream;
   int tabs_count; 

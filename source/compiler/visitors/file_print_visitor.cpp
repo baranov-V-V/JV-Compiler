@@ -27,7 +27,11 @@ void FilePrintVisitor::Visit(MainClass* main_class) {
 }
 
 void FilePrintVisitor::Visit(ClassDeclaration* class_declaration) {
-  return;
+  PRINT_TABBED("ClassDeclaration")
+  VISIT_TABBED(
+    EXECUTE_TABBED(stream << "type " << class_declaration->class_type->GetClassName().name << std::endl;)
+    class_declaration->declaration_list->Accept(this);
+  )
 }
 
 void FilePrintVisitor::Visit(ClassDeclarationList* class_declaration_list) {
@@ -45,12 +49,17 @@ void FilePrintVisitor::Visit(DeclarationList* declaration_list) {
 }
 
 void FilePrintVisitor::Visit(MethodDeclaration* method_declaration) {
-  return;
+  PRINT_TABBED("Method Declaration")
+  VISIT_TABBED(
+    EXECUTE_TABBED(stream << "type" << (int) method_declaration->method_type->GetReturnType()->GetTypeId() <<
+    " " << method_declaration->identifier.name << "()" << std::endl; )
+  )
 }
 
 void FilePrintVisitor::Visit(VariableDeclaration* variable_declaration) {
   EXECUTE_TABBED(
-    stream << "Decl int " << variable_declaration->identifier << std::endl;
+    stream << "Decl type(" << (int) variable_declaration->type->GetTypeId() << ") " <<
+    variable_declaration->identifier.name << std::endl;
   )
 }
 
@@ -84,9 +93,7 @@ void FilePrintVisitor::Visit(NotExpression* expression) {
 void FilePrintVisitor::Visit(AssignmentStatement* statement) {
   PRINT_TABBED("Assignment Expr")
   VISIT_TABBED(
-    EXECUTE_TABBED(
-      stream << "Identifier "<< statement->identifier << std::endl;
-    )
+    statement->value->Accept(this);
     statement->expression->Accept(this);
   )
 }
@@ -260,15 +267,22 @@ void FilePrintVisitor::Visit(MethodCall* program) {
 }
 
 void FilePrintVisitor::Visit(ArrayLValue* statement) {
-
+  PRINT_TABBED("ArrayLValue")
+  VISIT_TABBED(
+    EXECUTE_TABBED(stream << statement->identifier.name << std::endl;)
+    statement->idx->Accept(this);
+  )
 }
 
 void FilePrintVisitor::Visit(FieldLValue* statement) {
-
+  PRINT_TABBED("ArrayLValue")
 }
 
 void FilePrintVisitor::Visit(IdentifierLValue* statement) {
-
+  PRINT_TABBED("IdLValue")
+  VISIT_TABBED(
+    EXECUTE_TABBED(stream << statement->name.name << std::endl;)
+  )
 }
 
 #undef PRINT_TABBED
