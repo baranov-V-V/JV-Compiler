@@ -23,3 +23,13 @@ int MethodType::GetArgsNum() const {
 }
 
 MethodType::MethodType() : Type(Type::TypeID::MethodTy) {}
+
+std::string MethodType::ToString() const {
+  std::string res;
+  res += return_type->ToString() + " (";
+  for (const ArgEntry& entry : args) {
+    res += entry.type->ToString() + " " + entry.symbol.name + ", ";
+  }
+  res += ")";
+  return res;
+}

@@ -1,5 +1,10 @@
 #pragma once
 
-class SymbolTable {
+#include "scope_layer.hpp"
 
+class SymbolTable {
+  //pass
+
+ private:
+  ScopeLayer* global_scope;
 };

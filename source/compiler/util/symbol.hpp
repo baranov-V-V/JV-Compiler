@@ -17,3 +17,15 @@ class Symbol {
   std::string name;
   yy::location location;
 };
+
+namespace std {
+
+template<>
+struct hash<Symbol> {
+  std::size_t operator()(const Symbol& other) const {
+    return hash<string>()(other.name);
+  }
+};
+
+} // namespace std
+

@@ -38,3 +38,7 @@ void ClassType::AddFieldType(const SharedPtr<Type>& field_type) {
 const Symbol& ClassType::GetClassName() const {
   return name;
 }
+
+std::string ClassType::ToString() const {
+  return "class \"" + name.name + "\"";
+}

@@ -15,6 +15,7 @@ class Type {
   };
 
   [[nodiscard]] TypeID GetTypeId() const;
+  [[nodiscard]] virtual std::string ToString() const;
 
   explicit Type(TypeID id);
 

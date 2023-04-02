@@ -1,6 +1,7 @@
 #pragma once
 
+#include "object.hpp"
 
-class Integer {
+class Integer : public Object {
 
 };

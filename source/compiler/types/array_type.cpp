@@ -17,3 +17,7 @@ bool ArrayType::operator==(const ArrayType& rhs) const {
 bool ArrayType::operator!=(const ArrayType& rhs) const {
   return !(rhs == *this);
 }
+
+std::string ArrayType::ToString() const {
+  return elem_type->ToString() + "[]";
+}

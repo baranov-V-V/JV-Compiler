@@ -9,6 +9,8 @@ class ArrayType : public Type {
 
   [[nodiscard]] const SharedPtr<Type>& GetElemType() const;
 
+  std::string ToString() const override;
+
   bool operator==(const ArrayType& rhs) const;
   bool operator!=(const ArrayType& rhs) const;
 

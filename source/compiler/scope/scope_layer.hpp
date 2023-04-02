@@ -5,16 +5,22 @@
 #include <unordered_map>
 #include "util/symbol.hpp"
 #include "objects/object.hpp"
+#include "types/class_type.hpp"
+#include "types/array_type.hpp"
 
 class ScopeLayer {
  public:
-  ScopeLayer() = default;
-  ScopeLayer(ScopeLayer* parent);
+  ScopeLayer();
+  explicit ScopeLayer(ScopeLayer* parent);
+  virtual ~ScopeLayer();
   
-  //void DeclareVariable(Symbol symbol, Type type);
+  void DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type);
+  //void DeclareClass(const Symbol& symbol, SharedPtr<ClassType> type);
+  void DeclareArray(const Symbol& symbol, SharedPtr<ArrayType> type);
 
-  virtual std::shared_ptr<Object>& Get(Symbol symbol) = 0;
-  [[nodiscard]] virtual const std::shared_ptr<Object>& Get(Symbol symbol) const = 0;
+  [[nodiscard]] std::shared_ptr<Object>& GetFromCurrent(const Symbol& symbol);
+  [[nodiscard]] const std::shared_ptr<Object>& GetFromAnywhere(const Symbol& symbol) const;
+
   virtual void Put(Symbol symbol, std::shared_ptr<Object> value) = 0;
 
   /*
@@ -23,10 +29,10 @@ class ScopeLayer {
   size_t GetArgIndex(Symbol symbol) const;
   */
 
-  [[nodiscard]] virtual SharedPtr<Type> GetType(Symbol symbol) const = 0;
+  //[[nodiscard]] SharedPtr<Type> GetType(const Symbol& symbol) const;
 
-  [[nodiscard]] virtual bool IsDeclared(Symbol symbol) const = 0;
-  [[nodiscard]] virtual bool IsDeclaredAnywhere(Symbol symbol) const = 0;
+  [[nodiscard]] bool IsDeclaredCurrent(const Symbol& symbol) const;
+  [[nodiscard]] bool IsDeclaredAnywhere(const Symbol& symbol) const;
 
   virtual void AddChild(ScopeLayer* child) = 0;
 
@@ -35,7 +41,16 @@ class ScopeLayer {
   void AttachClass(std::shared_ptr<ScopeLayer> class_scope);
   */
 
-  [[nodiscard]] virtual int GetChildNum() const = 0;
-  [[nodiscard]] virtual ScopeLayer* GetChild(int idx) const = 0;
-  [[nodiscard]] virtual ScopeLayer* GetParent() const = 0;
+  [[nodiscard]] int GetChildNum() const;
+  [[nodiscard]] ScopeLayer* GetChild(int idx) const;
+  [[nodiscard]] ScopeLayer* GetParent() const;
+
+ protected:
+  std::string name = "anonymous";
+  ScopeLayer* parent;
+
+  std::vector<ScopeLayer*> children;
+  std::unordered_map<Symbol, std::shared_ptr<Object>> variables;
+
+  ScopeLayer* class_scope;
 };
