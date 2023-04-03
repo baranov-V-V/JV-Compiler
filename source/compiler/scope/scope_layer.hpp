@@ -12,16 +12,24 @@ class ScopeLayer {
  public:
   ScopeLayer();
   explicit ScopeLayer(ScopeLayer* parent);
+  explicit ScopeLayer(ScopeLayer* parent, ScopeLayer* class_layer);
   virtual ~ScopeLayer();
   
   void DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type);
-  //void DeclareClass(const Symbol& symbol, SharedPtr<ClassType> type);
-  void DeclareArray(const Symbol& symbol, SharedPtr<ArrayType> type);
+  void DeclareVariable(const Symbol& symbol, const std::shared_ptr<Object>& type);
+  void DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& type);
+  void DeclareArray(const Symbol& symbol, const SharedPtr<ArrayType>& type);
 
   [[nodiscard]] std::shared_ptr<Object>& GetFromCurrent(const Symbol& symbol);
   [[nodiscard]] const std::shared_ptr<Object>& GetFromAnywhere(const Symbol& symbol) const;
 
-  virtual void Put(Symbol symbol, std::shared_ptr<Object> value) = 0;
+  template<class ObjType>
+  [[nodiscard]] std::shared_ptr<ObjType>& GetTypedFromCurrent(const Symbol& symbol);
+
+  template<class ObjType>
+  [[nodiscard]] const std::shared_ptr<ObjType>& GetTypedFromAnywhere(const Symbol& symbol) const;
+
+  void Put(const Symbol& symbol, std::shared_ptr<Object> value);
 
   /*
   bool IsClassData(Symbol symbol) const;
@@ -34,7 +42,7 @@ class ScopeLayer {
   [[nodiscard]] bool IsDeclaredCurrent(const Symbol& symbol) const;
   [[nodiscard]] bool IsDeclaredAnywhere(const Symbol& symbol) const;
 
-  virtual void AddChild(ScopeLayer* child) = 0;
+  void AddChild(ScopeLayer* child);
 
   /*
   void AttachParent(std::shared_ptr<ScopeLayer> parent);
@@ -46,6 +54,9 @@ class ScopeLayer {
   [[nodiscard]] ScopeLayer* GetParent() const;
 
  protected:
+  void CheckDeclared(const Symbol& symbol, const SharedPtr<Type>& type) const;
+  void CheckDeclared(const Symbol& symbol) const;
+
   std::string name = "anonymous";
   ScopeLayer* parent;
 

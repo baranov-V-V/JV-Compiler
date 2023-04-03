@@ -57,6 +57,7 @@ void FilePrintVisitor::Visit(MethodDeclaration* method_declaration) {
 }
 
 void FilePrintVisitor::Visit(VariableDeclaration* variable_declaration) {
+  PRINT_TABBED("Variable declaration")
   EXECUTE_TABBED(
     stream << "Decl type(" << (int) variable_declaration->type->GetTypeId() << ") " <<
     variable_declaration->identifier.name << std::endl;
@@ -282,6 +283,14 @@ void FilePrintVisitor::Visit(IdentifierLValue* statement) {
   PRINT_TABBED("IdLValue")
   VISIT_TABBED(
     EXECUTE_TABBED(stream << statement->name.name << std::endl;)
+  )
+}
+
+void FilePrintVisitor::Visit(FieldDeclaraion* declaration) {
+  PRINT_TABBED("Field declaration")
+  EXECUTE_TABBED(
+    stream << "Decl type(" << (int) declaration->type->GetTypeId() << ") " <<
+           declaration << std::endl;
   )
 }
 

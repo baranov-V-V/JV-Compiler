@@ -8,11 +8,11 @@
 
 class ClassType : public Type {
  public:
-  ClassType();
-  ClassType(std::initializer_list<SharedPtr<MethodType>> methods, std::initializer_list<SharedPtr<Type>> fields);
-  ClassType(const std::vector<SharedPtr<MethodType>>& methods, const std::vector<SharedPtr<Type>>& fields);
+  explicit ClassType(const Symbol& symbol);
+  ClassType(const Symbol& symbol, std::initializer_list<SharedPtr<MethodType>> methods, std::initializer_list<SharedPtr<Type>> fields);
+  ClassType(const Symbol& symbol, const std::vector<SharedPtr<MethodType>>& methods, const std::vector<SharedPtr<Type>>& fields);
 
-  std::string ToString() const override;
+  [[nodiscard]] std::string ToString() const override;
 
   [[nodiscard]] const SharedPtr<MethodType>& GetMethodType(int idx) const;
   [[nodiscard]] int GetMethodsNum() const;

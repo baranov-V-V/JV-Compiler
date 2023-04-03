@@ -1,15 +1,15 @@
 #include "class_type.hpp"
 
-ClassType::ClassType() : Type(Type::TypeID::MethodTy) {}
-
-ClassType::ClassType(std::initializer_list<SharedPtr<MethodType>> methods,
+ClassType::ClassType(const Symbol& symbol, std::initializer_list<SharedPtr<MethodType>> methods,
                      std::initializer_list<SharedPtr<Type>> fields) :
+                     name(symbol),
                      methods(methods.begin(), methods.end()),
                      fields(fields.begin(), fields.end()),
                      Type(Type::TypeID::MethodTy) {}
 
-ClassType::ClassType(const std::vector<SharedPtr<MethodType>>& methods, const std::vector<SharedPtr<Type>>& fields) :
-  methods(methods), fields(fields), Type(Type::TypeID::MethodTy) {}
+ClassType::ClassType(const Symbol& symbol, const std::vector<SharedPtr<MethodType>>& methods,
+                     const std::vector<SharedPtr<Type>>& fields) :
+  name(symbol), methods(methods), fields(fields), Type(Type::TypeID::MethodTy) {}
 
 const SharedPtr<MethodType>& ClassType::GetMethodType(int idx) const {
   return methods.at(idx);
@@ -41,4 +41,7 @@ const Symbol& ClassType::GetClassName() const {
 
 std::string ClassType::ToString() const {
   return "class \"" + name.name + "\"";
+}
+
+ClassType::ClassType(const Symbol& symbol) : Type(Type::TypeID::ClassTy), name(symbol) {
 }

@@ -8,6 +8,7 @@
 #include "compiler/ast/declarations/class_declaration_list.hpp"
 #include "compiler/ast/declarations/declaration.hpp"
 #include "compiler/ast/declarations/declaration_list.hpp"
+#include "compiler/ast/declarations/field_declaration.hpp"
 #include "compiler/ast/declarations/method_declaration.hpp"
 #include "compiler/ast/declarations/variable_declaration.hpp"
 

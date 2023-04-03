@@ -8,6 +8,7 @@ class DeclarationList;
 class Declaration;
 class MethodDeclaration;
 class VariableDeclaration;
+class FieldDeclaration;
 
 class ArrayIdxExpression;
 class TrueExpression;
@@ -20,6 +21,7 @@ class IntegerExpression;
 class LengthExpression;
 class LogicOpExpression;
 class MathOpExpression;
+
 class MethodCallExpression;
 class NewArrayExpression;
 class NewClassExpression;

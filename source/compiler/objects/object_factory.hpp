@@ -10,10 +10,9 @@
 #include "types/class_type.hpp"
 
 class ObjectFactory {
+ public:
   static std::shared_ptr<Integer> CreateInteger(int value);
-
   static std::shared_ptr<Float> CreateFloat(float value);
-
   static std::shared_ptr<Bool> CreateBool(bool value);
 
   template<class Obj>

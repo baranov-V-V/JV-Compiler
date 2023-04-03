@@ -45,6 +45,7 @@ class FilePrintVisitor: public PrintVisitor {
   void Visit(IntegerExpression* expression) override;
   void Visit(NotExpression* expression) override;
 
+  void Visit(FieldDeclaration* declaration) override;
   void Visit(AssignmentStatement* statement) override;
   void Visit(IfElseStatement* statement) override;
   void Visit(IfStatement* statement) override;

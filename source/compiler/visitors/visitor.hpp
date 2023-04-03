@@ -1,6 +1,7 @@
 #pragma once
 
 #include "compiler/ast/forward_declaration.hpp"
+#include "ast/declarations/field_declaration.hpp"
 
 class Visitor {
  public:
@@ -10,6 +11,7 @@ class Visitor {
   virtual void Visit(ClassDeclaration* class_declaration) = 0;
   virtual void Visit(ClassDeclarationList* class_declaration_list) = 0;
   virtual void Visit(DeclarationList* declaration_list) = 0;
+  virtual void Visit(FieldDeclaration* declaration) = 0;
   virtual void Visit(MethodDeclaration* method_declaration) = 0;
   virtual void Visit(VariableDeclaration* variable_declarations) = 0;
 

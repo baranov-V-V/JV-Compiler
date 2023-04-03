@@ -605,3 +605,7 @@ void LLVMIRVisitor::Visit(FieldLValue *statement) {
 void LLVMIRVisitor::Visit(IdentifierLValue *statement) {
 
 }
+
+void LLVMIRVisitor::Visit(FieldDeclaraion* declaration) {
+
+}

@@ -57,6 +57,7 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
   void Visit(LocalVariableStatement* statement) override;
   void Visit(StatementListStatement* expression) override;
 
+  void Visit(FieldDeclaration* declaration) override;
   void Visit(ArrayIdxExpression *expression) override;
   void Visit(LengthExpression *expression) override;
   void Visit(MethodCallExpression *expression) override;
@@ -75,6 +76,7 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
 
  private:
   SymbolTable<std::string, llvm::Value*> table;
+
   ProgramStack<llvm::Value*> stack;
 
   llvm::LLVMContext* context;

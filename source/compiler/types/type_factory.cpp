@@ -44,7 +44,7 @@ SharedPtr<Type> TypeFactory::GetBasicType(const Symbol& literal_type) {
   } else if (literal_type == "void") {
     return GetVoidTy();
   }
-  //not reacheble place
+  //not reachable place
   COMPILER_ERROR("No such basic type [{}] at ", literal_type.name);
 }
 
@@ -58,4 +58,8 @@ SharedPtr<ArrayType> TypeFactory::GetArrayTy(const SharedPtr<ClassType>& base_ty
 
 SharedPtr<ArrayType> TypeFactory::GetArrayTy(const SharedPtr<Type>& base_type) {
   return std::make_shared<ArrayType>(base_type);
+}
+
+SharedPtr<ClassType> TypeFactory::GetClassTy(const Symbol& class_name) {
+  return std::make_shared<ClassType>(class_name);
 }

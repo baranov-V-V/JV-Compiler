@@ -11,6 +11,8 @@
   
   //#include "../ast/forward_declaration.hpp"
   #include "compiler/ast/forward_declaration.hpp"
+  #include "compiler/types/type.hpp"
+  #include "compiler/types/util/arg_entry.hpp"
 
   class Scanner;
   class Driver;
@@ -61,6 +63,7 @@
   */
 
   #include "compiler/ast/ast.hpp"
+  #include "../types/type.hpp"
 
   static yy::parser::symbol_type yylex(Scanner &scanner, Driver& driver) {
     return scanner.ScanToken();
@@ -126,33 +129,34 @@
   VOID "void"
   <std::string> IDENTIFIER "identifier"
   <int> NUMBER "number"
-  <float> FLOAT "float"
+  <float> FLOAT_CONST "float_const"
 
 
 %nterm <Program*> program
 %nterm <MainClass*> main_class
 %nterm <ClassDeclaration*> class_declaration
 %nterm <ClassDeclarationList*> class_declaration_list
-%nterm <Declaration*> declaration
+%nterm <Declaration*> class_member_declaration
 %nterm <DeclarationList*> declaration_list
 %nterm <MethodDeclaration*> method_declaration
 %nterm <VariableDeclaration*> variable_declaration
+%nterm <FieldDeclaration*> field_declaration
 
 %nterm <Expression*> expr
 %nterm <CommaExpressionList*> comma_expr_list
 %nterm <ArgEntry> formals
 %nterm <std::vector<ArgEntry>> comma_formals_list
+%nterm <MethodCall*> method_call
 
 %nterm <SharedPtr<Type>> type
 %nterm <SharedPtr<Type>> simple_type
 %nterm <SharedPtr<Type>> array_type
 
-%ntern <LValue*> lvalue
+%nterm <LValue*> lvalue
 
 %nterm <Statement*> statement
 %nterm <LocalVariableStatement*> local_variable_statement
 %nterm <StatementList*> statement_list
-%nterm <StatementListStatement*> statement_list_statement
 
 %nterm <int> integer_literal
 
@@ -188,16 +192,19 @@ class_declaration: "class" "identifier" "{" declaration_list "}"
   { $$ = new ClassDeclaration($6); }
 ;
 
-declaration_list : declaration
+declaration_list : class_member_declaration
   { $$ = DeclarationList($1); }
-                 | declaration_list declaration
+                 | declaration_list class_member_declaration
   { $$ = $1; $$->Add($2); }
 ;
 
-declaration : variable_declaration
+class_member_declaration: field_declaration
   { $$ = $1; }
-            | method_declaration
+  			 | method_declaration
   { $$ = $1; }
+
+field_declaration: type "identifier" ";"
+  { $$ = new FieldDeclaration($1, Symbol($2)); }
 ;
 
 variable_declaration: type "identifier" ";"
@@ -205,7 +212,7 @@ variable_declaration: type "identifier" ";"
 ;
 
 method_declaration: type "identifier" "(" comma_formals_list ")" "{" statement_list "}"
-  { $$ = new MethodDeclaration(Symbol($2), TypeFactory::GetMethodTy($4, $1), $3, $7); }
+  { $$ = new MethodDeclaration(Symbol($2), TypeFactory::GetMethodTy($4, $1), $7); }
 ;
 
 comma_formals_list: formals
@@ -237,18 +244,6 @@ simple_type: "int"
   { $$ = TypeFactory::GetClassTy(Symbol($1)); }
 ;
 
-comma_formals_list: formals
-  { $$ = std::pair<std::vector<Type>, std::vector<std::string>>();
-    $$.first.push_back($1.first);
-    $$.second.push_back($1.second);
-  }
-                  | comma_formals_list "," formals
-  { $$ = $1; $$.first.push_back($3.first); $$.second.push_back($3.second); }
-;
-
-formals: type "identifier" { $$ = ArgEntry($1, $2); }
-;
-
 statement: local_variable_statement
   { $$ = $1; }
          | "{" statement_list "}"
@@ -267,8 +262,6 @@ statement: local_variable_statement
   { $$ = new MethodCallStatement($1); }
   	 | "return" expr ";"
   { $$ = new ReturnStatement($2); }
-  	 | lvalue "=" expr ";"
-  { $$ = new AssignmentStatement($1, $3); }
 ;
 
 lvalue: "identifier"
@@ -331,7 +324,7 @@ expr: "(" expr ")"
   { $$ = new NewArrayExpression($2, $4); }
       | "new" "identifier" "(" ")"
   { $$ = new NewClassExpression(TypeFactory::GetClassTy(Symbol($2))); }
-      | this
+      | "this"
   { $$ = new ThisExpression(); }
       | method_call
   { $$ = new MethodCallExpression($1); }
