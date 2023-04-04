@@ -146,7 +146,7 @@
   VOID "void"
   <std::string> IDENTIFIER "identifier"
   <int> NUMBER "number"
-  <float> FLOAT_CONST "float_const"
+  <float> FLOAT_NUMBER "float_number"
 
 
 %nterm <Program*> program
@@ -204,9 +204,9 @@ class_declaration_list: class_declaration
 ;
 
 class_declaration: "class" "identifier" "{" declaration_list "}" 
-  { $$ = new ClassDeclaration($4); }
+  { $$ = new ClassDeclaration(TypeFactory::GetClassTy(Symbol($2)), $4); }
                  | "class" "identifier" "extends" "identifier" "{" declaration_list "}"
-  { $$ = new ClassDeclaration($6); }
+  { $$ = new ClassDeclaration(TypeFactory::GetClassTy(Symbol($2)), $6); }
 ;
 
 declaration_list : class_member_declaration

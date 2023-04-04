@@ -31,11 +31,10 @@ SymbolLayerTree::Iterator::Iterator(ScopeLayer* root, ScopeLayer* parent) : root
 
 
 ScopeLayer*& SymbolLayerTree::Iterator::operator*() const {
-  return
 }
 
 ScopeLayer* SymbolLayerTree::Iterator::operator->() const {
-  current_parent->GetChild(curr_idx);
+  return current_parent->GetChild(curr_idx);
 }
 
 void SymbolLayerTree::Iterator::GoDown() {

@@ -6,4 +6,4 @@ void NewClassExpression::Accept(Visitor* visitor) {
   visitor->Visit(this);
 }
 
-NewClassExpression::NewClassExpression(SharedPtr<Type> type) : type(std::move(type)) {}
+NewClassExpression::NewClassExpression(SharedPtr<ClassType> type) : type(std::move(type)) {}

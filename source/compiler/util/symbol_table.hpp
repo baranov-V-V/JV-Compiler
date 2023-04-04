@@ -18,7 +18,7 @@ class SymbolTable {
 
   void Clear();
  private:
-  std::unordered_map<Val, Key> table;
+  std::unordered_map<Key, Val> table;
 };
 
 template<typename Key, typename Val>

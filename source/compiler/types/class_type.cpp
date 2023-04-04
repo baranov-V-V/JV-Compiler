@@ -32,7 +32,7 @@ int ClassType::GetFieldsNum() const {
 }
 
 void ClassType::AddFieldType(const SharedPtr<Type>& field_type) {
-  fields.push_back(field_type)
+  fields.push_back(field_type);
 }
 
 const Symbol& ClassType::GetClassName() const {

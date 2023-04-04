@@ -2,6 +2,7 @@
 
 #include "l_value.hpp"
 #include "util/symbol.hpp"
+#include "visitors/visitor.hpp"
 
 class IdentifierLValue : public LValue {
  public:

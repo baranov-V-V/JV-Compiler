@@ -1,7 +1,6 @@
 #pragma once
 
 #include "compiler/ast/forward_declaration.hpp"
-#include "ast/declarations/field_declaration.hpp"
 
 class Visitor {
  public:

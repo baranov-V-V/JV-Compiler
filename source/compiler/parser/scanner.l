@@ -21,6 +21,11 @@
     const std::string &s,
     const yy::parser::location_type& loc
   );
+
+  yy::parser::symbol_type make_FLOAT(
+    const std::string &s,
+    const yy::parser::location_type& loc
+  );
 %}
 
 id    [a-zA-Z][a-zA-Z_0-9]*
@@ -110,5 +115,5 @@ yy::parser::symbol_type make_FLOAT(
 ) {
   errno = 0;
   float n = atof(s.c_str());
-  return yy::parser::make_FLOAT(n, loc);
+  return yy::parser::make_FLOAT_NUMBER(n, loc);
 }

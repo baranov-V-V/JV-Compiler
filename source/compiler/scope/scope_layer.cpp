@@ -49,7 +49,7 @@ void ScopeLayer::DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& 
 std::shared_ptr<Object>& ScopeLayer::GetFromCurrent(const Symbol& symbol) {
   CheckDeclared(symbol);
 
-  variables.at(symbol);
+  return variables.at(symbol);
 }
 
 const std::shared_ptr<Object>& ScopeLayer::GetFromAnywhere(const Symbol& symbol) const {

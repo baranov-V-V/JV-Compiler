@@ -18,14 +18,11 @@ SharedPtr<MethodType> TypeFactory::GetMethodTy() {
   return std::make_shared<MethodType>();
 }
 
-SharedPtr<ClassType> TypeFactory::GetClassTy() {
-  return std::make_shared<ClassType>();
-}
-
 SharedPtr<MethodType> TypeFactory::GetMethodTy(const std::vector<ArgEntry>& args, const SharedPtr<Type>& return_type) {
   return std::make_shared<MethodType>(args, return_type);
 }
 
+/*
 SharedPtr<ClassType> TypeFactory::GetClassTy(std::initializer_list<SharedPtr<MethodType>> methods,
                                              std::initializer_list<SharedPtr<Type>> fields) {
   return std::make_shared<ClassType>(methods, fields);
@@ -35,6 +32,7 @@ SharedPtr<ClassType> TypeFactory::GetClassTy(const std::vector<SharedPtr<MethodT
                                              const std::vector<SharedPtr<Type>>& fields) {
   return std::make_shared<ClassType>(methods, fields);
 }
+*/
 
 SharedPtr<Type> TypeFactory::GetBasicType(const Symbol& literal_type) {
   if (literal_type == "integer" || literal_type == "int") {

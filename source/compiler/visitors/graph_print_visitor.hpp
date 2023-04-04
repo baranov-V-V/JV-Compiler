@@ -44,6 +44,8 @@ class GraphPrintVisitor : public PrintVisitor {
   virtual void Visit(LocalVariableStatement* statement) override;
   virtual void Visit(StatementListStatement* statement) override;
 
+  void Visit(FieldDeclaration* declaration) override;
+
   void Visit(ArrayIdxExpression *expression) override;
   void Visit(LengthExpression *expression) override;
   void Visit(MethodCallExpression *expression) override;

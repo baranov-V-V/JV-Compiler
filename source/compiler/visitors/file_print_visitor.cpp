@@ -286,7 +286,7 @@ void FilePrintVisitor::Visit(IdentifierLValue* statement) {
   )
 }
 
-void FilePrintVisitor::Visit(FieldDeclaraion* declaration) {
+void FilePrintVisitor::Visit(FieldDeclaration* declaration) {
   PRINT_TABBED("Field declaration")
   EXECUTE_TABBED(
     stream << "Decl type(" << (int) declaration->type->GetTypeId() << ") " <<

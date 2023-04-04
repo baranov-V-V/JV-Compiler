@@ -1,7 +1,8 @@
 #pragma once
 
 #include "compiler/ast/core/binary_operations.hpp"
-#include "compiler/visitors/visitor.hpp"
+
+class Visitor;
 
 class AstNode {
  public:

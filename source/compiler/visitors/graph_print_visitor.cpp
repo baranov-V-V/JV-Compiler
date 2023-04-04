@@ -93,13 +93,18 @@ void GraphPrintVisitor::Visit(AssignmentStatement* statement) {
   stream->print("\tnode{} [label =\"<first> Assignment \", color=\"grey14\", fillcolor=\"gray38\"]\n",
     (void*) statement
   );
+  /*
+
+
   stream->print("\tnode{} [label =\"<first> [Id] {} \", color=\"grey14\", fillcolor=\"gray38\"]\n",\
     (void*) &statement->identifier, statement->identifier
   );
+
   statement->expression->Accept(this);
   stream->print("\t\tnode{}:sw -> node{} [color=\"navy\"];\n",
     (void*) statement, (void*) &statement->identifier
   );
+  */
   stream->print("\t\tnode{}:se -> node{} [color=\"navy\"];\n",
     (void*) statement, (void*) &statement->expression
   );
@@ -194,7 +199,7 @@ void GraphPrintVisitor::Visit(StatementList* statement) {
 
 void GraphPrintVisitor::Visit(LocalVariableStatement* statement) {
   stream->print("\tnode{} [label =\"<first> Local Var Decl |<second> [Id] {}\", color=\"grey14\", fillcolor=\"gray38\"]\n",
-    (void*) statement, statement->variable_declaration->identifier
+    (void*) statement, statement->variable_declaration->identifier.name
   );
 }
 
@@ -278,5 +283,9 @@ void GraphPrintVisitor::Visit(FieldLValue *statement) {
 }
 
 void GraphPrintVisitor::Visit(IdentifierLValue *statement) {
+
+}
+
+void GraphPrintVisitor::Visit(FieldDeclaration* declaration) {
 
 }

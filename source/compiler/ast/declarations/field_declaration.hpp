@@ -2,6 +2,7 @@
 
 #include "declaration.hpp"
 #include "types/type.hpp"
+#include "compiler/util/symbol.hpp"
 
 class FieldDeclaration : public Declaration {
  public:

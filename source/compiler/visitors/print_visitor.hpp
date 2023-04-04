@@ -45,7 +45,7 @@ class PrintVisitor: public Visitor {
   virtual void Visit(IntegerExpression* expression) = 0;
   virtual void Visit(NotExpression* expression) = 0;
 
-  virtual void Visit(FieldDeclaraion* declaration) = 0;
+  virtual void Visit(FieldDeclaration* declaration) = 0;
   virtual void Visit(AssignmentStatement* statement) = 0;
   virtual void Visit(IfElseStatement* statement) = 0;
   virtual void Visit(IfStatement* statement) = 0;

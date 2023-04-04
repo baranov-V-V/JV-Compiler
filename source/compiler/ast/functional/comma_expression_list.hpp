@@ -3,7 +3,7 @@
 #include "ast/expressions/expression.hpp"
 #include "ast/core/basic_list.hpp"
 
-class CommaExpressionList : BasicList<Expression> {
+class CommaExpressionList : public BasicList<Expression> {
  public:
   CommaExpressionList() = default;
   explicit CommaExpressionList(Expression* expression);

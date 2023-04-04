@@ -12,10 +12,6 @@ bool Symbol::operator!=(const Symbol& other) const {
   return name != other.name;
 }
 
-const std::string& Symbol::GetName() const {
-  return name;
-}
-
 bool Symbol::operator!=(const std::string& other) const {
   return name == other;
 }

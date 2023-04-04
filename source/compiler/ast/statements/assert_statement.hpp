@@ -1,6 +1,7 @@
 #pragma once
 
 #include "statement.hpp"
+#include "ast/expressions/expression.hpp"
 
 class AssertStatement : public Statement {
  public:

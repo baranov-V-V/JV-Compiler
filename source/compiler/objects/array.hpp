@@ -61,7 +61,7 @@ std::string Array<Obj>::ToString() const {
 
 template<typename Obj>
 bool Array<Obj>::Equals(const Object* obj) {
-  true;
+  return true;
   /*if (!obj->GetType()->IsArray()) {
     return false;
   }

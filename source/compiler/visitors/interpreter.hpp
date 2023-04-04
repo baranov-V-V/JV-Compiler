@@ -44,30 +44,19 @@ class Interpreter : public Visitor, public VisitorHelper<int> {
   void Visit(LocalVariableStatement* statement) override;
   void Visit(StatementListStatement* expression) override;
 
+  void Visit(FieldDeclaration* declaration) override;
   void Visit(ArrayIdxExpression *expression) override;
-
   void Visit(LengthExpression *expression) override;
-
   void Visit(MethodCallExpression *expression) override;
-
   void Visit(NewArrayExpression *expression) override;
-
   void Visit(NewClassExpression *expression) override;
-
   void Visit(ThisExpression *expression) override;
-
   void Visit(CommaExpressionList *program) override;
-
   void Visit(MethodCall *program) override;
-
   void Visit(AssertStatement *statement) override;
-
   void Visit(MethodCallStatement *statement) override;
-
   void Visit(ArrayLValue *statement) override;
-
   void Visit(FieldLValue *statement) override;
-
   void Visit(IdentifierLValue *statement) override;
 
   virtual int Accept(AstNode* ast_node) override;

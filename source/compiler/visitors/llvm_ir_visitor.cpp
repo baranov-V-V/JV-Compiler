@@ -72,14 +72,14 @@ void LLVMIRVisitor::Visit(MethodDeclaration* method_declaration) {
 }
 
 void LLVMIRVisitor::Visit(VariableDeclaration* variable_declaration) {
-  LOG_DEBUG("In Variable Declaration: int {}", variable_declaration->identifier)
+  LOG_DEBUG("In Variable Declaration: int {}", variable_declaration->identifier.name)
 
   llvm::Function* function = builder->GetInsertBlock()->getParent();
   llvm::BasicBlock& block = function->getEntryBlock();
 
   llvm::IRBuilder<> tmp(&block, block.begin());
-  llvm::Value* variable = tmp.CreateAlloca(builder->getInt32Ty(), nullptr, variable_declaration->identifier);
-  table.Insert(variable_declaration->identifier, variable);
+  llvm::Value* variable = tmp.CreateAlloca(builder->getInt32Ty(), nullptr, variable_declaration->identifier.name);
+  table.Insert(variable_declaration->identifier.name, variable);
 }
 
 void LLVMIRVisitor::Visit(TrueExpression* expression) {
@@ -213,14 +213,14 @@ void LLVMIRVisitor::Visit(NotExpression* expression) {
 }
 
 void LLVMIRVisitor::Visit(AssignmentStatement* statement) {
-  LOG_DEBUG("In Assignment Statement: {} = ...", statement->identifier)
+  LOG_DEBUG("In Assignment Statement")
   stack.Pop();
 
   llvm::Value* expr = Accept(statement->expression);
   llvm::LoadInst* load_expr = builder->CreateLoad(builder->getInt32Ty(), expr);
-  llvm::Value* var = table.Get(statement->identifier);
+  //llvm::Value* var = table.Get(statement->identifier);
 
-  stack.Put(builder->CreateStore(load_expr, var));
+  //stack.Put(builder->CreateStore(load_expr, var));
 }
 
 void LLVMIRVisitor::Visit(IfElseStatement* statement) {
@@ -404,11 +404,11 @@ void LLVMIRVisitor::Visit(StatementList* statement) {
 }
 
 void LLVMIRVisitor::Visit(LocalVariableStatement* statement) {
-  LOG_DEBUG("In Local Var Declaration: int {}", statement->variable_declaration->identifier)
+  LOG_DEBUG("In Local Var Declaration: int {}", statement->variable_declaration->identifier.name)
   stack.Pop();
 
   statement->variable_declaration->Accept(this);
-  stack.Put(table.Get(statement->variable_declaration->identifier));
+  stack.Put(table.Get(statement->variable_declaration->identifier.name));
 }
 
 void LLVMIRVisitor::Visit(StatementListStatement* statement) {
@@ -606,6 +606,6 @@ void LLVMIRVisitor::Visit(IdentifierLValue *statement) {
 
 }
 
-void LLVMIRVisitor::Visit(FieldDeclaraion* declaration) {
+void LLVMIRVisitor::Visit(FieldDeclaration* declaration) {
 
 }

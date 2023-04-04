@@ -3,5 +3,5 @@
 IdentifierLValue::IdentifierLValue(const Symbol& name) : name(name) {}
 
 void IdentifierLValue::Accept(Visitor* visitor) {
-  visitor->visit(this);
+  visitor->Visit(this);
 }
