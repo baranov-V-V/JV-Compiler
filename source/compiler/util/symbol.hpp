@@ -5,6 +5,7 @@
 
 class Symbol {
  public:
+  Symbol() = default;
   explicit Symbol(const std::string& name);
   Symbol(const std::string& name, yy::location location);
 

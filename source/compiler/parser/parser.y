@@ -9,11 +9,13 @@
 %code requires {
   #include <string>
   
-  //#include "../ast/forward_declaration.hpp"
-  #include "compiler/ast/forward_declaration.hpp"
-  #include "compiler/types/type.hpp"
-  #include "compiler/types/util/arg_entry.hpp"
+  #include "../ast/forward_declaration.hpp"
 
+  #include "../types/type.hpp"
+  #include "../types/type_factory.hpp"
+
+  class Type;
+  class ArgEntry;
   class Scanner;
   class Driver;
 }
@@ -24,46 +26,61 @@
 %code {
   #include "driver.hpp"
   #include "location.hh"
-  /*
+
   #include "../ast/core/ast_node.hpp"
   #include "../ast/core/basic_list.hpp"
   #include "../ast/core/binary_operations.hpp"
-  #include "../ast/declarations/class_declaration_list.hpp"
+
   #include "../ast/declarations/class_declaration.hpp"
-  #include "../ast/declarations/declaration_list.hpp"
+  #include "../ast/declarations/class_declaration_list.hpp"
   #include "../ast/declarations/declaration.hpp"
+  #include "../ast/declarations/declaration_list.hpp"
+  #include "../ast/declarations/field_declaration.hpp"
   #include "../ast/declarations/method_declaration.hpp"
   #include "../ast/declarations/variable_declaration.hpp"
 
-  #include "../ast/expressions/binary_op_expression.hpp"
-  #include "../ast/expressions/math_op_expression.hpp"
-  #include "../ast/expressions/logic_op_expression.hpp"
-  #include "../ast/expressions/compare_op_expression.hpp"
+  #include "../ast/expressions/array_idx_expression.hpp"
   #include "../ast/expressions/bool_expression.hpp"
+  #include "../ast/expressions/compare_op_expression.hpp"
+  #include "../ast/expressions/expression.hpp"
+  #include "../ast/expressions/float_expression.hpp"
   #include "../ast/expressions/identifier_expression.hpp"
   #include "../ast/expressions/integer_expression.hpp"
+  #include "../ast/expressions/length_expression.hpp"
+  #include "../ast/expressions/logic_op_expression.hpp"
+  #include "../ast/expressions/math_op_expression.hpp"
+  #include "../ast/expressions/method_call_expression.hpp"
+  #include "../ast/expressions/new_array_expression.hpp"
+  #include "../ast/expressions/new_class_expression.hpp"
   #include "../ast/expressions/not_expression.hpp"
+  #include "../ast/expressions/this_expression.hpp"
+
+  #include "../ast/functional/comma_expression_list.hpp"
+  #include "../ast/functional/method_call.hpp"
 
   #include "../ast/program/main_class.hpp"
   #include "../ast/program/program.hpp"
 
+  #include "../ast/statements/assert_statement.hpp"
   #include "../ast/statements/assignment_statement.hpp"
   #include "../ast/statements/if_else_statement.hpp"
   #include "../ast/statements/if_statement.hpp"
+  #include "../ast/statements/local_variable_statement.hpp"
+  #include "../ast/statements/mehtod_call_statement.hpp"
   #include "../ast/statements/print_statement.hpp"
   #include "../ast/statements/return_statement.hpp"
   #include "../ast/statements/statement_list.hpp"
   #include "../ast/statements/statement_list_statement.hpp"
   #include "../ast/statements/statement.hpp"
   #include "../ast/statements/while_statement.hpp"
-  #include "../ast/statements/local_variable_statement.hpp"
 
-  #include "../ast/types/integer.hpp"
-  #include "../ast/types/type.hpp"
-  */
+  #include "../ast/values/array_l_value.hpp"
+  #include "../ast/values/field_l_value.hpp"
+  #include "../ast/values/identifier_l_value.hpp"
+  #include "../ast/values/l_value.hpp"
 
-  #include "compiler/ast/ast.hpp"
   #include "../types/type.hpp"
+  #include "../types/type_factory.hpp"
 
   static yy::parser::symbol_type yylex(Scanner &scanner, Driver& driver) {
     return scanner.ScanToken();
@@ -193,7 +210,7 @@ class_declaration: "class" "identifier" "{" declaration_list "}"
 ;
 
 declaration_list : class_member_declaration
-  { $$ = DeclarationList($1); }
+  { $$ = new DeclarationList($1); }
                  | declaration_list class_member_declaration
   { $$ = $1; $$->Add($2); }
 ;
@@ -330,9 +347,9 @@ expr: "(" expr ")"
   { $$ = new MethodCallExpression($1); }
 
 method_call: expr "." "identifier" "(" comma_expr_list ")"
-  { $$ = new MethodCall($3, $1, $5); }
+  { $$ = new MethodCall(Symbol($3), $1, $5); }
            | expr "." "identifier" "(" ")"
-  { $$ = new MethodCall($3, $1, new CommaExpressionList()); }
+  { $$ = new MethodCall(Symbol($3), $1, new CommaExpressionList()); }
 ;
 
 comma_expr_list: expr

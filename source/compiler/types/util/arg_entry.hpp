@@ -6,6 +6,7 @@
 
 class ArgEntry {
  public:
+  ArgEntry() = default;
   ArgEntry(const SharedPtr<Type>& type, const Symbol& symbol);
 
   bool operator==(const ArgEntry& rhs) const;

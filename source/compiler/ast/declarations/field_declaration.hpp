@@ -12,4 +12,3 @@ class FieldDeclaration : public Declaration {
 
   SharedPtr<Type> type;
 };
-

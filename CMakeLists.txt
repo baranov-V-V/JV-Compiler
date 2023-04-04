@@ -47,7 +47,7 @@ add_executable(jvc
   ${COMPILER_SOURCE_DIR}/main.cpp
   ${BISON_Parser_OUTPUTS}
   ${FLEX_Scanner_OUTPUTS}
-        source/compiler/visitors/symbol_tree_visitor.cpp source/compiler/visitors/symbol_tree_visitor.hpp)
+)
 
 target_include_directories(jvc PRIVATE
   source/compiler
