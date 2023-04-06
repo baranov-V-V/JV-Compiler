@@ -9,10 +9,9 @@ class ArrayType : public Type {
 
   [[nodiscard]] const SharedPtr<Type>& GetElemType() const;
 
-  std::string ToString() const override;
+  [[nodiscard]] std::string ToString() const override;
 
-  bool operator==(const ArrayType& rhs) const;
-  bool operator!=(const ArrayType& rhs) const;
+  bool Equals(std::shared_ptr<Type> other) override;
 
  private:
   SharedPtr<Type> elem_type;

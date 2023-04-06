@@ -13,14 +13,6 @@ bool Type::IsArray() const {
   return id == TypeID::ArrayTy;
 }
 
-bool Type::operator==(const Type& other) const {
-  return id == other.id;
-}
-
-bool Type::operator!=(const Type& other) const {
-  return id != other.id;
-}
-
 Type::Type(Type::TypeID id) : id(id) {}
 
 Type::TypeID Type::GetTypeId() const {
@@ -44,4 +36,16 @@ std::string Type::ToString() const {
     default:
       LOG_CRITICAL("Unknown basic type [{}]", (int) id)
   }
+}
+
+bool Type::Equals(std::shared_ptr<Type> other) {
+  return id == other->GetTypeId();
+}
+
+bool Type::IsPrimitive() const {
+  return !IsArray() && !IsClass() && !IsMethod() && (id != TypeID::VoidTy);
+}
+
+bool Type::IsMethod() const {
+  return id == TypeID::MethodTy;
 }

@@ -29,7 +29,7 @@ void FilePrintVisitor::Visit(MainClass* main_class) {
 void FilePrintVisitor::Visit(ClassDeclaration* class_declaration) {
   PRINT_TABBED("ClassDeclaration")
   VISIT_TABBED(
-    EXECUTE_TABBED(stream << "type " << class_declaration->class_type->GetClassName().name << std::endl;)
+    EXECUTE_TABBED(stream << "type " << class_declaration->class_type->ToString() << std::endl;)
     class_declaration->declaration_list->Accept(this);
   )
 }
@@ -74,7 +74,7 @@ void FilePrintVisitor::Visit(FalseExpression* expression) {
 
 void FilePrintVisitor::Visit(IdentifierExpression* expression) {
   EXECUTE_TABBED(
-    stream << "Identifier Expr " << expression->identifier << std::endl;
+    stream << "Identifier Expr " << expression->identifier.name << std::endl;
   )
 }
 
@@ -228,7 +228,7 @@ void FilePrintVisitor::Visit(NewClassExpression* expression) {
   PRINT_TABBED("NewClassExpression")
   VISIT_TABBED(
     EXECUTE_TABBED(
-       stream << expression->type.get()->GetClassName().name << std::endl;
+       stream << expression->type.get()->ToString() << std::endl;
     )
   )
 }

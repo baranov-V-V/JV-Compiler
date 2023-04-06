@@ -1,6 +1,6 @@
 #pragma once
 
-#include "scope_layer.hpp"
+#include "scope/layers/scope_layer.hpp"
 #include "symbol_layer_tree.hpp"
 #include "class_table.hpp"
 
@@ -11,6 +11,6 @@ class SymbolTable {
   SymbolTable(const SymbolTable&) = delete;
 
  private:
-  SymbolLayerTree layer_tree;
-  ClassTable class_table;
+  SymbolLayerTree* layer_tree;
+  ClassTable* class_table;
 };

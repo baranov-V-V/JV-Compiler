@@ -1,47 +1,17 @@
 #include "class_type.hpp"
 
-ClassType::ClassType(const Symbol& symbol, std::initializer_list<SharedPtr<MethodType>> methods,
-                     std::initializer_list<SharedPtr<Type>> fields) :
-                     name(symbol),
-                     methods(methods.begin(), methods.end()),
-                     fields(fields.begin(), fields.end()),
-                     Type(Type::TypeID::MethodTy) {}
-
-ClassType::ClassType(const Symbol& symbol, const std::vector<SharedPtr<MethodType>>& methods,
-                     const std::vector<SharedPtr<Type>>& fields) :
-  name(symbol), methods(methods), fields(fields), Type(Type::TypeID::MethodTy) {}
-
-const SharedPtr<MethodType>& ClassType::GetMethodType(int idx) const {
-  return methods.at(idx);
-}
-
-int ClassType::GetMethodsNum() const {
-  return methods.size();
-}
-
-void ClassType::AddMethodType(const SharedPtr<MethodType>& method_type) {
-  methods.push_back(method_type);
-}
-
-const SharedPtr<Type>& ClassType::GetFieldType(int idx) const {
-  return fields.at(idx);
-}
-
-int ClassType::GetFieldsNum() const {
-  return fields.size();
-}
-
-void ClassType::AddFieldType(const SharedPtr<Type>& field_type) {
-  fields.push_back(field_type);
-}
-
-const Symbol& ClassType::GetClassName() const {
-  return name;
+ClassType::ClassType(const Symbol& symbol) : Type(Type::TypeID::ClassTy), name(symbol) {
 }
 
 std::string ClassType::ToString() const {
   return "class \"" + name.name + "\"";
 }
 
-ClassType::ClassType(const Symbol& symbol) : Type(Type::TypeID::ClassTy), name(symbol) {
+bool ClassType::Equals(std::shared_ptr<Type> other) {
+  if (other->GetTypeId() != TypeID::ClassTy) {
+    return false;
+  }
+  SharedPtr<ClassType> casted_other = std::reinterpret_pointer_cast<ClassType>(other);
+
+  return name == casted_other->name;
 }

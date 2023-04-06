@@ -33,3 +33,12 @@ std::string MethodType::ToString() const {
   res += ")";
   return res;
 }
+
+bool MethodType::Equals(std::shared_ptr<Type> other) {
+  if (other->GetTypeId() != TypeID::MethodTy) {
+    return false;
+  }
+  SharedPtr<MethodType> casted_other = std::reinterpret_pointer_cast<MethodType>(other);
+
+  return args == casted_other->args && return_type->Equals(casted_other->return_type);
+}

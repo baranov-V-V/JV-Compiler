@@ -1,4 +1,5 @@
 #include "symbol_layer_tree.hpp"
+#include "scope/layers/class_scope_layer.hpp"
 
 SymbolLayerTree::SymbolLayerTree(ScopeLayer* root) : root(root) {}
 
@@ -6,12 +7,20 @@ SymbolLayerTree::~SymbolLayerTree() {
   delete root;
 }
 
-void SymbolLayerTree::AddLayer(ScopeLayer* parent) {
-  parent->AddChild(new ScopeLayer(parent));
+void SymbolLayerTree::AddLayer(ScopeLayer* parent, const std::string& name) {
+  parent->AddChild(new ScopeLayer(parent, name));
 }
 
+/*
+void SymbolLayerTree::AddLayer(ScopeLayer* parent, ScopeLayer* class_layer) {
+  //change to class layer;
+  parent->AddChild(new ScopeLayer(parent, class_layer, "class"));
+}
+*/
 
-//void SymbolLayerTree::AddLayer(ScopeLayer* parent, ScopeLayer* class_layer) {}
+void SymbolLayerTree::AddClassLayer(ScopeLayer* parent, SharedPtr<ClassType> type) {
+  parent->AddChild(new ClassScopeLayer(parent, type));
+}
 
 SymbolLayerTree::Iterator SymbolLayerTree::begin() {
   return SymbolLayerTree::Iterator(root);
@@ -30,7 +39,8 @@ SymbolLayerTree::Iterator::Iterator(ScopeLayer* root, ScopeLayer* parent, int id
 SymbolLayerTree::Iterator::Iterator(ScopeLayer* root, ScopeLayer* parent) : root(root), current_parent(root), curr_idx(0) {}
 
 
-ScopeLayer*& SymbolLayerTree::Iterator::operator*() const {
+ScopeLayer* SymbolLayerTree::Iterator::operator*() const {
+  return current_parent->GetChild(curr_idx);
 }
 
 ScopeLayer* SymbolLayerTree::Iterator::operator->() const {

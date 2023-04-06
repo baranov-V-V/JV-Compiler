@@ -10,7 +10,9 @@ class MethodType : public Type {
   MethodType();
   MethodType(const std::vector<ArgEntry>& args, const SharedPtr<Type>& return_type);
 
-  std::string ToString() const override;
+  [[nodiscard]] std::string ToString() const override;
+
+  bool Equals(std::shared_ptr<Type> other) override;
 
   [[nodiscard]] const std::vector<ArgEntry>& GetArgs() const;
   void AddArg(const ArgEntry& arg_entry);

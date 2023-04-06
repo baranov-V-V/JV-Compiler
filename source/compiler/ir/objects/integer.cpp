@@ -12,7 +12,7 @@ std::string Integer::ToString() const {
 }
 
 bool Integer::Equals(const Object* obj) {
-  if (*obj->GetType() != *this->GetType()) {
+  if (obj->GetType() != this->GetType()) {
     return false;
   }
   Integer* casted_obj = (Integer*) obj;

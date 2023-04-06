@@ -15,6 +15,8 @@ class ObjectFactory {
   static std::shared_ptr<Float> CreateFloat(float value);
   static std::shared_ptr<Bool> CreateBool(bool value);
 
+  static std::shared_ptr<Object> CreatePrimitive(SharedPtr<Type> type);
+
   template<class Obj>
   static std::shared_ptr<Array<Obj>> CreateArray(SharedPtr<ArrayType> type, int size);
 

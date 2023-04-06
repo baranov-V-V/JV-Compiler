@@ -1,8 +1,8 @@
 #pragma once
 
-#include "visitor.hpp"
-#include "scope/class_table.hpp"
-#include "empty_visitor.hpp"
+#include "visitors/visitor.hpp"
+#include "scope/tables/class_table.hpp"
+#include "visitors/empty_visitor.hpp"
 
 class ClassTableVisitor : public EmptyVisitor {
  public:

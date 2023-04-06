@@ -78,7 +78,7 @@ void GraphPrintVisitor::Visit(FalseExpression* expression) {
 }
 
 void GraphPrintVisitor::Visit(IdentifierExpression* expression) {
-  stream->print("\tnode{} [label =\"<first> [int] {}\", color=\"grey14\", fillcolor=\"lightyellow\"]\n", reinterpret_cast<void*>(expression), expression->identifier);
+  stream->print("\tnode{} [label =\"<first> [int] {}\", color=\"grey14\", fillcolor=\"lightyellow\"]\n", reinterpret_cast<void*>(expression), expression->identifier.name);
 }
 
 void GraphPrintVisitor::Visit(IntegerExpression* expression) {

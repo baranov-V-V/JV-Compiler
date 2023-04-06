@@ -25,12 +25,12 @@ SharedPtr<MethodType> TypeFactory::GetMethodTy(const std::vector<ArgEntry>& args
 /*
 SharedPtr<ClassType> TypeFactory::GetClassTy(std::initializer_list<SharedPtr<MethodType>> methods,
                                              std::initializer_list<SharedPtr<Type>> fields) {
-  return std::make_shared<ClassType>(methods, fields);
+  return std::make_shared<SharedPtr<ClassType>>(methods, fields);
 }
 
 SharedPtr<ClassType> TypeFactory::GetClassTy(const std::vector<SharedPtr<MethodType>>& methods,
                                              const std::vector<SharedPtr<Type>>& fields) {
-  return std::make_shared<ClassType>(methods, fields);
+  return std::make_shared<SharedPtr<ClassType>>(methods, fields);
 }
 */
 

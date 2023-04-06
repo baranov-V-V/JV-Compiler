@@ -20,11 +20,12 @@ class Type {
   explicit Type(TypeID id);
 
   [[nodiscard]] bool IsInteger() const;
+  [[nodiscard]] bool IsPrimitive() const;
   [[nodiscard]] bool IsClass() const;
   [[nodiscard]] bool IsArray() const;
+  [[nodiscard]] bool IsMethod() const;
 
-  bool operator==(const Type& other) const;
-  bool operator!=(const Type& other) const;
+  virtual bool Equals(std::shared_ptr<Type> other);
 
  private:
   TypeID id;

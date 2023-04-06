@@ -3,3 +3,7 @@
 //
 
 #include "symbol_table.hpp"
+
+SymbolTable::SymbolTable(ScopeLayer* root) {
+
+}

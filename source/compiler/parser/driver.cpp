@@ -4,7 +4,7 @@
 #include "compiler/visitors/interpreter.hpp"
 #include "compiler/visitors/file_print_visitor.hpp"
 #include "compiler/visitors/graph_print_visitor.hpp"
-#include "compiler/visitors/llvm_ir_visitor.hpp"
+#include "ir/visitors/llvm_ir_visitor.hpp"
 
 #include "compiler/ast/program/program.hpp"
 #include "exceptions/compilation_exception.hpp"

@@ -20,6 +20,14 @@ std::shared_ptr<Method> ObjectFactory::CreateMethod(SharedPtr<MethodType> type) 
   return std::shared_ptr<Method>();
 }
 
+std::shared_ptr<Object> ObjectFactory::CreatePrimitive(SharedPtr<Type> type) {
+  switch (type->GetTypeId()) {
+    case Type::TypeID::IntTy:
+      break;
+      //return std::make_shared<Integer>()
+  }
+}
+
 template<class Obj>
 std::shared_ptr<Array<Obj>> ObjectFactory::CreateArray(SharedPtr<ArrayType> type, int size) {
   return std::shared_ptr<Array<Obj>>();

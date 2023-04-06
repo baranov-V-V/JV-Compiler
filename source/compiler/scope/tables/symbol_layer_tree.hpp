@@ -1,17 +1,17 @@
 #pragma once
 
 #include <stack>
-#include "scope_layer.hpp"
+#include "scope/layers/scope_layer.hpp"
 
 class SymbolLayerTree {
  public:
   explicit SymbolLayerTree(ScopeLayer* root);
   ~SymbolLayerTree();
 
-  void AddLayer(ScopeLayer* parent);
-  //void AddLayer(ScopeLayer* parent, ScopeLayer* class_layer);
+  void AddLayer(ScopeLayer* parent, const std::string& name = "anonymous");
+  void AddClassLayer(ScopeLayer* parent, SharedPtr<ClassType> type);
 
-  class Iterator : public std::iterator<std::input_iterator_tag, ScopeLayer*> {
+  class Iterator : public std::iterator<std::input_iterator_tag, ScopeLayer*, int, ScopeLayer*, ScopeLayer*> {
    public:
     Iterator() = default;
     explicit Iterator(ScopeLayer* root);
@@ -19,7 +19,7 @@ class SymbolLayerTree {
     explicit Iterator(ScopeLayer* root, ScopeLayer* parent);
 
     Iterator& operator++();
-    reference operator*() const;
+    ScopeLayer* operator*() const;
     ScopeLayer* operator->() const;
 
     void GoDown();

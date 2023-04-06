@@ -182,9 +182,9 @@ void LLVMIRVisitor::Visit(FalseExpression* expression) {
 }
 
 void LLVMIRVisitor::Visit(IdentifierExpression* expression) {
-  LOG_DEBUG("In Identifier Expression: {}", expression->identifier)
-  //stack.GetData().push_back(table.Get(expression->identifier));
-  stack.Put(table.Get(expression->identifier));
+  LOG_DEBUG("In Identifier Expression: {}", expression->identifier.name)
+  //stack.GetData().push_back(class_table.Get(expression->identifier));
+  stack.Put(table.Get(expression->identifier.name));
 }
 
 void LLVMIRVisitor::Visit(IntegerExpression* expression) {
@@ -218,7 +218,7 @@ void LLVMIRVisitor::Visit(AssignmentStatement* statement) {
 
   llvm::Value* expr = Accept(statement->expression);
   llvm::LoadInst* load_expr = builder->CreateLoad(builder->getInt32Ty(), expr);
-  //llvm::Value* var = table.Get(statement->identifier);
+  //llvm::Value* var = class_table.Get(statement->identifier);
 
   //stack.Put(builder->CreateStore(load_expr, var));
 }
@@ -298,7 +298,7 @@ void LLVMIRVisitor::Visit(IfStatement* statement) {
   builder->SetInsertPoint(merge_block);
 
   stack.Put(merge_block);
-  //llvm::PHINode* phi_node = builder->CreatePHI(llvm::Type::getInt32Ty(*context), 1, "iftmp");
+  //llvm::PHINode* phi_node = builder->CreatePHI(llvm::SharedPtr<Type>::getInt32Ty(*context), 1, "iftmp");
   //llvm::PHINode* phi_node = builder->CreatePHI(then_value->getType(), 1, "iftmp");
 
   //phi_node->addIncoming(then_value, then_block);

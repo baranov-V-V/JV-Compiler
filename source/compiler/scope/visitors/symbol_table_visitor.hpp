@@ -1,21 +1,26 @@
 #pragma once
 
-#include "visitor.hpp"
-#include "scope/symbol_layer_tree.hpp"
-#include "scope/symbol_table.hpp"
+#include "visitors/visitor.hpp"
+#include "scope/tables/symbol_layer_tree.hpp"
+#include "scope/tables/symbol_table.hpp"
+#include "visitors/empty_visitor.hpp"
+#include "util/visitor_helper.hpp"
+#include "util/program_stack.hpp"
+#include "types/converters/naive_type_converter.hpp"
 
-class SymbolTableVisitor : public Visitor {
+class
+SymbolTableVisitor : public Visitor, public VisitorHelper<SharedPtr<Type>> {
  public:
   SymbolTableVisitor();
   ~SymbolTableVisitor() override = default;
 
-  SymbolTable ConstructSymbolTree(Program* program);
+  SymbolTable* ConstructSymbolTree(Program* program);
 
   void Visit(ClassDeclaration* class_declaration) override;
   void Visit(ClassDeclarationList* class_declaration_list) override;
   void Visit(DeclarationList* declaration_list) override;
   void Visit(MethodDeclaration* method_declaration) override;
-  void Visit(VariableDeclaration* variable_declarations) override;
+  void Visit(VariableDeclaration* declaration) override;
   void Visit(ArrayIdxExpression* expression) override;
   void Visit(TrueExpression* expression) override;
   void Visit(FalseExpression* expression) override;
@@ -32,8 +37,8 @@ class SymbolTableVisitor : public Visitor {
   void Visit(ThisExpression* expression) override;
   void Visit(MainClass* main_class) override;
   void Visit(Program* program) override;
-  void Visit(CommaExpressionList* program) override;
-  void Visit(MethodCall* program) override;
+  void Visit(CommaExpressionList* expression_list) override;
+  void Visit(MethodCall* call) override;
   void Visit(AssertStatement* statement) override;
   void Visit(AssignmentStatement* statement) override;
   void Visit(IfElseStatement* statement) override;
@@ -50,21 +55,23 @@ class SymbolTableVisitor : public Visitor {
   void Visit(IdentifierLValue* statement) override;
   void Visit(FieldDeclaration* declaration) override;
 
- private:
-  void ScopeGoUp();
-  void ScopeGoDown();
+  SharedPtr<Type> Accept(AstNode* ast_node) override;
 
-  void VisitClassInfo(Program* program);
-  void VisitClassInfo(MainClass* program);
-  void VisitClassInfo(ClassDeclaration* class_declaration);
-  void VisitClassInfo(ClassDeclarationList* class_declaration_list);
-  void VisitClassInfo(FieldDeclaration* declaration);
-  void VisitClassInfo(MethodDeclaration* method_declaration);
-  void VisitClassInfo(DeclarationList* declaration_list);
+ private:
+  void CheckAndWarn(SharedPtr<Type> to, SharedPtr<Type> from);
+  void CheckConvertable(SharedPtr<Type> to, SharedPtr<Type> from);
+  void WarnNarrowing(SharedPtr<Type> to, SharedPtr<Type> from);
+
+  void ScopeGoUp();
+  void ScopeGoDown(const std::string& name = "anonymous");
+  void ScopeGoDownClass(SharedPtr<ClassType> type);
+
+  ProgramStack<SharedPtr<Type>> stack;
 
   SymbolLayerTree::Iterator layer_iterator;
+  ClassTable* class_table;
+  SymbolLayerTree* tree;
 
-  SymbolLayerTree layer_tree;
-  ClassTable class_table;
+  NaiveTypeConverter converter;
 };
 

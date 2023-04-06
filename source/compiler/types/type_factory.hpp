@@ -27,8 +27,4 @@ class TypeFactory {
   static SharedPtr<ArrayType> GetArrayTy(const SharedPtr<Type>& base_type);
 
  private:
-  static SharedPtr<Type> int_type;
-  static SharedPtr<Type> float_type;
-  static SharedPtr<Type> bool_type;
-  static SharedPtr<Type> void_type;
 };

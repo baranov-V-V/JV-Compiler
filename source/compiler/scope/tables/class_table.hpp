@@ -2,7 +2,7 @@
 
 #include <map>
 #include "types/class_type.hpp"
-#include "objects/class_info.hpp"
+#include "ir/objects/class_info.hpp"
 
 class ClassTable {
  public:

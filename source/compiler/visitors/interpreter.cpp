@@ -38,7 +38,7 @@ void Interpreter::Visit(MethodDeclaration* method_declaration) {
 }
 
 void Interpreter::Visit(VariableDeclaration* variable_declaration) {
-  //table.Insert(variable_declaration->identifier.name, 0);
+  //class_table.Insert(variable_declaration->identifier.name, 0);
 }
 
 void Interpreter::Visit(TrueExpression* expression) {
@@ -50,7 +50,7 @@ void Interpreter::Visit(FalseExpression* expression) {
 }
 
 void Interpreter::Visit(IdentifierExpression* expression) {
-  stack.Put(table.Get(expression->identifier));
+  stack.Put(table.Get(expression->identifier.name));
 }
 
 void Interpreter::Visit(IntegerExpression* expression) {
@@ -62,7 +62,7 @@ void Interpreter::Visit(NotExpression* expression) {
 }
 
 void Interpreter::Visit(AssignmentStatement* statement) {
-  //table.Update(statement->value->, Accept(statement->expression));
+  //class_table.Update(statement->value->, Accept(statement->expression));
 }
 
 void Interpreter::Visit(IfElseStatement* statement) {

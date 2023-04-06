@@ -281,10 +281,11 @@ statement: local_variable_statement
   { $$ = new ReturnStatement($2); }
 ;
 
+//neeeeed expression instead of identifier
 lvalue: "identifier"
-  { $$ = new IdentifierLValue(Symbol($1));}
+  { $$ = new IdentifierLValue(Symbol($1)); }
       | "identifier" "[" expr "]"
-  { $$ = new ArrayLValue(Symbol($1), $3);}
+  { $$ = new ArrayLValue(Symbol($1), $3); }
 ;
 
 local_variable_statement: variable_declaration
@@ -299,6 +300,7 @@ statement_list: statement
   { /*empty*/ }
 ;
 
+//need rule for this.x
 expr: "(" expr ")"
   { $$ = $2; }
       | expr "+"    expr
@@ -324,7 +326,7 @@ expr: "(" expr ")"
       | expr "%"    expr
   {$$ = new MathOpExpression($1, MathOperation::PERCENT, $3);}
       | "identifier"
-  { $$ = new IdentifierExpression($1); }
+  { $$ = new IdentifierExpression(Symbol($1)); }
       | integer_literal
   { $$ = new IntegerExpression($1); }
       | "true"

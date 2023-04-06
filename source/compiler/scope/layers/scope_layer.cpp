@@ -1,6 +1,7 @@
 #include "compiler/core/logger.hpp"
-#include "compiler/objects/object_factory.hpp"
+#include "compiler/ir/objects/object_factory.hpp"
 #include "scope_layer.hpp"
+#include "class_scope_layer.hpp"
 
 ScopeLayer::ScopeLayer() : parent(nullptr), class_scope(nullptr) {}
 
@@ -26,7 +27,7 @@ ScopeLayer* ScopeLayer::GetParent() const {
 
 void ScopeLayer::DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type) {
   CheckDeclared(symbol, type);
-  //variables.insert({symbol, });
+  //variables.insert({symbol, ObjectFactory::Create});
 }
 
 void ScopeLayer::DeclareVariable(const Symbol& symbol, const std::shared_ptr<Object>& object) {
@@ -88,7 +89,7 @@ void ScopeLayer::CheckDeclared(const Symbol& symbol) const {
   }
 }
 
-ScopeLayer::ScopeLayer(ScopeLayer* parent, ScopeLayer* class_layer, const std::string& name) : parent(parent), name(name), class_scope(class_layer) {}
+ScopeLayer::ScopeLayer(ScopeLayer* parent, ClassScopeLayer* class_layer, const std::string& name) : parent(parent), name(name), class_scope(class_layer) {}
 
 void ScopeLayer::Put(const Symbol& symbol, std::shared_ptr<Object> value) {
   if (!IsDeclaredCurrent(symbol)) {
@@ -98,6 +99,10 @@ void ScopeLayer::Put(const Symbol& symbol, std::shared_ptr<Object> value) {
 
 void ScopeLayer::AddChild(ScopeLayer* child) {
   children.push_back(child);
+}
+
+ClassScopeLayer* ScopeLayer::GetClassScope() {
+  return class_scope;
 }
 
 template<class ObjType>

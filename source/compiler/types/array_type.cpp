@@ -9,15 +9,15 @@ const SharedPtr<Type>& ArrayType::GetElemType() const {
   return elem_type;
 }
 
-bool ArrayType::operator==(const ArrayType& rhs) const {
-  return static_cast<const Type&>(*this) == static_cast<const Type&>(rhs) &&
-         elem_type == rhs.elem_type;
-}
-
-bool ArrayType::operator!=(const ArrayType& rhs) const {
-  return !(rhs == *this);
-}
-
 std::string ArrayType::ToString() const {
   return elem_type->ToString() + "[]";
+}
+
+bool ArrayType::Equals(std::shared_ptr<Type> other) {
+  if (other->GetTypeId() != TypeID::ArrayTy) {
+    return false;
+  }
+  SharedPtr<ArrayType> casted_other = std::reinterpret_pointer_cast<ArrayType>(other);
+
+  return elem_type->Equals(casted_other->elem_type);
 }

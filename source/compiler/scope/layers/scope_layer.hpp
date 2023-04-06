@@ -4,19 +4,22 @@
 #include <vector>
 #include <unordered_map>
 #include "util/symbol.hpp"
-#include "objects/object.hpp"
+#include "ir/objects/object.hpp"
 #include "types/class_type.hpp"
 #include "types/array_type.hpp"
+
+class ClassScopeLayer;
 
 class ScopeLayer {
  public:
   ScopeLayer();
   explicit ScopeLayer(ScopeLayer* parent, const std::string& name = "anonymous");
-  explicit ScopeLayer(ScopeLayer* parent, ScopeLayer* class_layer, const std::string& name = "anonymous");
+  explicit ScopeLayer(ScopeLayer* parent, ClassScopeLayer* class_layer, const std::string& name = "anonymous");
   virtual ~ScopeLayer();
   
   void DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type);
   void DeclareVariable(const Symbol& symbol, const std::shared_ptr<Object>& type);
+
   void DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& type);
   void DeclareArray(const Symbol& symbol, const SharedPtr<ArrayType>& type);
 
@@ -40,6 +43,8 @@ class ScopeLayer {
   [[nodiscard]] ScopeLayer* GetChild(int idx) const;
   [[nodiscard]] ScopeLayer* GetParent() const;
 
+  ClassScopeLayer* GetClassScope();
+
  protected:
   void CheckDeclared(const Symbol& symbol, const SharedPtr<Type>& type) const;
   void CheckDeclared(const Symbol& symbol) const;
@@ -50,5 +55,5 @@ class ScopeLayer {
   std::vector<ScopeLayer*> children;
   std::unordered_map<Symbol, std::shared_ptr<Object>> variables;
 
-  ScopeLayer* class_scope;
+  ClassScopeLayer* class_scope;
 };

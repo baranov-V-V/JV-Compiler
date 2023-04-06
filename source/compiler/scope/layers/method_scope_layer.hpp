@@ -1,6 +1,6 @@
 #pragma once
 
-#include "scope_layer.hpp"
+#include "scope/layers/scope_layer.hpp"
 
 class MethodScopeLayer : ScopeLayer {
 };

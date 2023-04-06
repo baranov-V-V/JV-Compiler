@@ -12,6 +12,8 @@ class ClassType : public Type {
 
   [[nodiscard]] std::string ToString() const override;
 
+  bool Equals(std::shared_ptr<Type> other) override;
+
  private:
   Symbol name;
 };
