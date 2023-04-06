@@ -4,7 +4,7 @@
 
 ScopeLayer::ScopeLayer() : parent(nullptr), class_scope(nullptr) {}
 
-ScopeLayer::ScopeLayer(ScopeLayer* parent) : parent(parent), class_scope(parent->class_scope) {}
+ScopeLayer::ScopeLayer(ScopeLayer* parent, const std::string& name) : parent(parent), name(name), class_scope(parent->class_scope) {}
 
 ScopeLayer::~ScopeLayer() {
   for (ScopeLayer* layer : children) {
@@ -88,7 +88,7 @@ void ScopeLayer::CheckDeclared(const Symbol& symbol) const {
   }
 }
 
-ScopeLayer::ScopeLayer(ScopeLayer* parent, ScopeLayer* class_layer) : parent(parent), class_scope(class_layer) {}
+ScopeLayer::ScopeLayer(ScopeLayer* parent, ScopeLayer* class_layer, const std::string& name) : parent(parent), name(name), class_scope(class_layer) {}
 
 void ScopeLayer::Put(const Symbol& symbol, std::shared_ptr<Object> value) {
   if (!IsDeclaredCurrent(symbol)) {

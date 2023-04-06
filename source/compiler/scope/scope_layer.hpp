@@ -11,8 +11,8 @@
 class ScopeLayer {
  public:
   ScopeLayer();
-  explicit ScopeLayer(ScopeLayer* parent);
-  explicit ScopeLayer(ScopeLayer* parent, ScopeLayer* class_layer);
+  explicit ScopeLayer(ScopeLayer* parent, const std::string& name = "anonymous");
+  explicit ScopeLayer(ScopeLayer* parent, ScopeLayer* class_layer, const std::string& name = "anonymous");
   virtual ~ScopeLayer();
   
   void DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type);
@@ -31,23 +31,10 @@ class ScopeLayer {
 
   void Put(const Symbol& symbol, std::shared_ptr<Object> value);
 
-  /*
-  bool IsClassData(Symbol symbol) const;
-  bool IsArgument(Symbol symbol) const;
-  size_t GetArgIndex(Symbol symbol) const;
-  */
-
-  //[[nodiscard]] SharedPtr<Type> GetType(const Symbol& symbol) const;
-
   [[nodiscard]] bool IsDeclaredCurrent(const Symbol& symbol) const;
   [[nodiscard]] bool IsDeclaredAnywhere(const Symbol& symbol) const;
 
   void AddChild(ScopeLayer* child);
-
-  /*
-  void AttachParent(std::shared_ptr<ScopeLayer> parent);
-  void AttachClass(std::shared_ptr<ScopeLayer> class_scope);
-  */
 
   [[nodiscard]] int GetChildNum() const;
   [[nodiscard]] ScopeLayer* GetChild(int idx) const;

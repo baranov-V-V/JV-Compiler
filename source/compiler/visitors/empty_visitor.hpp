@@ -1,18 +1,15 @@
 #pragma once
 
 #include "visitor.hpp"
-#include "scope/symbol_layer_tree.hpp"
 
-class SymbolTreeVisitor : public Visitor {
+class EmptyVisitor : public Visitor {
  public:
-  SymbolTreeVisitor();
-  ~SymbolTreeVisitor() override = default;
-
-  SymbolLayerTree* ConstructSymbolTree(Program* program);
+  ~EmptyVisitor() override = default;
 
   void Visit(ClassDeclaration* class_declaration) override;
   void Visit(ClassDeclarationList* class_declaration_list) override;
   void Visit(DeclarationList* declaration_list) override;
+  void Visit(FieldDeclaration* declaration) override;
   void Visit(MethodDeclaration* method_declaration) override;
   void Visit(VariableDeclaration* variable_declarations) override;
   void Visit(ArrayIdxExpression* expression) override;
@@ -48,8 +45,4 @@ class SymbolTreeVisitor : public Visitor {
   void Visit(FieldLValue* statement) override;
   void Visit(IdentifierLValue* statement) override;
 
- private:
-  void ConstructClassLayer();
-  void ConstructMethodLayer();
 };
-

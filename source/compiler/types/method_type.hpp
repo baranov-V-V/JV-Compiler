@@ -21,5 +21,4 @@ class MethodType : public Type {
  private:
   std::vector<ArgEntry> args;
   SharedPtr<Type> return_type;
-  //bool is_main = false;
 };

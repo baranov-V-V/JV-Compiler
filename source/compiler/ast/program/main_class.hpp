@@ -3,13 +3,15 @@
 #include "compiler/ast/core/ast_node.hpp"
 #include "compiler/ast/statements/statement_list.hpp"
 #include "compiler/visitors/visitor.hpp"
+#include "types/class_type.hpp"
 
 class MainClass: public AstNode {
  public:
-  MainClass(StatementList* statement_list);
-  virtual ~MainClass();
+  explicit MainClass(StatementList* statement_list);
+  ~MainClass() override;
 
-  virtual void Accept(Visitor* visitor) override;
+  void Accept(Visitor* visitor) override;
 
   StatementList* statement_list;
+  SharedPtr<ClassType> type;
 };

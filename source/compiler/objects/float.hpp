@@ -15,5 +15,6 @@ class Float : public Object {
   [[nodiscard]] bool Equals(const Object* obj) override;
 
  private:
+  //llvm:Value* value;
   float value;
 };
