@@ -62,6 +62,10 @@ SymbolTableVisitor : public Visitor, public VisitorHelper<SharedPtr<Type>> {
   void CheckConvertable(SharedPtr<Type> to, SharedPtr<Type> from);
   void WarnNarrowing(SharedPtr<Type> to, SharedPtr<Type> from);
 
+  void CheckRedeclared(const Symbol& symbol);
+  void CheckRedeclared(const SharedPtr<Type>& type, const Symbol& symbol);
+  void CheckDeclaredAnywhere(const Symbol& symbol);
+
   void ScopeGoUp();
   void ScopeGoDown(const std::string& name = "anonymous");
   void ScopeGoDownClass(SharedPtr<ClassType> type);

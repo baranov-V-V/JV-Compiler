@@ -4,6 +4,10 @@
 #include "scope/tables/class_table.hpp"
 #include "visitors/empty_visitor.hpp"
 
+/**
+ * @brief Constructs ClassTable, do not make any type-check/redeclaration-check;
+ * 
+ */
 class ClassTableVisitor : public EmptyVisitor {
  public:
   ~ClassTableVisitor() override = default;

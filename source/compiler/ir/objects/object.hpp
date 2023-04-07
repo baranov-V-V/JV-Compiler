@@ -13,15 +13,4 @@ class Object {
   [[nodiscard]] virtual std::string ToString() const = 0;
 
   [[nodiscard]] virtual bool Equals(const Object* obj) = 0;
-
-  //virtual bool ToBool() const;
-
-  //virtual int ToInt() const;
-
-  //virtual bool IsClass() const;
-  //bool IsArray() const;
-
-  //void SetArray(bool is_array);
-
-  //virtual void Print(std::ostream& stream) const;
 };

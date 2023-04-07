@@ -35,6 +35,11 @@ fmt::print(fmt::emphasis::bold | fmt::fg(fmt::color::orange_red), "error: "); \
 fmt::print(__VA_ARGS__);  \
 throw CompilationException();
 
+#define COMPILER_ERROR_POSITIONAL(pos, ...) \
+fmt::print("jvc:{}:{} ", pos.begin.line, pos.begin.column);          \
+fmt::print(fmt::emphasis::bold | fmt::fg(fmt::color::orange_red), "error: "); \
+fmt::print(__VA_ARGS__);  \
+throw CompilationException();
 
 #define COMPILER_WARNING(...) \
 fmt::print("jvc: ");          \

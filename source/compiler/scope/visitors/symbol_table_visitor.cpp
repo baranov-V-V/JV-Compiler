@@ -24,6 +24,11 @@ SymbolTable* SymbolTableVisitor::ConstructSymbolTree(Program* program) {
 void SymbolTableVisitor::Visit(ClassDeclaration* class_declaration) {
   ScopeGoDownClass(class_declaration->class_type);
   
+  //put all fields in class layer
+  for (const auto& entry : class_table->GetInfo(class_declaration->class_type).GetAllFields()) {
+    
+  }
+
   class_declaration->declaration_list->Accept(this);
 
   ScopeGoUp();
@@ -46,9 +51,8 @@ void SymbolTableVisitor::Visit(MethodDeclaration* method_declaration) {
 }
 
 void SymbolTableVisitor::Visit(VariableDeclaration* declaration) {
-  if (layer_iterator->IsDeclaredCurrent(declaration->identifier)) {
-    COMPILER_ERROR("Variable [{}] {} is already declared", declaration->type->ToString(), declaration->identifier.name)
-  }
+  CheckRedeclared(declaration->type, declaration->identifier);
+
   layer_iterator->DeclareVariable(declaration->identifier, declaration->type);
 }
 
@@ -80,10 +84,8 @@ void SymbolTableVisitor::Visit(CompareOpExpression* expression) {
 }
 
 void SymbolTableVisitor::Visit(IdentifierExpression* expression) {
-  //local variables are only using this;
-  if (!layer_iterator->IsDeclaredAnywhere(expression->identifier)) {
-
-  }
+  CheckDeclaredAnywhere(expression->identifier);
+  stack.Put(layer_iterator->GetFromAnywhere(expression->identifier)->GetType());
 }
 
 void SymbolTableVisitor::Visit(IntegerExpression* expression) {
@@ -197,6 +199,8 @@ void SymbolTableVisitor::Visit(AssertStatement* statement) {
 void SymbolTableVisitor::Visit(AssignmentStatement* statement) {
   SharedPtr<Type> lvalue_type = Accept(statement->value);
   SharedPtr<Type> expr_type = Accept(statement->expression);
+
+  // implement
 }
 
 void SymbolTableVisitor::Visit(IfElseStatement* statement) {
@@ -248,7 +252,7 @@ void SymbolTableVisitor::Visit(IdentifierLValue* statement) {
 }
 
 void SymbolTableVisitor::Visit(FieldDeclaration* declaration) {
-  //pass
+  //pass, already checked in class_table_visitor
 }
 
 void SymbolTableVisitor::ScopeGoUp() {
@@ -283,7 +287,27 @@ void SymbolTableVisitor::WarnNarrowing(SharedPtr<Type> to, SharedPtr<Type> from)
   }
 }
 
+void SymbolTableVisitor::CheckRedeclared(const Symbol& symbol) {
+  if (layer_iterator->IsDeclaredCurrent(symbol)) {
+    //Previous declaration at {}:{} add previous
+    COMPILER_ERROR("Variable {} is already declared", symbol.name)
+  }
+}
+
 void SymbolTableVisitor::CheckAndWarn(SharedPtr<Type> to, SharedPtr<Type> from) {
   CheckConvertable(to, from);
   WarnNarrowing(to, from);
+}
+
+void SymbolTableVisitor::CheckRedeclared(const SharedPtr<Type>& type, const Symbol& symbol) {
+  if (layer_iterator->IsDeclaredCurrent(symbol)) {
+    //Previous declaration at {}:{} add previous
+    COMPILER_ERROR("Variable [{}] {} is already declared", type->ToString(), symbol.name)
+  }
+}
+
+void SymbolTableVisitor::CheckDeclaredAnywhere(const Symbol& symbol) {
+  if (!layer_iterator->IsDeclaredAnywhere(symbol)) {
+    COMPILER_ERROR("Identifier `{}` is not declared in this scope", symbol.name)
+  }
 }
