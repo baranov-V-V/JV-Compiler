@@ -1,35 +1,29 @@
 #include "class_info.hpp"
 
-ClassInfo::ClassInfo(std::initializer_list<SharedPtr<MethodType>> methods,
-                     std::initializer_list<SharedPtr<Type>> fields) :
-                     methods(methods), fields(fields) {
-
-}
-
-ClassInfo::ClassInfo(const std::vector<SharedPtr<MethodType>> &methods, const std::vector<SharedPtr<Type>> &fields) :
-    methods(methods), fields(fields) {
-}
-
-const SharedPtr<MethodType> &ClassInfo::GetMethodType(int idx) const {
-    return methods.at(idx);
+const SharedPtr<MethodType> &ClassInfo::GetMethodType(const Symbol& symbol) const {
+  return methods.at(symbol);
 }
 
 int ClassInfo::GetMethodsNum() const {
-    return methods.size();
+  return methods.size();
 }
 
-void ClassInfo::AddMethodType(const SharedPtr<MethodType> &method_type) {
-    methods.push_back(method_type);
+void ClassInfo::AddMethodType(const Symbol& symbol, const SharedPtr<MethodType>& method_type) {
+  methods.insert({symbol, method_type});
 }
 
-const SharedPtr<Type> &ClassInfo::GetFieldType(int idx) const {
-    return fields.at(idx);
+const SharedPtr<Type> &ClassInfo::GetFieldType(const Symbol& symbol) const {
+  return fields.at(symbol);
 }
 
 int ClassInfo::GetFieldsNum() const {
-    return fields.size();
+  return fields.size();
 }
 
-void ClassInfo::AddFieldType(const SharedPtr<Type> &field_type) {
-    fields.push_back(field_type);
+void ClassInfo::AddFieldType(const Symbol& symbol, const SharedPtr<Type> &field_type) {
+  fields.insert({symbol, field_type});
+}
+
+const std::unordered_map<Symbol, SharedPtr<Type>>& ClassInfo::GetAllFields() {
+  return fields;
 }

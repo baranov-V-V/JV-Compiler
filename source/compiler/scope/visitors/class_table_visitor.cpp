@@ -33,9 +33,9 @@ void ClassTableVisitor::Visit(DeclarationList* declaration_list) {
 }
 
 void ClassTableVisitor::Visit(FieldDeclaration* declaration) {
-  table->AddField(current_type, declaration->type);
+  table->AddField(current_type, declaration->identifier, declaration->type);
 }
 
 void ClassTableVisitor::Visit(MethodDeclaration* method_declaration) {
-  table->AddMethod(current_type, method_declaration->method_type);
+  table->AddMethod(current_type, method_declaration->identifier, method_declaration->method_type);
 }

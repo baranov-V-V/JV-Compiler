@@ -16,10 +16,10 @@ ClassInfo& ClassTable::GetInfo(SharedPtr<ClassType> type) {
   return class_table.at(type);
 }
 
-void ClassTable::AddMethod(SharedPtr<ClassType> type, SharedPtr<MethodType> method_type) {
-  ClassTable::GetInfo(type).AddMethodType(method_type);
+void ClassTable::AddMethod(SharedPtr<ClassType> type, const Symbol& symbol, SharedPtr<MethodType> method_type) {
+  ClassTable::GetInfo(type).AddMethodType(symbol, method_type);
 }
 
-void ClassTable::AddField(SharedPtr<ClassType> type, SharedPtr<Type> field) {
-  ClassTable::GetInfo(type).AddFieldType(field);
+void ClassTable::AddField(SharedPtr<ClassType> type, const Symbol& symbol, SharedPtr<Type> field) {
+  ClassTable::GetInfo(type).AddFieldType(symbol, field);
 }
