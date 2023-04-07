@@ -42,3 +42,7 @@ bool MethodType::Equals(std::shared_ptr<Type> other) {
 
   return args == casted_other->args && return_type->Equals(casted_other->return_type);
 }
+
+const ArgEntry& MethodType::GetArg(int idx) const {
+  return args.at(idx);
+}

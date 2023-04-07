@@ -20,6 +20,8 @@ class ClassTable {
   [[nodiscard]] const ClassInfo& GetInfo(SharedPtr<ClassType> type) const;
   [[nodiscard]] ClassInfo& GetInfo(SharedPtr<ClassType> type);
 
+  [[nodiscard]] bool HasInfo(SharedPtr<ClassType> type) const;
+
   void AddMethod(SharedPtr<ClassType> type, const Symbol& symbol, SharedPtr<MethodType> method_type);
   void AddField(SharedPtr<ClassType> type, const Symbol& symbol, SharedPtr<Type> field);
 

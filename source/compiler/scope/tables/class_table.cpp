@@ -23,3 +23,7 @@ void ClassTable::AddMethod(SharedPtr<ClassType> type, const Symbol& symbol, Shar
 void ClassTable::AddField(SharedPtr<ClassType> type, const Symbol& symbol, SharedPtr<Type> field) {
   ClassTable::GetInfo(type).AddFieldType(symbol, field);
 }
+
+bool ClassTable::HasInfo(SharedPtr<ClassType> type) const {
+  return class_table.contains(type);
+}

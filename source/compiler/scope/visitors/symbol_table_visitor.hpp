@@ -59,8 +59,14 @@ SymbolTableVisitor : public Visitor, public VisitorHelper<SharedPtr<Type>> {
 
  private:
   void CheckAndWarn(SharedPtr<Type> to, SharedPtr<Type> from);
+  
   void CheckConvertable(SharedPtr<Type> to, SharedPtr<Type> from);
   void WarnNarrowing(SharedPtr<Type> to, SharedPtr<Type> from);
+
+  void CheckCommonType(SharedPtr<Type> lhs, SharedPtr<Type> rhs);
+  void CheckPrimitive(SharedPtr<Type> type);
+
+  //void CheckPrimitive(SharedPtr<Type> type);
 
   void CheckRedeclared(const Symbol& symbol);
   void CheckRedeclared(const SharedPtr<Type>& type, const Symbol& symbol);
@@ -77,5 +83,8 @@ SymbolTableVisitor : public Visitor, public VisitorHelper<SharedPtr<Type>> {
   SymbolLayerTree* tree;
 
   NaiveTypeConverter converter;
+
+  SharedPtr<ClassType> current_class;
+  SharedPtr<MethodType> current_method;
 };
 

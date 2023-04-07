@@ -26,9 +26,11 @@ void SymbolTableVisitor::Visit(ClassDeclaration* class_declaration) {
   
   //put all fields in class layer
   for (const auto& entry : class_table->GetInfo(class_declaration->class_type).GetAllFields()) {
-    
+    CheckRedeclared(entry.second, entry.first);
+    layer_iterator->DeclareVariable(entry.first, entry.second);
   }
 
+  current_class = class_declaration->class_type;
   class_declaration->declaration_list->Accept(this);
 
   ScopeGoUp();
@@ -45,6 +47,7 @@ void SymbolTableVisitor::Visit(DeclarationList* declaration_list) {
 void SymbolTableVisitor::Visit(MethodDeclaration* method_declaration) {
   ScopeGoDown(method_declaration->method_type->ToString());
 
+  current_method = method_declaration->method_type;
   method_declaration->statement_list->Accept(this);
 
   ScopeGoUp();
@@ -80,7 +83,13 @@ void SymbolTableVisitor::Visit(FalseExpression* expression) {
 }
 
 void SymbolTableVisitor::Visit(CompareOpExpression* expression) {
+  SharedPtr<Type> lhs = Accept(expression->lhs);
+  CheckPrimitive(lhs);
 
+  SharedPtr<Type> rhs = Accept(expression->rhs);
+  CheckPrimitive(rhs);
+
+  stack.Put(TypeFactory::GetBoolTy());
 }
 
 void SymbolTableVisitor::Visit(IdentifierExpression* expression) {
@@ -103,23 +112,43 @@ void SymbolTableVisitor::Visit(LengthExpression* expression) {
 }
 
 void SymbolTableVisitor::Visit(LogicOpExpression* expression) {
+  SharedPtr<Type> lhs = Accept(expression->lhs);
+  SharedPtr<Type> rhs = Accept(expression->rhs);
 
+  CheckAndWarn(TypeFactory::GetBoolTy(), lhs);
+  CheckAndWarn(TypeFactory::GetBoolTy(), rhs);
+
+  stack.Put(TypeFactory::GetBoolTy());
 }
 
 void SymbolTableVisitor::Visit(MathOpExpression* expression) {
+  SharedPtr<Type> lhs = Accept(expression->lhs);
+  CheckPrimitive(lhs);
 
+  SharedPtr<Type> rhs = Accept(expression->rhs);
+  CheckPrimitive(rhs);
+
+  //CheckCommonType(lhs, rhs);
+
+  stack.Put(converter.CommonType(lhs, rhs));
 }
 
 void SymbolTableVisitor::Visit(MethodCallExpression* expression) {
-
+  expression->call->Accept(this);
 }
 
 void SymbolTableVisitor::Visit(NewArrayExpression* expression) {
+  SharedPtr<Type> size_type = Accept(expression->size);
+  
+  if (size_type->IsInteger()) {
+    COMPILER_ERROR("In new expression: size of array expected [int], got: [{}]", size_type->ToString())
+  }
 
+  stack.Put(TypeFactory::GetArrayTy(expression->type));
 }
 
 void SymbolTableVisitor::Visit(NewClassExpression* expression) {
-
+  stack.Put(expression->type);
 }
 
 void SymbolTableVisitor::Visit(NotExpression* expression) {
@@ -157,38 +186,38 @@ void SymbolTableVisitor::Visit(CommaExpressionList* expression_list) {
 }
 
 void SymbolTableVisitor::Visit(MethodCall* call) {
-  SharedPtr<Type> class_type = Accept(call->caller);
+  SharedPtr<Type> type = Accept(call->caller);
   call->expression_list->Accept(this);
 
-  if (!class_type->IsClass()) {
-    COMPILER_ERROR("Method Call of a non-class caller with type []", class_type->ToString())
+  //is class at all
+  if (!type->IsClass()) {
+    COMPILER_ERROR("Method Call of a non-class caller with type []", type->ToString())
   }
 
-  // rewrite ClassTableWith Symbol
-  /*
-  //class exists
-  if (class_table->GetInfo()) {
+  //has info about this class
+  SharedPtr<ClassType> class_type = std::reinterpret_pointer_cast<ClassType>(type);
+  if (!class_table->HasInfo(class_type)) {
+    COMPILER_ERROR("Method Call of a non-existent class with type {}", class_type->ToString());
   }
 
   // method exists
-  if () {
+  if (!class_table->GetInfo(class_type).HasMethodType(call->function_name)) {
+    COMPILER_ERROR("Call of a non-existent method {}", call->function_name.name);
   }
 
   // check num args
-  if () {
-    COMPILER_ERROR("Not enough args")
+  SharedPtr<MethodType> method_type = class_table->GetInfo(class_type).GetMethodType(call->function_name);
+  int args_count = method_type->GetArgsNum();
+  if (args_count != call->expression_list->elements.size()) {
+    COMPILER_ERROR("Call of method has {} args, expected: {}", call->expression_list->elements.size(), args_count);
   }
 
-
-  // check args types
-  for (size_t i = 0; i < num_args; ++i) {
-    auto arg_type =
-      std::dynamic_pointer_cast<Expression>((*comma_expr_list)[i])->GetType();
-    if (arg_type != func_type.arg_types[i]) {
-      //CheckAndWarn()
-    }
+  call->expression_list->Accept(this);
+  for (int i = args_count - 1; i >= 0; --i) {
+    CheckAndWarn(method_type->GetArg(i).type, stack.TopAndPop());
   }
-   */
+
+  stack.Put(method_type->GetReturnType());
 }
 
 void SymbolTableVisitor::Visit(AssertStatement* statement) {
@@ -200,55 +229,96 @@ void SymbolTableVisitor::Visit(AssignmentStatement* statement) {
   SharedPtr<Type> lvalue_type = Accept(statement->value);
   SharedPtr<Type> expr_type = Accept(statement->expression);
 
-  // implement
+  CheckAndWarn(lvalue_type, expr_type);
 }
 
 void SymbolTableVisitor::Visit(IfElseStatement* statement) {
+  CheckAndWarn(TypeFactory::GetBoolTy(), Accept(statement->cond_expression));
 
+  ScopeGoDown("if");
+  statement->statement_true->Accept(this);
+  ScopeGoUp();
+
+  ScopeGoDown("else");
+  statement->statement_false->Accept(this);
+  ScopeGoUp();
 }
 
 void SymbolTableVisitor::Visit(IfStatement* statement) {
+  CheckAndWarn(TypeFactory::GetBoolTy(), Accept(statement->cond_expression));
 
+  ScopeGoDown("if_only");
+  statement->statement_true->Accept(this);
+  ScopeGoUp();
 }
 
 void SymbolTableVisitor::Visit(LocalVariableStatement* statement) {
-
+  statement->variable_declaration->Accept(this);
 }
 
 void SymbolTableVisitor::Visit(MethodCallStatement* statement) {
-
+  statement->call->Accept(this);
+  stack.Pop();
 }
 
 void SymbolTableVisitor::Visit(PrintStatement* statement) {
-
+  //print only for primitive
+  CheckPrimitive(Accept(statement->expression));
 }
 
 void SymbolTableVisitor::Visit(ReturnStatement* statement) {
+  SharedPtr<Type> type = Accept(statement->expression);
 
+  CheckAndWarn(current_method->GetReturnType(), type);
 }
 
 void SymbolTableVisitor::Visit(StatementList* statement) {
-
+  statement->Accept(this);
 }
 
 void SymbolTableVisitor::Visit(StatementListStatement* statement) {
-
+  ScopeGoDown("stmt_list_stmt");
+  statement->statement_list->Accept(this);
+  ScopeGoUp();
 }
 
 void SymbolTableVisitor::Visit(WhileStatement* statement) {
+  ScopeGoDown("while");
 
+  CheckAndWarn(TypeFactory::GetBoolTy(), Accept(statement->cond_expression));
+  statement->statement->Accept(this);
+
+  ScopeGoUp();
 }
 
 void SymbolTableVisitor::Visit(ArrayLValue* statement) {
+  CheckDeclaredAnywhere(statement->identifier);
+  SharedPtr<Type> type = layer_iterator->GetFromAnywhere(statement->identifier)->GetType();
 
+  if (!type->IsArray()) {
+    COMPILER_ERROR("Operatorp[] of non-array type: [{}]", type->ToString());
+  }
+
+  SharedPtr<Type> idx = Accept(statement->idx);
+
+  if (!idx->IsInteger()) {
+    COMPILER_ERROR("Index of array expected [int], got: [{}]", idx->ToString());
+  }
+
+  SharedPtr<ArrayType> array_type = std::reinterpret_pointer_cast<ArrayType>(type);
+
+  stack.Put(array_type->GetElemType());
 }
 
 void SymbolTableVisitor::Visit(FieldLValue* statement) {
-
+  //pass not used for now
 }
 
 void SymbolTableVisitor::Visit(IdentifierLValue* statement) {
-  //if (layer_iterator->)
+  CheckDeclaredAnywhere(statement->name);
+  SharedPtr<Type> type = layer_iterator->GetFromAnywhere(statement->name)->GetType();
+
+  stack.Put(type);
 }
 
 void SymbolTableVisitor::Visit(FieldDeclaration* declaration) {
@@ -284,6 +354,19 @@ void SymbolTableVisitor::WarnNarrowing(SharedPtr<Type> to, SharedPtr<Type> from)
   if (!converter.IsConvertable(to, from) &&
       converter.IsNarrowingConvertable(to, from)) {
     COMPILER_WARNING("Narrowing conversion from [{}] to [{}]", from->ToString(), to->ToString())
+  }
+}
+
+void SymbolTableVisitor::CheckCommonType(SharedPtr<Type> lhs,
+                                         SharedPtr<Type> rhs) {
+  if (!converter.HasCommonType(lhs, rhs)) {
+    COMPILER_ERROR("Types [{}], [{}] doesnt have common type", lhs->ToString(), rhs->ToString())
+  }
+}
+
+void SymbolTableVisitor::CheckPrimitive(SharedPtr<Type> type) {
+  if (type->IsPrimitive()) {
+    COMPILER_ERROR("Operand is not of primitive type: [{}]", type->ToString());
   }
 }
 

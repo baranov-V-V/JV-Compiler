@@ -27,3 +27,11 @@ void ClassInfo::AddFieldType(const Symbol& symbol, const SharedPtr<Type> &field_
 const std::unordered_map<Symbol, SharedPtr<Type>>& ClassInfo::GetAllFields() {
   return fields;
 }
+
+bool ClassInfo::HasMethodType(const Symbol& symbol) const {
+  return methods.contains(symbol);
+}
+
+bool ClassInfo::HasFieldType(const Symbol& symbol) const {
+  return fields.contains(symbol);
+}

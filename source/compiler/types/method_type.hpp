@@ -15,6 +15,8 @@ class MethodType : public Type {
   bool Equals(std::shared_ptr<Type> other) override;
 
   [[nodiscard]] const std::vector<ArgEntry>& GetArgs() const;
+  [[nodiscard]] const ArgEntry& GetArg(int idx) const;
+
   void AddArg(const ArgEntry& arg_entry);
 
   [[nodiscard]] SharedPtr<Type> GetReturnType() const;
