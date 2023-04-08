@@ -10,13 +10,21 @@ void Compiler::Compile(int argc, char** argv) {
 
   driver.Parse(file_in);
 
-  if (!dump_png.empty()) {
-    driver.PrintTreePng(dump_png);
+  if (!dump_txt.empty()) {
+    driver.PrintTreeTxt(dump_txt);
   }
+
   if (!dump_png.empty()) {
     driver.PrintTreePng(dump_png);
   }
 
+  driver.BuildLayerTree();
+
+  if (!table_png.empty()) {
+    driver.PrintSymbolTree(table_png);
+  }
+
+  /*
   std::filesystem::path tmp_dir = file_in.parent_path().append("tmp");
   if (!std::filesystem::exists(tmp_dir)) {
     if (!std::filesystem::create_directory(tmp_dir)) {
@@ -53,6 +61,7 @@ void Compiler::Compile(int argc, char** argv) {
   }
 
   std::filesystem::remove_all(tmp_dir);
+  */
 }
 
 Driver& Compiler::GetDriver() {
@@ -98,4 +107,8 @@ void Compiler::NeedEmitLLVM(bool need_emit) {
 
 const char* Compiler::GetVersion() {
   return "jvc (JV-Complier) version 1.0-SNAPSHOT (x86_64)" ;
+}
+
+void Compiler::SetDumpTable(const std::filesystem::path &dump_png) {
+  this->table_png = dump_png;
 }

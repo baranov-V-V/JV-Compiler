@@ -4,7 +4,7 @@
 #include "scope_layer.hpp"
 #include "class_scope_layer.hpp"
 
-ScopeLayer::ScopeLayer() : parent(nullptr), class_scope(nullptr) {}
+ScopeLayer::ScopeLayer(const std::string& name) : parent(nullptr), class_scope(nullptr), name(name) {}
 
 ScopeLayer::ScopeLayer(ScopeLayer* parent, const std::string& name) : parent(parent), name(name), class_scope(parent->class_scope) {}
 
@@ -27,7 +27,7 @@ ScopeLayer* ScopeLayer::GetParent() const {
 }
 
 void ScopeLayer::DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type) {
-  CheckDeclared(symbol, type);
+  //CheckDeclared(symbol, type);
 
   if (type->IsArray()) {
     DeclareArray(symbol, std::reinterpret_pointer_cast<ArrayType>(type));
@@ -39,7 +39,7 @@ void ScopeLayer::DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& ty
 }
 
 void ScopeLayer::DeclareVariable(const Symbol& symbol, const std::shared_ptr<Object>& object) {
-  CheckDeclared(symbol);
+  //CheckDeclared(symbol);
   variables.insert({symbol, object});
 }
 
@@ -56,8 +56,7 @@ void ScopeLayer::DeclarePrimitive(const Symbol& symbol, const SharedPtr<Type>& t
 }
 
 std::shared_ptr<Object>& ScopeLayer::GetFromCurrent(const Symbol& symbol) {
-  CheckDeclared(symbol);
-
+  //CheckDeclared(symbol);
   return variables.at(symbol);
 }
 
@@ -68,7 +67,7 @@ const std::shared_ptr<Object>& ScopeLayer::GetFromAnywhere(const Symbol& symbol)
     current_scope = current_scope->parent;
   }
 
-  CheckDeclared(symbol);
+  //CheckDeclared(symbol);
   return current_scope->GetFromCurrent(symbol);
 }
 
@@ -85,17 +84,21 @@ bool ScopeLayer::IsDeclaredAnywhere(const Symbol& symbol) const {
   return current_scope->IsDeclaredCurrent(symbol);
 }
 
+/*
 void ScopeLayer::CheckDeclared(const Symbol& symbol, const SharedPtr<Type>& type) const {
+  LOG_DEBUG("Checking {} {}", type->ToString(), symbol.name);
   if (IsDeclaredCurrent(symbol)) {
     COMPILER_ERROR("Variable: \"[{}] {}\" has been already declared", type->ToString(), symbol.name);
   }
 }
 
 void ScopeLayer::CheckDeclared(const Symbol& symbol) const {
-  if (IsDeclaredCurrent(symbol)) {
-    COMPILER_ERROR("Variable: \" {}\" has been already declared", symbol.name);
+  LOG_DEBUG("Checking {}", symbol.name);
+  if (!IsDeclaredCurrent(symbol)) {
+    COMPILER_ERROR("Variable: \"{}\" has been already declared", symbol.name);
   }
 }
+*/
 
 ScopeLayer::ScopeLayer(ScopeLayer* parent, ClassScopeLayer* class_layer, const std::string& name) : parent(parent), name(name), class_scope(class_layer) {}
 
@@ -114,16 +117,17 @@ ClassScopeLayer* ScopeLayer::GetClassScope() {
 }
 
 void ScopeLayer::GraphVizDump(fmt::ostream& ostream) {
-  ostream.print("\tnode{} [label=\"<LayerName> {}\"];", (void*) this, this->name);
+  ostream.print("\tnode{} [label=\"<LayerName> {}\"];\n", (void*) this, this->name);
 
   for (const auto& entry: variables) {
-    ostream.print("\tnode{} [label=\"<Type> {}|<Var> {}\"];",
+    ostream.print("\tnode{} [label=\"<Type> {}|<Var> {}\"];\n",
                   (void*) &entry.first, entry.second->GetType()->ToString(), entry.first.name);
-    ostream.print("\t\tnode{}:s -> node{} [color=\"grey14\"];\n", (void*) this, (void*) &entry.first);
+    ostream.print("\t\tnode{}:sw -> node{} [color=\"grey14\"];\n", (void*) this, (void*) &entry.first);
   }
 
   for (ScopeLayer* layer : children) {
     layer->GraphVizDump(ostream);
+      ostream.print("\t\tnode{}:se -> node{} [color=\"grey14\"];\n", (void*) this, (void*) layer);
   }
 }
 

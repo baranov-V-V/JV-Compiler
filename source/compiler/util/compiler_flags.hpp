@@ -119,3 +119,14 @@ class CompilerEmitLLVM : public CompilerFlag {
  private:
   llvm::cl::opt<bool> emit;
 };
+
+class SymbolTableDumpFlag : public CompilerFlag {
+ public:
+  SymbolTableDumpFlag();
+  ~SymbolTableDumpFlag() override = default;
+
+  void Apply(Compiler* compiler) const override;
+
+ private:
+  llvm::cl::opt<std::string> filename;
+};

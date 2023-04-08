@@ -5,22 +5,22 @@
 #include "class_table_visitor.hpp"
 
 #include "compiler/scope/layers/class_scope_layer.hpp"
+#include "types/type_factory.hpp"
 
 SymbolTableVisitor::SymbolTableVisitor() {}
 
-SymbolTable* SymbolTableVisitor::ConstructSymbolTree(Program* program) {
-  ScopeLayer* global = new ScopeLayer(nullptr, "global");
+std::unique_ptr<SymbolLayerTree> SymbolTableVisitor::ConstructSymbolTree(Program* program) {
 
-  tree = new SymbolLayerTree(global);
-  layer_iterator = SymbolLayerTree::Iterator(global);
+  tree = std::make_unique<SymbolLayerTree>(new ScopeLayer("global"));
+  layer_iterator = tree->begin();
 
   ClassTableVisitor class_table_visitor;
   class_table = class_table_visitor.ConstructClassTable(program);
 
   Visit(program);
 
-  SymbolTable* table = new SymbolTable(global);
-  return table;
+  //SymbolTable* table = new SymbolTable(global);
+  return std::move(tree);
 }
 
 void SymbolTableVisitor::Visit(ClassDeclaration* class_declaration) {
@@ -373,7 +373,7 @@ void SymbolTableVisitor::CheckCommonType(SharedPtr<Type> lhs,
 }
 
 void SymbolTableVisitor::CheckPrimitive(SharedPtr<Type> type) {
-  if (type->IsPrimitive()) {
+  if (!type->IsPrimitive()) {
     COMPILER_ERROR("Operand is not of primitive type: [{}]", type->ToString());
   }
 }
@@ -381,7 +381,7 @@ void SymbolTableVisitor::CheckPrimitive(SharedPtr<Type> type) {
 void SymbolTableVisitor::CheckRedeclared(const Symbol& symbol) {
   if (layer_iterator->IsDeclaredCurrent(symbol)) {
     //Previous declaration at {}:{} add previous
-    COMPILER_ERROR("Variable {} is already declared", symbol.name)
+    COMPILER_ERROR("Variable \"{}\" has already been declared", symbol.name)
   }
 }
 

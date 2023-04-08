@@ -1,0 +1,102 @@
+Program
+	Main ClassRef
+		Local Var Decl
+			Variable declaration
+			Decl type(1) a
+		Local Var Decl
+			Variable declaration
+			Decl type(1) b
+		Assignment Expr
+			IdLValue
+				a
+			Integer Expr "3"
+		Assignment Expr
+			IdLValue
+				b
+			Integer Expr "5"
+		If Else Statement
+			Logic Op Expr
+				Compare Op Expr
+					Identifier Expr a
+					>
+					Integer Expr "2"
+				||
+				Compare Op Expr
+					Identifier Expr a
+					>
+					Integer Expr "4"
+			Statement List Statement
+				Assignment Expr
+					IdLValue
+						b
+					Integer Expr "10"
+			Statement List Statement
+				Assignment Expr
+					IdLValue
+						b
+					Integer Expr "11"
+		Print Statement
+			Math Op Expr
+				Identifier Expr b
+				+
+				Integer Expr "100"
+		Assignment Expr
+			IdLValue
+				a
+			Integer Expr "4"
+		If Else Statement
+			Logic Op Expr
+				Compare Op Expr
+					Identifier Expr a
+					>
+					Integer Expr "2"
+				&&
+				Compare Op Expr
+					Identifier Expr a
+					==
+					Integer Expr "4"
+			Statement List Statement
+				Assignment Expr
+					IdLValue
+						b
+					Integer Expr "13"
+			Statement List Statement
+				Assignment Expr
+					IdLValue
+						b
+					Integer Expr "11"
+		Local Var Decl
+			Variable declaration
+			Decl type(1) c
+		Local Var Decl
+			Variable declaration
+			Decl type(1) d
+		Assignment Expr
+			IdLValue
+				c
+			Integer Expr "10"
+		If Else Statement
+			Logic Op Expr
+				Compare Op Expr
+					Identifier Expr c
+					<
+					Integer Expr "11"
+				&&
+				True Expr
+			Statement List Statement
+				Print Statement
+					Integer Expr "1"
+			Statement List Statement
+				Print Statement
+					Integer Expr "0"
+		If Else Statement
+			Logic Op Expr
+				False Expr
+				||
+				True Expr
+			Statement List Statement
+				Print Statement
+					Integer Expr "1"
+			Statement List Statement
+				Print Statement
+					Integer Expr "0"

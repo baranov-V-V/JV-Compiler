@@ -1,4 +1,5 @@
 #include "compiler_flags.hpp"
+
 #include "compiler/core/compiler.hpp"
 
 #include <optional>
@@ -60,6 +61,7 @@ CompilerFlags::~CompilerFlags() {
 void CompilerFlags::InitFlags() {
   flags.push_back(new CompilerDebugLevelFlag());
   flags.push_back(new CompileInputFlag());
+  flags.push_back(new SymbolTableDumpFlag());
   flags.push_back(new TraseParseFlag());
   flags.push_back(new TraseScanFlag());
   flags.push_back(new AstDumpTxtFlag());
@@ -112,3 +114,11 @@ void CompilerEmitLLVM::Apply(Compiler* compiler) const {
 
 CompilerEmitLLVM::CompilerEmitLLVM() : emit("emit-llvm", llvm::cl::desc("Show llvm ir representation"),
                                             llvm::cl::init(false)) {}
+
+SymbolTableDumpFlag::SymbolTableDumpFlag() :
+  filename("dump-table", llvm::cl::desc("Specify symbol table output filename"), llvm::cl::value_desc("filename"),
+  llvm::cl::init("")) {}
+
+void SymbolTableDumpFlag::Apply(Compiler* compiler) const {
+  compiler->SetDumpTable(filename.getValue());
+}

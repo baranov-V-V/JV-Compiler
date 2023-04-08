@@ -30,7 +30,7 @@ void GraphPrintVisitor::Print(const std::filesystem::path& filename,
 }
 
 void GraphPrintVisitor::Visit(Program* program) {
-  stream->print("digraph structs {{\n");
+  stream->print("digraph Ast {{\n");
   stream->print("node [shape=\"record\", style=\"filled\"];\n");
   stream->print("\tnode{} [label =\"<first> Program\", color=\"grey14\", fillcolor=\"gray38\"]\n", reinterpret_cast<void*>(program));
   program->main_class->Accept(this);

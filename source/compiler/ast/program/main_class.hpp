@@ -2,8 +2,9 @@
 
 #include "compiler/ast/core/ast_node.hpp"
 #include "compiler/ast/statements/statement_list.hpp"
-#include "compiler/visitors/visitor.hpp"
 #include "types/class_type.hpp"
+
+class Visitor;
 
 class MainClass: public AstNode {
  public:

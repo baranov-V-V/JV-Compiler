@@ -14,9 +14,10 @@
 class ClassScopeLayer;
 
 //TODO Add MethodSupport and FindMethod Functions;
+//Doest do any checks, all checks belong to SymbolTableVisitor
 class ScopeLayer {
  public:
-  ScopeLayer();
+  explicit ScopeLayer(const std::string& name = "anonymous");
   explicit ScopeLayer(ScopeLayer* parent, const std::string& name = "anonymous");
   explicit ScopeLayer(ScopeLayer* parent, ClassScopeLayer* class_layer, const std::string& name = "anonymous");
   virtual ~ScopeLayer();
@@ -53,9 +54,10 @@ class ScopeLayer {
   virtual void GraphVizDump(fmt::ostream& ostream);
 
  protected:
-  void CheckDeclared(const Symbol& symbol, const SharedPtr<Type>& type) const;
+  //void CheckDeclared(const Symbol& symbol, const SharedPtr<Type>& type) const;
 
-  void CheckDeclared(const Symbol& symbol) const;
+  //void CheckDeclared(const Symbol& symbol) const;
+
   std::string name = "anonymous";
 
   ScopeLayer* parent;

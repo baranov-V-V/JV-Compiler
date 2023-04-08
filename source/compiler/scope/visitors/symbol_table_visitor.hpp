@@ -2,11 +2,11 @@
 
 #include "visitors/visitor.hpp"
 #include "scope/tables/symbol_layer_tree.hpp"
-#include "scope/tables/symbol_table.hpp"
 #include "visitors/empty_visitor.hpp"
 #include "util/visitor_helper.hpp"
 #include "util/program_stack.hpp"
 #include "types/converters/naive_type_converter.hpp"
+#include "scope/tables/class_table.hpp"
 
 class
 SymbolTableVisitor : public Visitor, public VisitorHelper<SharedPtr<Type>> {
@@ -14,7 +14,7 @@ SymbolTableVisitor : public Visitor, public VisitorHelper<SharedPtr<Type>> {
   SymbolTableVisitor();
   ~SymbolTableVisitor() override = default;
 
-  SymbolTable* ConstructSymbolTree(Program* program);
+  std::unique_ptr<SymbolLayerTree> ConstructSymbolTree(Program* program);
 
   void Visit(ClassDeclaration* class_declaration) override;
   void Visit(ClassDeclarationList* class_declaration_list) override;
@@ -80,7 +80,9 @@ SymbolTableVisitor : public Visitor, public VisitorHelper<SharedPtr<Type>> {
 
   SymbolLayerTree::Iterator layer_iterator;
   ClassTable* class_table;
-  SymbolLayerTree* tree;
+
+  //TODO change to unique_pte
+  std::unique_ptr<SymbolLayerTree> tree;
 
   NaiveTypeConverter converter;
 

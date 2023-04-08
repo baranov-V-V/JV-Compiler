@@ -43,6 +43,7 @@ bool Type::Equals(std::shared_ptr<Type> other) {
 }
 
 bool Type::IsPrimitive() const {
+  //LOG_DEBUG("type_id: {}", (int) id)
   return !IsArray() && !IsClass() && !IsMethod() && (id != TypeID::VoidTy);
 }
 

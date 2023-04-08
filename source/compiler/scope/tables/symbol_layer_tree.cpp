@@ -3,7 +3,9 @@
 #include "symbol_layer_tree.hpp"
 #include "scope/layers/class_scope_layer.hpp"
 
-SymbolLayerTree::SymbolLayerTree(ScopeLayer* root) : root(root) {}
+SymbolLayerTree::SymbolLayerTree(ScopeLayer* global) : root(new ScopeLayer("root")) {
+  AddLayer(this->root, "global");
+}
 
 SymbolLayerTree::~SymbolLayerTree() {
   delete root;
@@ -43,10 +45,14 @@ void SymbolLayerTree::DumpTree(const std::filesystem::path& path) {
 
   //TODO maybe remove
   //for fmt::ostream
-  std::filesystem::create_directories(dot_file.parent_path());
+  //TODO uncomment
+  //std::filesystem::create_directories(dot_file.parent_path());
 
   fmt::ostream ostream = fmt::output_file(dot_file.c_str());
+  ostream.print("digraph Ast {{\n");
+  ostream.print("node [shape=\"record\", style=\"filled\"];\n");
   root->GraphVizDump(ostream);
+  ostream.print("}}\n");
   ostream.close();
 
   LOG_INFO("graphing done with code: {}", system(command.c_str()));
@@ -72,12 +78,15 @@ ScopeLayer* SymbolLayerTree::Iterator::operator->() const {
 void SymbolLayerTree::Iterator::GoDown() {
   current_parent = current_parent->GetChild(curr_idx);
   child_indexes.push(curr_idx);
+
+  //TODO change curr_idx
+
   curr_idx = 0;
 }
 
 void SymbolLayerTree::Iterator::GoUp() {
   current_parent = current_parent->GetParent();
-  curr_idx = child_indexes.top();
+  curr_idx = child_indexes.top() + 1;
   child_indexes.pop();
 }
 

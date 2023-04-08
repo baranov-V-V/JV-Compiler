@@ -188,7 +188,7 @@
 %start program;
 
 program : main_class 
-  { $$ = new Program($1); driver.SetProgram($$); }
+  { $$ = new Program($1, new ClassDeclarationList()); driver.SetProgram($$); }
         | main_class class_declaration_list
   { $$ = new Program($1, $2); driver.SetProgram($$); }
 ;
@@ -204,9 +204,9 @@ class_declaration_list: class_declaration
 ;
 
 class_declaration: "class" "identifier" "{" declaration_list "}" 
-  { $$ = new ClassDeclaration(TypeFactory::GetClassTy(Symbol($2)), $4); }
+  { $$ = new ClassDeclaration(TypeFactory::GetClassTy(Symbol($2, driver.GetLocation())), $4); }
                  | "class" "identifier" "extends" "identifier" "{" declaration_list "}"
-  { $$ = new ClassDeclaration(TypeFactory::GetClassTy(Symbol($2)), $6); }
+  { $$ = new ClassDeclaration(TypeFactory::GetClassTy(Symbol($2, driver.GetLocation())), $6); }
 ;
 
 declaration_list : class_member_declaration
@@ -221,19 +221,19 @@ class_member_declaration: field_declaration
   { $$ = $1; }
 
 field_declaration: type "identifier" ";"
-  { $$ = new FieldDeclaration($1, Symbol($2)); }
+  { $$ = new FieldDeclaration($1, Symbol($2, driver.GetLocation())); }
 ;
 
 variable_declaration: type "identifier" ";"
-  { $$ = new VariableDeclaration($1, Symbol($2)); }
+  { $$ = new VariableDeclaration($1, Symbol($2, driver.GetLocation())); }
 ;
 
 //TODO (make new rule)
 //  		    | type "identifier" "=" expr ";"
-  //  { $$ = new VariableDeclaration($1, Symbol($2)); }
+  //  { $$ = new VariableDeclaration($1, Symbol($2, driver.GetLocation())); }
 
 method_declaration: type "identifier" "(" comma_formals_list ")" "{" statement_list "}"
-  { $$ = new MethodDeclaration(Symbol($2), TypeFactory::GetMethodTy($4, $1), $7); }
+  { $$ = new MethodDeclaration(Symbol($2, driver.GetLocation()), TypeFactory::GetMethodTy($4, $1), $7); }
 ;
 
 comma_formals_list: formals
@@ -242,7 +242,7 @@ comma_formals_list: formals
  { $$ = $1; $$.push_back($3); }
 ;
 
-formals: type "identifier" { $$ = ArgEntry($1, Symbol($2)); }
+formals: type "identifier" { $$ = ArgEntry($1, Symbol($2, driver.GetLocation())); }
 ;
 
 type: simple_type { $$ = $1; }
@@ -262,7 +262,7 @@ simple_type: "int"
            | "float"
   { $$ = TypeFactory::GetFloatTy(); }
            | "identifier"
-  { $$ = TypeFactory::GetClassTy(Symbol($1)); }
+  { $$ = TypeFactory::GetClassTy(Symbol($1, driver.GetLocation())); }
 ;
 
 statement: local_variable_statement
@@ -287,9 +287,9 @@ statement: local_variable_statement
 
 //neeeeed expression instead of identifier
 lvalue: "identifier"
-  { $$ = new IdentifierLValue(Symbol($1)); }
+  { $$ = new IdentifierLValue(Symbol($1, driver.GetLocation())); }
       | "identifier" "[" expr "]"
-  { $$ = new ArrayLValue(Symbol($1), $3); }
+  { $$ = new ArrayLValue(Symbol($1, driver.GetLocation()), $3); }
 ;
 
 local_variable_statement: variable_declaration
@@ -330,7 +330,7 @@ expr: "(" expr ")"
       | expr "%"    expr
   {$$ = new MathOpExpression($1, MathOperation::PERCENT, $3);}
       | "identifier"
-  { $$ = new IdentifierExpression(Symbol($1)); }
+  { $$ = new IdentifierExpression(Symbol($1, driver.GetLocation())); }
       | integer_literal
   { $$ = new IntegerExpression($1); }
       | "true"
@@ -353,9 +353,9 @@ expr: "(" expr ")"
   { $$ = new MethodCallExpression($1); }
 
 method_call: expr "." "identifier" "(" comma_expr_list ")"
-  { $$ = new MethodCall(Symbol($3), $1, $5); }
+  { $$ = new MethodCall(Symbol($3, driver.GetLocation()), $1, $5); }
            | expr "." "identifier" "(" ")"
-  { $$ = new MethodCall(Symbol($3), $1, new CommaExpressionList()); }
+  { $$ = new MethodCall(Symbol($3, driver.GetLocation()), $1, new CommaExpressionList()); }
 ;
 
 comma_expr_list: expr

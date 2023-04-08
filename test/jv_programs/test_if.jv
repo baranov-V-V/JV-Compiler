@@ -9,6 +9,7 @@ class A {
       b = 10;
     } else {
       b = 11;
+      int a;
     }
 
     println(b + 100);
@@ -16,6 +17,7 @@ class A {
 
     if ((a > 2) && (a == 4)) {
       b = 13;
+      int b;
     } else {
       b = 11;
     }
