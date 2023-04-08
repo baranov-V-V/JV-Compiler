@@ -1,8 +1,10 @@
 #pragma once
 
 #include "spdlog/spdlog.h"
+
 #include "fmt/core.h"
 #include "fmt/color.h"
+
 #include "compiler/exceptions/compilation_exception.hpp"
 
 enum LOG_LEVEL : int {

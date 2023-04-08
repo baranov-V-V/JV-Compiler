@@ -13,6 +13,7 @@
 
 class ClassScopeLayer;
 
+//TODO Add MethodSupport and FindMethod Functions;
 class ScopeLayer {
  public:
   ScopeLayer();

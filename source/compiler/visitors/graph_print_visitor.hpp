@@ -9,6 +9,7 @@
 #include <filesystem>
 #include <string>
 
+//TODO full rewrite class
 class GraphPrintVisitor : public PrintVisitor {
  public:
   GraphPrintVisitor() = default;

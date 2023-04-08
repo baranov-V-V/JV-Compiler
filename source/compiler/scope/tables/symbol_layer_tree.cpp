@@ -1,6 +1,7 @@
+#include "core/logger.hpp"
+
 #include "symbol_layer_tree.hpp"
 #include "scope/layers/class_scope_layer.hpp"
-#include "core/logger.hpp"
 
 SymbolLayerTree::SymbolLayerTree(ScopeLayer* root) : root(root) {}
 

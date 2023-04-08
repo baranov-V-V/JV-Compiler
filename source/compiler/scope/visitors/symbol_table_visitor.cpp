@@ -3,6 +3,7 @@
 #include "symbol_table_visitor.hpp"
 #include "compiler/ast/ast.hpp"
 #include "class_table_visitor.hpp"
+
 #include "compiler/scope/layers/class_scope_layer.hpp"
 
 SymbolTableVisitor::SymbolTableVisitor() {}

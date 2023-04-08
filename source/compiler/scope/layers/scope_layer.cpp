@@ -1,4 +1,5 @@
 #include "compiler/core/logger.hpp"
+
 #include "compiler/ir/objects/object_factory.hpp"
 #include "scope_layer.hpp"
 #include "class_scope_layer.hpp"
