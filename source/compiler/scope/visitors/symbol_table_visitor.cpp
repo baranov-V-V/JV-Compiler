@@ -9,6 +9,7 @@ SymbolTableVisitor::SymbolTableVisitor() {}
 
 SymbolTable* SymbolTableVisitor::ConstructSymbolTree(Program* program) {
   ScopeLayer* global = new ScopeLayer(nullptr, "global");
+
   tree = new SymbolLayerTree(global);
   layer_iterator = SymbolLayerTree::Iterator(global);
 

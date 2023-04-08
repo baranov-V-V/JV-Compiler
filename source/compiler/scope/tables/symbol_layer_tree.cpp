@@ -1,5 +1,6 @@
 #include "symbol_layer_tree.hpp"
 #include "scope/layers/class_scope_layer.hpp"
+#include "core/logger.hpp"
 
 SymbolLayerTree::SymbolLayerTree(ScopeLayer* root) : root(root) {}
 
@@ -28,6 +29,26 @@ SymbolLayerTree::Iterator SymbolLayerTree::begin() {
 
 SymbolLayerTree::Iterator SymbolLayerTree::end() {
   return SymbolLayerTree::Iterator(root, root, root->GetChildNum());
+}
+
+void SymbolLayerTree::DumpTree(const std::filesystem::path& path) {
+  std::filesystem::path dot_file(path);
+
+  dot_file.replace_extension("dot");
+  std::string command = "dot -Tpng " + dot_file.string() + " -o " + path.string();
+
+  LOG_DEBUG("dot file : {}", dot_file.string());
+  LOG_DEBUG("png file : {}", path.string());
+
+  //TODO maybe remove
+  //for fmt::ostream
+  std::filesystem::create_directories(dot_file.parent_path());
+
+  fmt::ostream ostream = fmt::output_file(dot_file.c_str());
+  root->GraphVizDump(ostream);
+  ostream.close();
+
+  LOG_INFO("graphing done with code: {}", system(command.c_str()));
 }
 
 SymbolLayerTree::Iterator::Iterator(ScopeLayer* root) : root(root), current_parent(root), curr_idx(0) {

@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+
+#include "fmt/os.h"
+
 #include "util/symbol.hpp"
 #include "ir/objects/object.hpp"
 #include "types/class_type.hpp"
@@ -20,6 +23,7 @@ class ScopeLayer {
   void DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type);
   void DeclareVariable(const Symbol& symbol, const std::shared_ptr<Object>& type);
 
+  //TODO safe delete
   //void DeclareMethod(const Symbol& symbol, const SharedPtr<MethodType>& type);
 
   [[nodiscard]] std::shared_ptr<Object>& GetFromCurrent(const Symbol& symbol);
@@ -44,19 +48,23 @@ class ScopeLayer {
 
   ClassScopeLayer* GetClassScope();
 
+  //TODO make private
+  virtual void GraphVizDump(fmt::ostream& ostream);
+
  protected:
   void CheckDeclared(const Symbol& symbol, const SharedPtr<Type>& type) const;
+
   void CheckDeclared(const Symbol& symbol) const;
-
   std::string name = "anonymous";
-  ScopeLayer* parent;
 
+  ScopeLayer* parent;
   std::vector<ScopeLayer*> children;
+
   std::unordered_map<Symbol, std::shared_ptr<Object>> variables;
 
   ClassScopeLayer* class_scope;
-
  private:
+
   void DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& type);
   void DeclareArray(const Symbol& symbol, const SharedPtr<ArrayType>& type);
   void DeclarePrimitive(const Symbol& symbol, const SharedPtr<Type>& type);

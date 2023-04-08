@@ -10,6 +10,7 @@ void GraphPrintVisitor::Print(const std::filesystem::path& filename,
                               Program* program) {
 
   std::filesystem::path dot_file(filename);
+  //TODO(smth mayber wrong here)
   dot_file.replace_extension("dot");
   std::string command = "dot -Tpng " + dot_file.string() + " -o " + filename.string(); 
   

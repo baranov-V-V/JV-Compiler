@@ -112,6 +112,20 @@ ClassScopeLayer* ScopeLayer::GetClassScope() {
   return class_scope;
 }
 
+void ScopeLayer::GraphVizDump(fmt::ostream& ostream) {
+  ostream.print("\tnode{} [label=\"<LayerName> {}\"];", (void*) this, this->name);
+
+  for (const auto& entry: variables) {
+    ostream.print("\tnode{} [label=\"<Type> {}|<Var> {}\"];",
+                  (void*) &entry.first, entry.second->GetType()->ToString(), entry.first.name);
+    ostream.print("\t\tnode{}:s -> node{} [color=\"grey14\"];\n", (void*) this, (void*) &entry.first);
+  }
+
+  for (ScopeLayer* layer : children) {
+    layer->GraphVizDump(ostream);
+  }
+}
+
 /*
 void ScopeLayer::DeclareMethod(const Symbol& symbol, const SharedPtr<MethodType>& type) {
   variables.insert({symbol, std::reinterpret_pointer_cast<Object>(ObjectFactory::CreateMethod(type))});

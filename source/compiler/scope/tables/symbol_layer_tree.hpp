@@ -1,15 +1,21 @@
 #pragma once
 
+#include <filesystem>
+
 #include <stack>
 #include "scope/layers/scope_layer.hpp"
 
 class SymbolLayerTree {
  public:
+  friend class ScopeLayer;
+
   explicit SymbolLayerTree(ScopeLayer* root);
   ~SymbolLayerTree();
 
   void AddLayer(ScopeLayer* parent, const std::string& name = "anonymous");
   void AddClassLayer(ScopeLayer* parent, SharedPtr<ClassType> type);
+
+  void DumpTree(const std::filesystem::path& path);
 
   class Iterator : public std::iterator<std::input_iterator_tag, ScopeLayer*, int, ScopeLayer*, ScopeLayer*> {
    public:
