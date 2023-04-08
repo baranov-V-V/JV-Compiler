@@ -30,6 +30,12 @@ void SymbolTableVisitor::Visit(ClassDeclaration* class_declaration) {
     layer_iterator->DeclareVariable(entry.first, entry.second);
   }
 
+  //put all methods in class layer
+  for (const auto& entry : class_table->GetInfo(class_declaration->class_type).GetAllMethods()) {
+    CheckRedeclared(entry.second, entry.first);
+    layer_iterator->DeclareVariable(entry.first, entry.second);
+  }
+
   current_class = class_declaration->class_type;
   class_declaration->declaration_list->Accept(this);
 

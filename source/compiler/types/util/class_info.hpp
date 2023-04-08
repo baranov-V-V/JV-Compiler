@@ -22,6 +22,7 @@ class ClassInfo {
   void AddFieldType(const Symbol& symbol, const SharedPtr<Type>& field_type);
 
   const std::unordered_map<Symbol, SharedPtr<Type>>& GetAllFields();
+  const std::unordered_map<Symbol, SharedPtr<MethodType>>& GetAllMethods();
 
  private:
   std::unordered_map<Symbol, SharedPtr<MethodType>> methods;

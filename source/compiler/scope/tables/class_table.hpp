@@ -2,7 +2,7 @@
 
 #include <map>
 #include "types/class_type.hpp"
-#include "ir/objects/class_info.hpp"
+#include "types/util/class_info.hpp"
 
 /**
  * @brief Holds most basic info about the classes, need to construct this to

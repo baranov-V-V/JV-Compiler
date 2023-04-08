@@ -23,6 +23,8 @@ class ScopeLayer {
   void DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& type);
   void DeclareArray(const Symbol& symbol, const SharedPtr<ArrayType>& type);
 
+  //void DeclareMethod(const Symbol& symbol, const SharedPtr<MethodType>& type);
+
   [[nodiscard]] std::shared_ptr<Object>& GetFromCurrent(const Symbol& symbol);
   [[nodiscard]] const std::shared_ptr<Object>& GetFromAnywhere(const Symbol& symbol) const;
 

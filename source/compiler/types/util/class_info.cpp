@@ -35,3 +35,7 @@ bool ClassInfo::HasMethodType(const Symbol& symbol) const {
 bool ClassInfo::HasFieldType(const Symbol& symbol) const {
   return fields.contains(symbol);
 }
+
+const std::unordered_map<Symbol, SharedPtr<MethodType>>& ClassInfo::GetAllMethods() {
+  return methods;
+}

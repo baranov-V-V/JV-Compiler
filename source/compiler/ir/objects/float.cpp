@@ -12,6 +12,7 @@ std::string Float::ToString() const {
 }
 
 bool Float::Equals(const Object* obj) {
+  //TODO(make equals)
   return false;
 }
 

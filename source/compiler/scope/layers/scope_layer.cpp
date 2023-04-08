@@ -27,7 +27,8 @@ ScopeLayer* ScopeLayer::GetParent() const {
 
 void ScopeLayer::DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type) {
   CheckDeclared(symbol, type);
-  //variables.insert({symbol, ObjectFactory::Create});
+
+  variables.insert({symbol, ObjectFactory::CreatePrimitive(type)});
 }
 
 void ScopeLayer::DeclareVariable(const Symbol& symbol, const std::shared_ptr<Object>& object) {
@@ -38,13 +39,13 @@ void ScopeLayer::DeclareVariable(const Symbol& symbol, const std::shared_ptr<Obj
 void ScopeLayer::DeclareArray(const Symbol& symbol, const SharedPtr<ArrayType>& type) {
   CheckDeclared(symbol, type);
 
-  //variables.insert({symbol, ObjectFactory::CreateArray<>()});
+  variables.insert({symbol, ObjectFactory::CreateArrayRef(type)});
 }
 
 void ScopeLayer::DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& type) {
   CheckDeclared(symbol, type);
 
-  variables.insert({symbol, std::reinterpret_pointer_cast<Object>(ObjectFactory::CreateClass(type))});
+  variables.insert({symbol, std::reinterpret_pointer_cast<Object>(ObjectFactory::CreateClassRef(type))});
 }
 
 std::shared_ptr<Object>& ScopeLayer::GetFromCurrent(const Symbol& symbol) {
@@ -104,6 +105,12 @@ void ScopeLayer::AddChild(ScopeLayer* child) {
 ClassScopeLayer* ScopeLayer::GetClassScope() {
   return class_scope;
 }
+
+/*
+void ScopeLayer::DeclareMethod(const Symbol& symbol, const SharedPtr<MethodType>& type) {
+  variables.insert({symbol, std::reinterpret_pointer_cast<Object>(ObjectFactory::CreateMethod(type))});
+}
+*/
 
 template<class ObjType>
 std::shared_ptr<ObjType>& ScopeLayer::GetTypedFromCurrent(const Symbol& symbol) {

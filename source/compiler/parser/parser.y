@@ -228,6 +228,10 @@ variable_declaration: type "identifier" ";"
   { $$ = new VariableDeclaration($1, Symbol($2)); }
 ;
 
+//TODO (make new rule)
+//  		    | type "identifier" "=" expr ";"
+  //  { $$ = new VariableDeclaration($1, Symbol($2)); }
+
 method_declaration: type "identifier" "(" comma_formals_list ")" "{" statement_list "}"
   { $$ = new MethodDeclaration(Symbol($2), TypeFactory::GetMethodTy($4, $1), $7); }
 ;

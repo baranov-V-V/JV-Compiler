@@ -2,10 +2,11 @@
 
 #include "object.hpp"
 
-class Bool : public Object {
+class Boolean : public Object {
  public:
-  explicit Bool(bool value);
-  ~Bool() override = default;
+  Boolean() = default;
+  explicit Boolean(bool value);
+  ~Boolean() override = default;
 
   [[nodiscard]] bool GetValue() const;
   void SetValue(bool value);
@@ -15,5 +16,5 @@ class Bool : public Object {
   [[nodiscard]] bool Equals(const Object* obj) override;
 
  private:
-  bool value;
+  bool value = false;
 };

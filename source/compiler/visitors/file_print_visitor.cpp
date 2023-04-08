@@ -20,7 +20,7 @@ void FilePrintVisitor::Visit(Program* program) {
 }
 
 void FilePrintVisitor::Visit(MainClass* main_class) {
-  PRINT_TABBED("Main Class")
+  PRINT_TABBED("Main ClassRef")
   VISIT_TABBED(
     main_class->statement_list->Accept(this);
   )
@@ -35,7 +35,7 @@ void FilePrintVisitor::Visit(ClassDeclaration* class_declaration) {
 }
 
 void FilePrintVisitor::Visit(ClassDeclarationList* class_declaration_list) {
-  PRINT_TABBED("Class Declaration List")
+  PRINT_TABBED("ClassRef Declaration List")
   VISIT_TABBED(
     class_declaration_list->Accept(this);
   )

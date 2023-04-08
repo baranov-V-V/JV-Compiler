@@ -1,24 +1,25 @@
 #include "bool.hpp"
 #include "types/type_factory.hpp"
 
-Bool::Bool(bool value) : value(value) {}
+Boolean::Boolean(bool value) : value(value) {}
 
-SharedPtr<Type> Bool::GetType() const {
+SharedPtr<Type> Boolean::GetType() const {
   return TypeFactory::GetBoolTy();
 }
 
-std::string Bool::ToString() const {
+std::string Boolean::ToString() const {
   return TypeFactory::GetBoolTy()->ToString() + (value ? " true" : " false");
 }
 
-bool Bool::Equals(const Object* obj) {
+bool Boolean::Equals(const Object* obj) {
+  //TODO(make equals)
   return false;
 }
 
-bool Bool::GetValue() const {
+bool Boolean::GetValue() const {
   return value;
 }
 
-void Bool::SetValue(bool value) {
-  Bool::value = value;
+void Boolean::SetValue(bool value) {
+  Boolean::value = value;
 }

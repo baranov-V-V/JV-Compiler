@@ -4,6 +4,7 @@
 
 class Float : public Object {
  public:
+  Float() = default;
   explicit Float(float value);
   ~Float() override = default;
 
@@ -16,5 +17,5 @@ class Float : public Object {
 
  private:
   //llvm:Value* value;
-  float value;
+  float value = 0.0;
 };

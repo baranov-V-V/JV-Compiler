@@ -4,6 +4,7 @@
 
 class Integer : public Object {
  public:
+  Integer() = default;
   explicit Integer(int value);
   ~Integer() override = default;
 
@@ -15,5 +16,6 @@ class Integer : public Object {
   [[nodiscard]] bool Equals(const Object* obj) override;
 
  private:
-  int value;
+  //llvm::Value*;
+  int value = 0;
 };

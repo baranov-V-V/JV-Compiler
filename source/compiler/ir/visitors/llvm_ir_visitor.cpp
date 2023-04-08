@@ -56,7 +56,7 @@ void LLVMIRVisitor::Visit(ClassDeclaration* class_declaration) {
 }
 
 void LLVMIRVisitor::Visit(ClassDeclarationList* class_declaration_list) {
-  LOG_DEBUG("In Class-Decalration List")
+  LOG_DEBUG("In ClassRef-Decalration List")
   class_declaration_list->Accept(this);
 }
 
