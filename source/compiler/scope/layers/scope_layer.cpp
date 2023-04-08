@@ -28,7 +28,13 @@ ScopeLayer* ScopeLayer::GetParent() const {
 void ScopeLayer::DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type) {
   CheckDeclared(symbol, type);
 
-  variables.insert({symbol, ObjectFactory::CreatePrimitive(type)});
+  if (type->IsArray()) {
+    DeclareArray(symbol, std::reinterpret_pointer_cast<ArrayType>(type));
+  } else if (type->IsClass()) {
+    DeclareClass(symbol, std::reinterpret_pointer_cast<ClassType>(type));
+  } else {
+    DeclarePrimitive(symbol, type);
+  }
 }
 
 void ScopeLayer::DeclareVariable(const Symbol& symbol, const std::shared_ptr<Object>& object) {
@@ -37,15 +43,15 @@ void ScopeLayer::DeclareVariable(const Symbol& symbol, const std::shared_ptr<Obj
 }
 
 void ScopeLayer::DeclareArray(const Symbol& symbol, const SharedPtr<ArrayType>& type) {
-  CheckDeclared(symbol, type);
-
   variables.insert({symbol, ObjectFactory::CreateArrayRef(type)});
 }
 
 void ScopeLayer::DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& type) {
-  CheckDeclared(symbol, type);
-
   variables.insert({symbol, std::reinterpret_pointer_cast<Object>(ObjectFactory::CreateClassRef(type))});
+}
+
+void ScopeLayer::DeclarePrimitive(const Symbol& symbol, const SharedPtr<Type>& type) {
+  variables.insert({symbol, ObjectFactory::CreatePrimitive(type)});
 }
 
 std::shared_ptr<Object>& ScopeLayer::GetFromCurrent(const Symbol& symbol) {

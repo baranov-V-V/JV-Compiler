@@ -20,9 +20,6 @@ class ScopeLayer {
   void DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type);
   void DeclareVariable(const Symbol& symbol, const std::shared_ptr<Object>& type);
 
-  void DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& type);
-  void DeclareArray(const Symbol& symbol, const SharedPtr<ArrayType>& type);
-
   //void DeclareMethod(const Symbol& symbol, const SharedPtr<MethodType>& type);
 
   [[nodiscard]] std::shared_ptr<Object>& GetFromCurrent(const Symbol& symbol);
@@ -58,4 +55,9 @@ class ScopeLayer {
   std::unordered_map<Symbol, std::shared_ptr<Object>> variables;
 
   ClassScopeLayer* class_scope;
+
+ private:
+  void DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& type);
+  void DeclareArray(const Symbol& symbol, const SharedPtr<ArrayType>& type);
+  void DeclarePrimitive(const Symbol& symbol, const SharedPtr<Type>& type);
 };
