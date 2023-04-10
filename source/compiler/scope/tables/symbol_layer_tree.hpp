@@ -3,6 +3,7 @@
 #include <filesystem>
 
 #include <stack>
+#include <map>
 #include "scope/layers/scope_layer.hpp"
 
 class SymbolLayerTree {
@@ -37,7 +38,9 @@ class SymbolLayerTree {
     ScopeLayer* current_parent;
 
     int curr_idx;
-    std::stack<int> child_indexes;
+    //std::stack<int> child_indexes;
+
+    std::map<ScopeLayer*, int> child_indexes;
   };
 
   Iterator begin();

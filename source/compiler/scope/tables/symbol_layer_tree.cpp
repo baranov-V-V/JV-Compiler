@@ -76,20 +76,27 @@ ScopeLayer* SymbolLayerTree::Iterator::operator->() const {
 }
 
 void SymbolLayerTree::Iterator::GoDown() {
+  child_indexes[current_parent] = curr_idx;
+
   current_parent = current_parent->GetChild(curr_idx);
-  child_indexes.push(curr_idx);
 
-  //TODO change curr_idx
+  if (!child_indexes.contains(current_parent)) {
+    child_indexes.insert({current_parent, 0});
+  } else {
+    ++child_indexes.at(current_parent);
+  }
 
-  curr_idx = 0;
+  curr_idx = child_indexes.at(current_parent);
 }
 
 void SymbolLayerTree::Iterator::GoUp() {
+  child_indexes.at(current_parent) = curr_idx;
+
   current_parent = current_parent->GetParent();
-  curr_idx = child_indexes.top() + 1;
-  child_indexes.pop();
+  curr_idx = child_indexes.at(current_parent);
 }
 
+/*
 SymbolLayerTree::Iterator& SymbolLayerTree::Iterator::operator++() {
   if (curr_idx == current_parent->GetChildNum()) {
     curr_idx = child_indexes.top();
@@ -101,3 +108,4 @@ SymbolLayerTree::Iterator& SymbolLayerTree::Iterator::operator++() {
 
   return *this;
 }
+*/

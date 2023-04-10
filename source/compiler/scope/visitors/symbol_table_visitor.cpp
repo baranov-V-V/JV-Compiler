@@ -92,10 +92,10 @@ void SymbolTableVisitor::Visit(FalseExpression* expression) {
 
 void SymbolTableVisitor::Visit(CompareOpExpression* expression) {
   SharedPtr<Type> lhs = Accept(expression->lhs);
-  CheckPrimitive(lhs);
+  CheckTypePrimitive(lhs);
 
   SharedPtr<Type> rhs = Accept(expression->rhs);
-  CheckPrimitive(rhs);
+  CheckTypePrimitive(rhs);
 
   stack.Put(TypeFactory::GetBoolTy());
 }
@@ -123,18 +123,18 @@ void SymbolTableVisitor::Visit(LogicOpExpression* expression) {
   SharedPtr<Type> lhs = Accept(expression->lhs);
   SharedPtr<Type> rhs = Accept(expression->rhs);
 
-  CheckAndWarn(TypeFactory::GetBoolTy(), lhs);
-  CheckAndWarn(TypeFactory::GetBoolTy(), rhs);
+  CheckTypesAndWarn(TypeFactory::GetBoolTy(), lhs);
+  CheckTypesAndWarn(TypeFactory::GetBoolTy(), rhs);
 
   stack.Put(TypeFactory::GetBoolTy());
 }
 
 void SymbolTableVisitor::Visit(MathOpExpression* expression) {
   SharedPtr<Type> lhs = Accept(expression->lhs);
-  CheckPrimitive(lhs);
+  CheckTypePrimitive(lhs);
 
   SharedPtr<Type> rhs = Accept(expression->rhs);
-  CheckPrimitive(rhs);
+  CheckTypePrimitive(rhs);
 
   //CheckCommonType(lhs, rhs);
 
@@ -162,7 +162,7 @@ void SymbolTableVisitor::Visit(NewClassExpression* expression) {
 void SymbolTableVisitor::Visit(NotExpression* expression) {
   SharedPtr<Type> type = Accept(expression->expression);
 
-  CheckAndWarn(TypeFactory::GetBoolTy(), type);
+  CheckTypesAndWarn(TypeFactory::GetBoolTy(), type);
 
   stack.Put(TypeFactory::GetBoolTy());
 }
@@ -222,7 +222,7 @@ void SymbolTableVisitor::Visit(MethodCall* call) {
 
   call->expression_list->Accept(this);
   for (int i = args_count - 1; i >= 0; --i) {
-    CheckAndWarn(method_type->GetArg(i).type, stack.TopAndPop());
+    CheckTypesAndWarn(method_type->GetArg(i).type, stack.TopAndPop());
   }
 
   stack.Put(method_type->GetReturnType());
@@ -230,18 +230,18 @@ void SymbolTableVisitor::Visit(MethodCall* call) {
 
 void SymbolTableVisitor::Visit(AssertStatement* statement) {
   SharedPtr<Type> type = Accept(statement->expression);
-  CheckConvertable(TypeFactory::GetBoolTy(), type);
+  CheckTypesConvertable(TypeFactory::GetBoolTy(), type);
 }
 
 void SymbolTableVisitor::Visit(AssignmentStatement* statement) {
   SharedPtr<Type> lvalue_type = Accept(statement->value);
   SharedPtr<Type> expr_type = Accept(statement->expression);
 
-  CheckAndWarn(lvalue_type, expr_type);
+  CheckTypesAndWarn(lvalue_type, expr_type);
 }
 
 void SymbolTableVisitor::Visit(IfElseStatement* statement) {
-  CheckAndWarn(TypeFactory::GetBoolTy(), Accept(statement->cond_expression));
+  CheckTypesAndWarn(TypeFactory::GetBoolTy(), Accept(statement->cond_expression));
 
   ScopeGoDown("if");
   statement->statement_true->Accept(this);
@@ -253,7 +253,7 @@ void SymbolTableVisitor::Visit(IfElseStatement* statement) {
 }
 
 void SymbolTableVisitor::Visit(IfStatement* statement) {
-  CheckAndWarn(TypeFactory::GetBoolTy(), Accept(statement->cond_expression));
+  CheckTypesAndWarn(TypeFactory::GetBoolTy(), Accept(statement->cond_expression));
 
   ScopeGoDown("if_only");
   statement->statement_true->Accept(this);
@@ -271,13 +271,13 @@ void SymbolTableVisitor::Visit(MethodCallStatement* statement) {
 
 void SymbolTableVisitor::Visit(PrintStatement* statement) {
   //print only for primitive
-  CheckPrimitive(Accept(statement->expression));
+  CheckTypePrimitive(Accept(statement->expression));
 }
 
 void SymbolTableVisitor::Visit(ReturnStatement* statement) {
   SharedPtr<Type> type = Accept(statement->expression);
 
-  CheckAndWarn(current_method->GetReturnType(), type);
+  CheckTypesAndWarn(current_method->GetReturnType(), type);
 }
 
 void SymbolTableVisitor::Visit(StatementList* statement) {
@@ -293,7 +293,7 @@ void SymbolTableVisitor::Visit(StatementListStatement* statement) {
 void SymbolTableVisitor::Visit(WhileStatement* statement) {
   ScopeGoDown("while");
 
-  CheckAndWarn(TypeFactory::GetBoolTy(), Accept(statement->cond_expression));
+  CheckTypesAndWarn(TypeFactory::GetBoolTy(), Accept(statement->cond_expression));
   statement->statement->Accept(this);
 
   ScopeGoUp();
@@ -352,7 +352,7 @@ SharedPtr<Type> SymbolTableVisitor::Accept(AstNode* ast_node) {
   return stack.TopAndPop();
 }
 
-void SymbolTableVisitor::CheckConvertable(SharedPtr<Type> to, SharedPtr<Type> from) {
+void SymbolTableVisitor::CheckTypesConvertable(SharedPtr<Type> to, SharedPtr<Type> from) {
   if (!converter.IsNarrowingConvertable(to, from)) {
     COMPILER_ERROR("Could not convert [{}] to [{}]", from->ToString(), to->ToString())
   }
@@ -365,14 +365,14 @@ void SymbolTableVisitor::WarnNarrowing(SharedPtr<Type> to, SharedPtr<Type> from)
   }
 }
 
-void SymbolTableVisitor::CheckCommonType(SharedPtr<Type> lhs,
+void SymbolTableVisitor::CheckHasCommonType(SharedPtr<Type> lhs,
                                          SharedPtr<Type> rhs) {
   if (!converter.HasCommonType(lhs, rhs)) {
     COMPILER_ERROR("Types [{}], [{}] doesnt have common type", lhs->ToString(), rhs->ToString())
   }
 }
 
-void SymbolTableVisitor::CheckPrimitive(SharedPtr<Type> type) {
+void SymbolTableVisitor::CheckTypePrimitive(SharedPtr<Type> type) {
   if (!type->IsPrimitive()) {
     COMPILER_ERROR("Operand is not of primitive type: [{}]", type->ToString());
   }
@@ -385,8 +385,8 @@ void SymbolTableVisitor::CheckRedeclared(const Symbol& symbol) {
   }
 }
 
-void SymbolTableVisitor::CheckAndWarn(SharedPtr<Type> to, SharedPtr<Type> from) {
-  CheckConvertable(to, from);
+void SymbolTableVisitor::CheckTypesAndWarn(SharedPtr<Type> to, SharedPtr<Type> from) {
+  CheckTypesConvertable(to, from);
   WarnNarrowing(to, from);
 }
 

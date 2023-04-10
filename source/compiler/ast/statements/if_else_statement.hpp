@@ -6,12 +6,12 @@
 
 class IfElseStatement: public Statement {
  public:
-  IfElseStatement(Expression* expr, Statement* statement_true, Statement* statement_false);
+  IfElseStatement(Expression* expr, StatementList* statement_true, StatementList* statement_false);
   virtual ~IfElseStatement() override;
 
   virtual void Accept(Visitor* visitor) override;
 
   Expression* cond_expression;
-  Statement* statement_true;
-  Statement* statement_false;
+  StatementList* statement_true;
+  StatementList* statement_false;
 };

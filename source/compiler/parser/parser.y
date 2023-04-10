@@ -269,13 +269,13 @@ statement: local_variable_statement
   { $$ = $1; }
          | "{" statement_list "}"
   { $$ = new StatementListStatement($2); }
-         | "if"  "(" expr ")" statement "else" statement
-  { $$ = new IfElseStatement($3, $5, $7); }
-         | "if"  "(" expr ")" statement
-  { $$ = new IfStatement($3, $5); }
-         | "while" "(" expr ")" statement
-  { $$ = new WhileStatement($3, $5); }
-         | "println" "(" expr ")" ";"
+         | "if"  "(" expr ")" "{" statement_list "}" "else" "{" statement_list "}"
+  { $$ = new IfElseStatement($3, $6, $10); }
+         | "if"  "(" expr ")" "{" statement_list "}"
+  { $$ = new IfStatement($3, $6); }
+         | "while"  "(" expr ")" "{" statement_list "}"
+  { $$ = new WhileStatement($3, $6); }
+         | "println"  "(" expr ")" ";"
   { $$ = new PrintStatement($3); }
          | lvalue "=" expr ";"
   { $$ = new AssignmentStatement($1, $3); }

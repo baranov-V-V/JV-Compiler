@@ -58,15 +58,15 @@ SymbolTableVisitor : public Visitor, public VisitorHelper<SharedPtr<Type>> {
   SharedPtr<Type> Accept(AstNode* ast_node) override;
 
  private:
-  void CheckAndWarn(SharedPtr<Type> to, SharedPtr<Type> from);
+  void CheckTypesAndWarn(SharedPtr<Type> to, SharedPtr<Type> from);
   
-  void CheckConvertable(SharedPtr<Type> to, SharedPtr<Type> from);
+  void CheckTypesConvertable(SharedPtr<Type> to, SharedPtr<Type> from);
   void WarnNarrowing(SharedPtr<Type> to, SharedPtr<Type> from);
 
-  void CheckCommonType(SharedPtr<Type> lhs, SharedPtr<Type> rhs);
-  void CheckPrimitive(SharedPtr<Type> type);
+  void CheckHasCommonType(SharedPtr<Type> lhs, SharedPtr<Type> rhs);
+  void CheckTypePrimitive(SharedPtr<Type> type);
 
-  //void CheckPrimitive(SharedPtr<Type> type);
+  //void CheckTypePrimitive(SharedPtr<Type> type);
 
   void CheckRedeclared(const Symbol& symbol);
   void CheckRedeclared(const SharedPtr<Type>& type, const Symbol& symbol);
