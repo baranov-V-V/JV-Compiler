@@ -22,7 +22,7 @@ void FilePrintVisitor::Visit(Program* program) {
 void FilePrintVisitor::Visit(MainClass* main_class) {
   PRINT_TABBED("Main ClassRef")
   VISIT_TABBED(
-    main_class->statement_list->Accept(this);
+    Visit(main_class->statement_list);
   )
 }
 
@@ -92,7 +92,7 @@ void FilePrintVisitor::Visit(NotExpression* expression) {
 }
 
 void FilePrintVisitor::Visit(AssignmentStatement* statement) {
-  PRINT_TABBED("Assignment Expr")
+  PRINT_TABBED("Assignment Stmt")
   VISIT_TABBED(
     statement->value->Accept(this);
     statement->expression->Accept(this);

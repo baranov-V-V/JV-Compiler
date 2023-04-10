@@ -19,7 +19,7 @@ void TraseScanFlag::Apply(Compiler* compiler) const {
 }
 
 AstDumpTxtFlag::AstDumpTxtFlag() : 
-  filename("dump-txt", llvm::cl::desc("Specify dump output filename"), llvm::cl::value_desc("filename"),
+  filename("dump-ast-txt", llvm::cl::desc("AST text dump"), llvm::cl::value_desc("filename"),
             llvm::cl::init("")) {}
 
 void AstDumpTxtFlag::Apply(Compiler* compiler) const {
@@ -28,13 +28,10 @@ void AstDumpTxtFlag::Apply(Compiler* compiler) const {
 }
 
 AstDumpPngFlag::AstDumpPngFlag() :
-  filename("dump-pic", llvm::cl::desc("Specify dump output filename"), llvm::cl::value_desc("filename"),
+  filename("dump-ast", llvm::cl::desc("AST graphviz dump"), llvm::cl::value_desc("filename"),
            llvm::cl::init("")) {}
 
 void AstDumpPngFlag::Apply(Compiler* compiler) const {
-  if (!filename.getValue().empty()) {
-    COMPILER_ERROR("this flag is not yet supported")
-  }
   compiler->SetDumpPng(filename.getValue());
 }
 
@@ -88,7 +85,6 @@ void CompilerFlags::PreprocessFlags() {
   Map["color"]->setHiddenFlag(llvm::cl::OptionHidden::Hidden);
   Map["help"]->setDescription("Display available options");
   Map["help-list"]->setDescription("Display list of available options");
-  Map["dump-pic"]->setHiddenFlag(llvm::cl::OptionHidden::Hidden);
 }
 
 void CompilerDebugLevelFlag::Apply(Compiler* compiler) const {

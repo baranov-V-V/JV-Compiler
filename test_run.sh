@@ -1,1 +1,1 @@
-./jvc --debug-level=TRACE --dump-table=pic/lol.png test/jv_programs/primitive/test_comments.jv
+./jvc --debug-level=TRACE --dump-table=pic/table.png --dump-ast-txt=pic/ast.txt --dump-ast=pic/ast.png test/jv_programs/primitive/test_if.jv

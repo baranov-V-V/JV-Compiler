@@ -4,6 +4,7 @@
 #include "compiler/ast/forward_declaration.hpp"
 
 #include "fmt/os.h"
+#include "util/symbol.hpp"
 
 #include <fstream>
 #include <filesystem>
@@ -22,8 +23,8 @@ class GraphPrintVisitor : public PrintVisitor {
   
   void Visit(ClassDeclaration* class_declaration) override;
   void Visit(ClassDeclarationList* class_declaration_list) override;
-  void Visit(DeclarationList* declaration_list) override;
-  void Visit(MethodDeclaration* method_declaration) override;
+  void Visit(DeclarationList* list) override;
+  void Visit(MethodDeclaration* declaration) override;
   void Visit(VariableDeclaration* variable_declaration) override;
 
   void Visit(LogicOpExpression* expression) override;
@@ -61,9 +62,17 @@ class GraphPrintVisitor : public PrintVisitor {
   void Visit(FieldLValue *statement) override;
   void Visit(IdentifierLValue *statement) override;
 
-private:
+ private:
+  template<typename NodeType = void*>
+  void PrintNode(const std::string& name, NodeType node);
+
+  template<typename FromType = void*, typename ToType = void*>
+  void PrintEdge(FromType from, ToType to, const std::string& direction = "");
+
+  template<class ListType>
+  void PrintList(ListType* list, const std::string& name, const std::string& delimiter = ";");
+
   fmt::ostream* stream;
 
-  void MakeFictListNodes(int count);
   int fict_node_no;
 };
