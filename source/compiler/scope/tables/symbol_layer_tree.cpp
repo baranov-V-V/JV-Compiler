@@ -43,19 +43,22 @@ void SymbolLayerTree::DumpTree(const std::filesystem::path& path) {
   LOG_DEBUG("dot file : {}", dot_file.string());
   LOG_DEBUG("png file : {}", path.string());
 
-  //TODO maybe remove
-  //for fmt::ostream
-  //TODO uncomment
-  //std::filesystem::create_directories(dot_file.parent_path());
+  if (!dot_file.parent_path().empty()) {
+    std::filesystem::create_directories(dot_file.parent_path());
+  }
 
   fmt::ostream ostream = fmt::output_file(dot_file.c_str());
   ostream.print("digraph Ast {{\n");
   ostream.print("node [shape=\"record\", style=\"filled\"];\n");
+
   root->GraphVizDump(ostream);
+
   ostream.print("}}\n");
   ostream.close();
 
   LOG_INFO("graphing done with code: {}", system(command.c_str()));
+
+  std::filesystem::remove(dot_file);
 }
 
 SymbolLayerTree::Iterator::Iterator(ScopeLayer* root) : root(root), current_parent(root), curr_idx(0) {

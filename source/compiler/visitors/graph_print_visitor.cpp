@@ -10,14 +10,17 @@ void GraphPrintVisitor::Print(const std::filesystem::path& filename,
                               Program* program) {
 
   std::filesystem::path dot_file(filename);
-  //TODO(smth mayber wrong here)
+
   dot_file.replace_extension("dot");
   std::string command = "dot -Tpng " + dot_file.string() + " -o " + filename.string(); 
   
   LOG_DEBUG("dot file : {}", dot_file.string());
   LOG_DEBUG("png file : {}", filename.string());
-  
-  std::filesystem::create_directories(dot_file.parent_path()); 
+
+  if (!dot_file.parent_path().empty()) {
+    std::filesystem::create_directories(dot_file.parent_path());
+  }
+
   fmt::ostream tmp_ostream = fmt::output_file(dot_file.c_str());
   stream = &tmp_ostream;
 
@@ -27,13 +30,18 @@ void GraphPrintVisitor::Print(const std::filesystem::path& filename,
   tmp_ostream.close();
 
   LOG_INFO("graphing done with code: {}", system(command.c_str()));
+
+  std::filesystem::remove(dot_file);
 }
 
 void GraphPrintVisitor::Visit(Program* program) {
   stream->print("digraph Ast {{\n");
   stream->print("node [shape=\"record\", style=\"filled\"];\n");
   stream->print("\tnode{} [label =\"<first> Program\", color=\"grey14\", fillcolor=\"gray38\"]\n", reinterpret_cast<void*>(program));
+
   program->main_class->Accept(this);
+
+
   stream->print("\t\tnode{}:sw -> node{} [color=\"navy\"];\n", reinterpret_cast<void*>(program), reinterpret_cast<void*>(program->main_class));
   stream->print("}}");
 }

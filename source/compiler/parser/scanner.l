@@ -37,7 +37,11 @@ blank [ \t\r]
   # define YY_USER_ACTION  loc.columns (yyleng);
 %}
 
+
+%x comment
+
 %%
+
 %{
   yy::location& loc = driver.location;
   loc.step();
@@ -45,6 +49,16 @@ blank [ \t\r]
 
 {blank}+   loc.step ();
 \n+        loc.lines (yyleng); loc.step ();
+
+"//".*
+
+"/*"         BEGIN(comment);
+
+<comment>[^*\n]*
+<comment>"*"+[^*/\n]*
+<comment>\n+            loc.lines (yyleng); loc.step ();
+<comment>"*"+"/"        BEGIN(INITIAL);
+
 
 "="         return yy::parser::make_ASSIGN      (loc);
 "&&"        return yy::parser::make_AND         (TOKEN::TOK_AND, loc);

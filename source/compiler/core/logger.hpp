@@ -48,5 +48,5 @@ throw CompilationException();
 #define COMPILER_WARNING(...) \
 fmt::print("jvc: ");          \
 fmt::print(fmt::emphasis::bold | fmt::fg(fmt::color::medium_purple), "warning: "); \
-fmt::print("\n\n"); \
-fmt::print(__VA_ARGS__);
+fmt::print(__VA_ARGS__);                              \
+fmt::print("\n\n");

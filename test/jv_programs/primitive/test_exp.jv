@@ -12,6 +12,7 @@ class A {
     println(c);
 
     a1 = ((5 + b) * (c + 2) % 10 + 7) / 3;
+
     println(a1);
   }
 }

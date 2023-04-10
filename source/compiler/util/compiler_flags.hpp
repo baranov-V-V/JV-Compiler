@@ -8,6 +8,9 @@
 class CompilerFlag;
 class Compiler;
 
+//TODO make singleton flags: divide them in categories.
+//then use them to call in special places in program
+
 class CompilerFlags {
  public:
   CompilerFlags() = default;

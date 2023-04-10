@@ -12,17 +12,22 @@ class A {
       int a;
     }
 
-    println(b + 100);
+    println(b + true);
     a = 4;
 
+    int c;
     if ((a > 2) && (a == 4)) {
       b = 13;
       int b;
+
+      bool a;
+      a = 3;
+      int c;
+
     } else {
       b = 11;
     }
 
-    int c;
     int d;
 
     c = 10;
@@ -31,6 +36,7 @@ class A {
       println(1);
     } else {
       println(0);
+      int c;
     }
 
     if (false || true) {
