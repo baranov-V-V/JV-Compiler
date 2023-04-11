@@ -9,7 +9,6 @@ class A {
 }
 
 class Foo {
-  /*
   int getA() {
     return a;
   }
@@ -17,7 +16,6 @@ class Foo {
   void setA(int a_param) {
     a = a_param;
   }
-  */
 
   int a;
   int b;

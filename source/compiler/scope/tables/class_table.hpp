@@ -21,5 +21,13 @@ class ClassTable {
   void AddField(SharedPtr<ClassType> type, const Symbol& symbol, SharedPtr<Type> field);
 
  private:
-  std::map<SharedPtr<ClassType>, ClassInfo> class_table;
+  /*
+  struct ClassComp : public std::binary_function<SharedPtr<ClassType>, SharedPtr<ClassType>, bool> {
+    bool operator()(const SharedPtr<ClassType>& lhs, const SharedPtr<ClassType>& rhs) const {
+      return *lhs.get() < *rhs.get();
+    }
+  };
+  */
+
+  std::unordered_map<SharedPtr<ClassType>, ClassInfo, ClassTypeHash, ClassTypeEq> class_table;
 };

@@ -6,15 +6,15 @@ class A {
     b = 3;
     println(a + b);
 
-    //Bar bar;
-    //bar = new Bar();
+    Bar bar;
+    bar = new Bar();
     
-    //Foo foo;
-    //foo = new Foo();
+    Foo foo;
+    foo = new Foo();
 
-    //foo.setA(a + 10);
-    //bar.setFoo(foo);
-    //bar.printFoo();
+    foo.setA(a + 10);
+    bar.setFoo(foo);
+    bar.printFoo();
   }
 }
 
@@ -39,7 +39,6 @@ class Foo {
   }
 }
 
-/*
 
 class Bar {
   Foo getFoo() {
@@ -61,5 +60,3 @@ class Bar {
     f.printA();
   }
 }
-
-*/

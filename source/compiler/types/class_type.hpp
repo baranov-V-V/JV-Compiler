@@ -14,6 +14,20 @@ class ClassType : public Type {
 
   bool Equals(std::shared_ptr<Type> other) override;
 
+  [[nodiscard]] const Symbol& GetName() const;
+
  private:
   Symbol name;
+};
+
+struct ClassTypeHash {
+  std::size_t operator()(const SharedPtr<ClassType>& other) const {
+    return std::hash<std::string>()(other->GetName().name);
+  }
+};
+
+struct ClassTypeEq {
+  bool operator()(const SharedPtr<ClassType>& lhs, const SharedPtr<ClassType>& rhs) const {
+    return lhs->Equals(rhs);
+  }
 };

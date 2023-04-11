@@ -15,3 +15,7 @@ bool ClassType::Equals(std::shared_ptr<Type> other) {
 
   return name == casted_other->name;
 }
+
+const Symbol& ClassType::GetName() const {
+  return name;
+}

@@ -45,7 +45,7 @@ void ClassTableVisitor::Visit(MethodDeclaration* method_declaration) {
 
 void ClassTableVisitor::CheckRedeclared(const SharedPtr<ClassType>& class_type) {
   if (table->HasInfo(class_type)) {
-    COMPILER_ERROR("Redeclaration of class '{}'", class_type->ToString());
+    COMPILER_ERROR("Redeclaration of class {}", class_type->ToString());
   }
 }
 
