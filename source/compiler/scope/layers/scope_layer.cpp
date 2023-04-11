@@ -27,19 +27,18 @@ ScopeLayer* ScopeLayer::GetParent() const {
 }
 
 void ScopeLayer::DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type) {
-  //CheckDeclared(symbol, type);
-
   if (type->IsArray()) {
     DeclareArray(symbol, std::reinterpret_pointer_cast<ArrayType>(type));
   } else if (type->IsClass()) {
     DeclareClass(symbol, std::reinterpret_pointer_cast<ClassType>(type));
+  } else if (type->IsMethod()) {
+    DeclareMethod(symbol, std::reinterpret_pointer_cast<MethodType>(type));
   } else {
     DeclarePrimitive(symbol, type);
   }
 }
 
 void ScopeLayer::DeclareVariable(const Symbol& symbol, const std::shared_ptr<Object>& object) {
-  //CheckDeclared(symbol);
   variables.insert({symbol, object});
 }
 
@@ -56,7 +55,6 @@ void ScopeLayer::DeclarePrimitive(const Symbol& symbol, const SharedPtr<Type>& t
 }
 
 std::shared_ptr<Object>& ScopeLayer::GetFromCurrent(const Symbol& symbol) {
-  //CheckDeclared(symbol);
   return variables.at(symbol);
 }
 
@@ -84,22 +82,6 @@ bool ScopeLayer::IsDeclaredAnywhere(const Symbol& symbol) const {
   return current_scope->IsDeclaredCurrent(symbol);
 }
 
-/*
-void ScopeLayer::CheckDeclared(const Symbol& symbol, const SharedPtr<Type>& type) const {
-  LOG_DEBUG("Checking {} {}", type->ToString(), symbol.name);
-  if (IsDeclaredCurrent(symbol)) {
-    COMPILER_ERROR("Variable: \"[{}] {}\" has been already declared", type->ToString(), symbol.name);
-  }
-}
-
-void ScopeLayer::CheckDeclared(const Symbol& symbol) const {
-  LOG_DEBUG("Checking {}", symbol.name);
-  if (!IsDeclaredCurrent(symbol)) {
-    COMPILER_ERROR("Variable: \"{}\" has been already declared", symbol.name);
-  }
-}
-*/
-
 ScopeLayer::ScopeLayer(ScopeLayer* parent, ClassScopeLayer* class_layer, const std::string& name) : parent(parent), name(name), class_scope(class_layer) {}
 
 void ScopeLayer::Put(const Symbol& symbol, std::shared_ptr<Object> value) {
@@ -120,8 +102,13 @@ void ScopeLayer::GraphVizDump(fmt::ostream& ostream) {
   ostream.print("\tnode{} [label=\"<LayerName> {}\"];\n", (void*) this, this->name);
 
   for (const auto& entry: variables) {
-    ostream.print("\tnode{} [label=\"<Type> {}|<Var> {}\"];\n",
-                  (void*) &entry.first, entry.second->GetType()->ToString(), entry.first.name);
+    if (entry.second->GetType()->IsMethod()) {
+      ostream.print("\tnode{} [label=\"<Type> {}\"];\n",
+                    (void*) &entry.first, entry.second->GetType()->ToString());
+    } else {
+      ostream.print("\tnode{} [label=\"<Type> {}|<Var> {}\"];\n",
+                    (void*) &entry.first, entry.second->GetType()->ToString(), entry.first.name);
+    }
     ostream.print("\t\tnode{}:sw -> node{} [color=\"grey14\"];\n", (void*) this, (void*) &entry.first);
   }
 
@@ -131,11 +118,9 @@ void ScopeLayer::GraphVizDump(fmt::ostream& ostream) {
   }
 }
 
-/*
-void ScopeLayer::DeclareMethod(const Symbol& symbol, const SharedPtr<MethodType>& type) {
+void ScopeLayer::DeclareMethod(const Symbol &symbol, const SharedPtr<MethodType> &type) {
   variables.insert({symbol, std::reinterpret_pointer_cast<Object>(ObjectFactory::CreateMethod(type))});
 }
-*/
 
 template<class ObjType>
 std::shared_ptr<ObjType>& ScopeLayer::GetTypedFromCurrent(const Symbol& symbol) {

@@ -5,7 +5,7 @@
 #include "visitors/empty_visitor.hpp"
 
 /**
- * @brief Constructs ClassTable, do not make any type-check/redeclaration-check;
+ * @brief Constructs ClassTable,make any type-check/redeclaration-check;
  * 
  */
 class ClassTableVisitor : public EmptyVisitor {
@@ -24,6 +24,9 @@ class ClassTableVisitor : public EmptyVisitor {
   void Visit(Program* program) override;
 
  private:
+  void CheckRedeclared(const SharedPtr<ClassType>& class_type);
+  void CheckRedeclared(const Symbol& method);
+
   ClassTable* table;
   SharedPtr<ClassType> current_type;
 };

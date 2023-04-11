@@ -79,8 +79,7 @@ void GraphPrintVisitor::Visit(DeclarationList* list) {
 }
 
 void GraphPrintVisitor::Visit(MethodDeclaration* declaration) {
-  PrintNode<void*>(fmt::format("Meth [{}] {}", declaration->method_type->ToString(), declaration->identifier.name),
-            declaration);
+  PrintNode<void*>(fmt::format("Meth {}", declaration->method_type->ToString()),declaration);
 
   Visit(declaration->statement_list);
 
@@ -88,7 +87,7 @@ void GraphPrintVisitor::Visit(MethodDeclaration* declaration) {
 }
 
 void GraphPrintVisitor::Visit(VariableDeclaration* declaration) {
-  PrintNode<void*>(fmt::format("Decl [{}] {}", declaration->type->ToString(), declaration->identifier.name), declaration);
+  PrintNode<void*>(fmt::format("Decl {} {}", declaration->type->ToString(), declaration->identifier.name), declaration);
 }
 
 void GraphPrintVisitor::Visit(TrueExpression* expression) {

@@ -188,29 +188,29 @@
 %start program;
 
 program : main_class 
-  { $$ = new Program($1, new ClassDeclarationList()); driver.SetProgram($$); }
+  { $$ = new Program($1, new ClassDeclarationList()); driver.SetProgram($$); $$->location = driver.GetLocation(); }
         | main_class class_declaration_list
-  { $$ = new Program($1, $2); driver.SetProgram($$); }
+  { $$ = new Program($1, $2); driver.SetProgram($$); $$->location = driver.GetLocation(); }
 ;
 
 main_class: "class" "identifier" "{" "public" "static" "void" "main" "(" ")" "{" statement_list "}" "}"
-  { $$ = new MainClass($11); }
+  { $$ = new MainClass($11); $$->location = driver.GetLocation(); }
 ;
 
 class_declaration_list: class_declaration 
-  { $$ = new ClassDeclarationList($1); }
+  { $$ = new ClassDeclarationList($1); $$->location = driver.GetLocation(); }
                       | class_declaration_list class_declaration
   { $$ = $1; $$->Add($2); }
 ;
 
 class_declaration: "class" "identifier" "{" declaration_list "}" 
-  { $$ = new ClassDeclaration(TypeFactory::GetClassTy(Symbol($2, driver.GetLocation())), $4); }
+  { $$ = new ClassDeclaration(TypeFactory::GetClassTy(Symbol($2, driver.GetLocation())), $4); $$->location = driver.GetLocation(); }
                  | "class" "identifier" "extends" "identifier" "{" declaration_list "}"
-  { $$ = new ClassDeclaration(TypeFactory::GetClassTy(Symbol($2, driver.GetLocation())), $6); }
+  { $$ = new ClassDeclaration(TypeFactory::GetClassTy(Symbol($2, driver.GetLocation())), $6); $$->location = driver.GetLocation(); }
 ;
 
 declaration_list : class_member_declaration
-  { $$ = new DeclarationList($1); }
+  { $$ = new DeclarationList($1); $$->location = driver.GetLocation(); }
                  | declaration_list class_member_declaration
   { $$ = $1; $$->Add($2); }
 ;
@@ -221,19 +221,19 @@ class_member_declaration: field_declaration
   { $$ = $1; }
 
 field_declaration: type "identifier" ";"
-  { $$ = new FieldDeclaration($1, Symbol($2, driver.GetLocation())); }
+  { $$ = new FieldDeclaration($1, Symbol($2, driver.GetLocation())); $$->location = driver.GetLocation(); }
 ;
 
 variable_declaration: type "identifier" ";"
-  { $$ = new VariableDeclaration($1, Symbol($2, driver.GetLocation())); }
+  { $$ = new VariableDeclaration($1, Symbol($2, driver.GetLocation())); $$->location = driver.GetLocation(); }
 ;
 
 //TODO (make new rule)
 //  		    | type "identifier" "=" expr ";"
-  //  { $$ = new VariableDeclaration($1, Symbol($2, driver.GetLocation())); }
+  //  { $$ = new VariableDeclaration($1, Symbol($2, driver.GetLocation())); $$->location = driver.GetLocation(); }
 
 method_declaration: type "identifier" "(" comma_formals_list ")" "{" statement_list "}"
-  { $$ = new MethodDeclaration(Symbol($2, driver.GetLocation()), TypeFactory::GetMethodTy($4, $1), $7); }
+  { $$ = new MethodDeclaration(Symbol($2, driver.GetLocation()), TypeFactory::GetMethodTy(Symbol($2, driver.GetLocation()), $4, $1), $7); $$->location = driver.GetLocation(); }
 ;
 
 comma_formals_list: formals
@@ -270,98 +270,98 @@ simple_type: "int"
 statement: local_variable_statement
   { $$ = $1; }
          | "{" statement_list "}"
-  { $$ = new StatementListStatement($2); }
+  { $$ = new StatementListStatement($2); $$->location = driver.GetLocation(); }
          | "if"  "(" expr ")" "{" statement_list "}" "else" "{" statement_list "}"
-  { $$ = new IfElseStatement($3, $6, $10); }
+  { $$ = new IfElseStatement($3, $6, $10); $$->location = driver.GetLocation(); }
          | "if"  "(" expr ")" "{" statement_list "}"
-  { $$ = new IfStatement($3, $6); }
+  { $$ = new IfStatement($3, $6); $$->location = driver.GetLocation(); }
          | "while"  "(" expr ")" "{" statement_list "}"
-  { $$ = new WhileStatement($3, $6); }
+  { $$ = new WhileStatement($3, $6); $$->location = driver.GetLocation(); }
          | "println"  "(" expr ")" ";"
-  { $$ = new PrintStatement($3); }
+  { $$ = new PrintStatement($3); $$->location = driver.GetLocation(); }
          | lvalue "=" expr ";"
-  { $$ = new AssignmentStatement($1, $3); }
+  { $$ = new AssignmentStatement($1, $3); $$->location = driver.GetLocation(); }
   	     | method_call ";"
-  { $$ = new MethodCallStatement($1); }
+  { $$ = new MethodCallStatement($1); $$->location = driver.GetLocation(); }
   	     | "return" expr ";"
-  { $$ = new ReturnStatement($2); }
+  { $$ = new ReturnStatement($2); $$->location = driver.GetLocation(); }
 ;
 
 //neeeeed expression instead of identifier
 lvalue: "identifier"
-  { $$ = new IdentifierLValue(Symbol($1, driver.GetLocation())); }
+  { $$ = new IdentifierLValue(Symbol($1, driver.GetLocation())); $$->location = driver.GetLocation(); }
       | "identifier" "[" expr "]"
-  { $$ = new ArrayLValue(Symbol($1, driver.GetLocation()), $3); }
+  { $$ = new ArrayLValue(Symbol($1, driver.GetLocation()), $3); $$->location = driver.GetLocation(); }
 ;
 
 local_variable_statement: variable_declaration
-  { $$ = new LocalVariableStatement($1); }
+  { $$ = new LocalVariableStatement($1); $$->location = driver.GetLocation(); }
 ;
 
 statement_list: statement 
-  { $$ = new StatementList($1); }
+  { $$ = new StatementList($1); $$->location = driver.GetLocation(); }
               | statement_list statement 
   { $$ = $1; $$->Add($2); }
               |
-  { /* empty */ $$ = new StatementList(); }
+  { /* empty */ $$ = new StatementList(); $$->location = driver.GetLocation(); }
 ;
 
 //need rule for this.x
 expr: "(" expr ")"
   { $$ = $2; }
       | expr "+"    expr
-  {$$ = new MathOpExpression($1, MathOperation::PLUS, $3);}
+  {$$ = new MathOpExpression($1, MathOperation::PLUS, $3); $$->location = driver.GetLocation(); }
       | expr "-"    expr
-  {$$ = new MathOpExpression($1, MathOperation::MINUS, $3);}
+  {$$ = new MathOpExpression($1, MathOperation::MINUS, $3); $$->location = driver.GetLocation(); }
       | expr "*"    expr
-  {$$ = new MathOpExpression($1, MathOperation::MUL, $3);}
+  {$$ = new MathOpExpression($1, MathOperation::MUL, $3); $$->location = driver.GetLocation(); }
       | expr "/"    expr
-  {$$ = new MathOpExpression($1, MathOperation::DIV, $3);}
+  {$$ = new MathOpExpression($1, MathOperation::DIV, $3); $$->location = driver.GetLocation(); }
       | expr "=="   expr
-  {$$ = new CompareOpExpression($1, CompareOperation::EQUAL, $3);}
+  {$$ = new CompareOpExpression($1, CompareOperation::EQUAL, $3); $$->location = driver.GetLocation(); }
       | expr "!="   expr
-  {$$ = new CompareOpExpression($1, CompareOperation::NEQUAL, $3);}
+  {$$ = new CompareOpExpression($1, CompareOperation::NEQUAL, $3); $$->location = driver.GetLocation(); }
       | expr "<"    expr
-  {$$ = new CompareOpExpression($1, CompareOperation::LESS, $3);}
+  {$$ = new CompareOpExpression($1, CompareOperation::LESS, $3); $$->location = driver.GetLocation(); }
       | expr ">"    expr
-  {$$ = new CompareOpExpression($1, CompareOperation::GREATER, $3);}
+  {$$ = new CompareOpExpression($1, CompareOperation::GREATER, $3); $$->location = driver.GetLocation(); }
       | expr "||"   expr
-  {$$ = new LogicOpExpression($1, LogicOperation::OR, $3);}
+  {$$ = new LogicOpExpression($1, LogicOperation::OR, $3); $$->location = driver.GetLocation(); }
       | expr "&&"   expr
-  {$$ = new LogicOpExpression($1, LogicOperation::AND, $3);}
+  {$$ = new LogicOpExpression($1, LogicOperation::AND, $3); $$->location = driver.GetLocation(); }
       | expr "%"    expr
-  {$$ = new MathOpExpression($1, MathOperation::PERCENT, $3);}
+  {$$ = new MathOpExpression($1, MathOperation::PERCENT, $3); $$->location = driver.GetLocation(); }
       | "identifier"
-  { $$ = new IdentifierExpression(Symbol($1, driver.GetLocation())); }
+  { $$ = new IdentifierExpression(Symbol($1, driver.GetLocation())); $$->location = driver.GetLocation(); }
       | integer_literal
-  { $$ = new IntegerExpression($1); }
+  { $$ = new IntegerExpression($1); $$->location = driver.GetLocation(); }
       | "true"
-  { $$ = new TrueExpression(); }
+  { $$ = new TrueExpression(); $$->location = driver.GetLocation(); }
       | "false"
-  { $$ = new FalseExpression(); }
+  { $$ = new FalseExpression(); $$->location = driver.GetLocation(); }
       | "!" expr
-  { $$ = new NotExpression($2); }
+  { $$ = new NotExpression($2); $$->location = driver.GetLocation(); }
       | expr "[" expr "]"
-  { $$ = new ArrayIdxExpression($1, $3); }
+  { $$ = new ArrayIdxExpression($1, $3); $$->location = driver.GetLocation(); }
       | expr "." "length"
-  { $$ = new LengthExpression($1); }
+  { $$ = new LengthExpression($1); $$->location = driver.GetLocation(); }
       | "new" simple_type "[" expr "]"
-  { $$ = new NewArrayExpression($2, $4); }
+  { $$ = new NewArrayExpression($2, $4); $$->location = driver.GetLocation(); }
       | "new" "identifier" "(" ")"
-  { $$ = new NewClassExpression(TypeFactory::GetClassTy(Symbol($2))); }
+  { $$ = new NewClassExpression(TypeFactory::GetClassTy(Symbol($2))); $$->location = driver.GetLocation(); }
       | "this"
-  { $$ = new ThisExpression(); }
+  { $$ = new ThisExpression(); $$->location = driver.GetLocation(); }
       | method_call
-  { $$ = new MethodCallExpression($1); }
+  { $$ = new MethodCallExpression($1); $$->location = driver.GetLocation(); }
 
 method_call: expr "." "identifier" "(" comma_expr_list ")"
-  { $$ = new MethodCall(Symbol($3, driver.GetLocation()), $1, $5); }
+  { $$ = new MethodCall(Symbol($3, driver.GetLocation()), $1, $5); $$->location = driver.GetLocation(); }
            | expr "." "identifier" "(" ")"
-  { $$ = new MethodCall(Symbol($3, driver.GetLocation()), $1, new CommaExpressionList()); }
+  { $$ = new MethodCall(Symbol($3, driver.GetLocation()), $1, new CommaExpressionList()); $$->location = driver.GetLocation(); }
 ;
 
 comma_expr_list: expr
-  { $$ = new CommaExpressionList($1); }
+  { $$ = new CommaExpressionList($1); $$->location = driver.GetLocation(); }
                | comma_expr_list "," expr
   { $$ = $1; $$->Add($3); }
 ;

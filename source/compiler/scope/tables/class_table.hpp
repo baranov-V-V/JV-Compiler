@@ -4,11 +4,6 @@
 #include "types/class_type.hpp"
 #include "types/util/class_info.hpp"
 
-/**
- * @brief Holds most basic info about the classes, need to construct this to
- * find all methods and fields of all classes before type checking
- * 
- */
 class ClassTable {
  public:
   ClassTable() = default;

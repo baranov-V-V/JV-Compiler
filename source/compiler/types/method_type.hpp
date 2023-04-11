@@ -8,7 +8,7 @@
 class MethodType : public Type {
  public:
   MethodType();
-  MethodType(const std::vector<ArgEntry>& args, const SharedPtr<Type>& return_type);
+  MethodType(const Symbol& name, const std::vector<ArgEntry>& args, const SharedPtr<Type>& return_type);
 
   [[nodiscard]] std::string ToString() const override;
 
@@ -16,6 +16,7 @@ class MethodType : public Type {
 
   [[nodiscard]] const std::vector<ArgEntry>& GetArgs() const;
   [[nodiscard]] const ArgEntry& GetArg(int idx) const;
+  [[nodiscard]] const Symbol& GetName() const;
 
   void AddArg(const ArgEntry& arg_entry);
 
@@ -23,6 +24,7 @@ class MethodType : public Type {
   [[nodiscard]] int GetArgsNum() const;
 
  private:
+  Symbol name;
   std::vector<ArgEntry> args;
   SharedPtr<Type> return_type;
 };

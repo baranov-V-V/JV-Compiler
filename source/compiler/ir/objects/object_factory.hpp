@@ -22,6 +22,5 @@ class ObjectFactory {
   static std::shared_ptr<ArrayRef> CreateArrayRef(SharedPtr<ArrayType> type);
   static std::shared_ptr<ClassRef> CreateClassRef(SharedPtr<ClassType> type);
 
-
-  //static std::shared_ptr<Method> CreateMethod(SharedPtr<MethodType> type);
+  static std::shared_ptr<Method> CreateMethod(SharedPtr<MethodType> type);
 };

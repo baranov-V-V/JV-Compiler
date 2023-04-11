@@ -17,12 +17,6 @@ std::shared_ptr<ClassRef> ObjectFactory::CreateClassRef(SharedPtr<ClassType> typ
   return std::make_shared<ClassRef>(type);
 }
 
-/*
-std::shared_ptr<Method> ObjectFactory::CreateMethod(SharedPtr<MethodType> type) {
-  return std::shared_ptr<Method>(type);
-}
- */
-
 std::shared_ptr<Object> ObjectFactory::CreatePrimitive(SharedPtr<Type> type) {
   switch (type->GetTypeId()) {
     case Type::TypeID::IntTy:
@@ -41,4 +35,8 @@ std::shared_ptr<Object> ObjectFactory::CreatePrimitive(SharedPtr<Type> type) {
 
 std::shared_ptr<ArrayRef> ObjectFactory::CreateArrayRef(SharedPtr<ArrayType> type) {
   return std::make_shared<ArrayRef>(type);
+}
+
+std::shared_ptr<Method> ObjectFactory::CreateMethod(SharedPtr<MethodType> type) {
+  return std::make_shared<Method>(type);
 }

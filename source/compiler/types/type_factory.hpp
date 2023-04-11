@@ -14,8 +14,7 @@ class TypeFactory {
   static SharedPtr<Type> GetIntTy();
   static SharedPtr<Type> GetBoolTy();
   static SharedPtr<Type> GetFloatTy();
-  static SharedPtr<MethodType> GetMethodTy();
-  static SharedPtr<MethodType> GetMethodTy(const std::vector<ArgEntry>& args, const SharedPtr<Type>& return_type);
+  static SharedPtr<MethodType> GetMethodTy(const Symbol& name, const std::vector<ArgEntry>& args, const SharedPtr<Type>& return_type);
   static SharedPtr<ClassType> GetClassTy(const Symbol& class_name);
   /*
   static SharedPtr<ClassType> GetClassTy(std::initializer_list<SharedPtr<MethodType>> methods,

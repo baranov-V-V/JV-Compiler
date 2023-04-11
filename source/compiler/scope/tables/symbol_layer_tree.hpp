@@ -5,6 +5,7 @@
 #include <stack>
 #include <map>
 #include "scope/layers/scope_layer.hpp"
+#include "types/util/class_info.hpp"
 
 class SymbolLayerTree {
  public:
@@ -17,6 +18,9 @@ class SymbolLayerTree {
   void AddClassLayer(ScopeLayer* parent, SharedPtr<ClassType> type);
 
   void DumpTree(const std::filesystem::path& path);
+
+  //SharedPtr<MethodType> GetMethod(const Symbol& class_name, const Symbol& method_name);
+  //ClassInfo GetClass(const Symbol& class_name, const Symbol& method_name);
 
   class Iterator : public std::iterator<std::input_iterator_tag, ScopeLayer*, int, ScopeLayer*, ScopeLayer*> {
    public:

@@ -25,6 +25,9 @@ class ClassInfo {
   const std::unordered_map<Symbol, SharedPtr<MethodType>>& GetAllMethods();
 
  private:
+  //TODO Change to std::multimap, just need to check if method with these params and types exist;
+  //TODO do not do this;
   std::unordered_map<Symbol, SharedPtr<MethodType>> methods;
+
   std::unordered_map<Symbol, SharedPtr<Type>> fields;
 };

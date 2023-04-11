@@ -15,6 +15,5 @@ class ClassDeclaration: public AstNode {
   virtual void Accept(Visitor* visitor) override;
 
   SharedPtr<ClassType> class_type;
-  //std::string class_name;
   DeclarationList* declaration_list;
 };

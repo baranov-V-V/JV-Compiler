@@ -1,3 +1,4 @@
+#include "compiler/core/logger.hpp"
 #include "class_table_visitor.hpp"
 #include "ast/ast.hpp"
 
@@ -19,6 +20,7 @@ void ClassTableVisitor::Visit(Program* program) {
 }
 
 void ClassTableVisitor::Visit(ClassDeclaration* class_declaration) {
+  CheckRedeclared(class_declaration->class_type);
   table->CreateClassInfo(class_declaration->class_type);
   current_type = class_declaration->class_type;
   class_declaration->declaration_list->Accept(this);
@@ -37,5 +39,18 @@ void ClassTableVisitor::Visit(FieldDeclaration* declaration) {
 }
 
 void ClassTableVisitor::Visit(MethodDeclaration* method_declaration) {
+  CheckRedeclared(method_declaration->identifier);
   table->AddMethod(current_type, method_declaration->identifier, method_declaration->method_type);
+}
+
+void ClassTableVisitor::CheckRedeclared(const SharedPtr<ClassType>& class_type) {
+  if (table->HasInfo(class_type)) {
+    COMPILER_ERROR("Redeclaration of class '{}'", class_type->ToString());
+  }
+}
+
+void ClassTableVisitor::CheckRedeclared(const Symbol& method) {
+  if (table->GetInfo(current_type).HasMethodType(method)) {
+    COMPILER_ERROR("Redeclaration of method with name '{}'", method.name);
+  }
 }

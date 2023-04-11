@@ -25,9 +25,6 @@ class ScopeLayer {
   void DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type);
   void DeclareVariable(const Symbol& symbol, const std::shared_ptr<Object>& type);
 
-  //TODO safe delete
-  //void DeclareMethod(const Symbol& symbol, const SharedPtr<MethodType>& type);
-
   [[nodiscard]] std::shared_ptr<Object>& GetFromCurrent(const Symbol& symbol);
   [[nodiscard]] const std::shared_ptr<Object>& GetFromAnywhere(const Symbol& symbol) const;
 
@@ -71,4 +68,5 @@ class ScopeLayer {
   void DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& type);
   void DeclareArray(const Symbol& symbol, const SharedPtr<ArrayType>& type);
   void DeclarePrimitive(const Symbol& symbol, const SharedPtr<Type>& type);
+  void DeclareMethod(const Symbol& symbol, const SharedPtr<MethodType>& type);
 };

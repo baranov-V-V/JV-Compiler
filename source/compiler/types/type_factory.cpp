@@ -14,14 +14,6 @@ SharedPtr<Type> TypeFactory::GetFloatTy() {
   return std::make_shared<Type>(Type::TypeID::FloatTy);
 }
 
-SharedPtr<MethodType> TypeFactory::GetMethodTy() {
-  return std::make_shared<MethodType>();
-}
-
-SharedPtr<MethodType> TypeFactory::GetMethodTy(const std::vector<ArgEntry>& args, const SharedPtr<Type>& return_type) {
-  return std::make_shared<MethodType>(args, return_type);
-}
-
 /*
 SharedPtr<ClassType> TypeFactory::GetClassTy(std::initializer_list<SharedPtr<MethodType>> methods,
                                              std::initializer_list<SharedPtr<Type>> fields) {
@@ -60,4 +52,9 @@ SharedPtr<ArrayType> TypeFactory::GetArrayTy(const SharedPtr<Type>& base_type) {
 
 SharedPtr<ClassType> TypeFactory::GetClassTy(const Symbol& class_name) {
   return std::make_shared<ClassType>(class_name);
+}
+
+SharedPtr<MethodType>
+TypeFactory::GetMethodTy(const Symbol& name, const std::vector<ArgEntry>& args, const SharedPtr<Type>& return_type) {
+  return std::make_shared<MethodType>(name, args, return_type);
 }

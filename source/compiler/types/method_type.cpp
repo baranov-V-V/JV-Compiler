@@ -3,8 +3,8 @@
 #include <memory>
 #include "method_type.hpp"
 
-MethodType::MethodType(const std::vector<ArgEntry>& args, const SharedPtr<Type>& return_type)
-  : Type(Type::TypeID::MethodTy), args(args), return_type(return_type) {}
+MethodType::MethodType(const Symbol& name, const std::vector<ArgEntry>& args, const SharedPtr<Type>& return_type)
+  : Type(Type::TypeID::MethodTy), args(args), return_type(return_type), name(name) {}
 
 const std::vector<ArgEntry>& MethodType::GetArgs() const {
   return args;
@@ -26,11 +26,11 @@ MethodType::MethodType() : Type(Type::TypeID::MethodTy) {}
 
 std::string MethodType::ToString() const {
   std::string res;
-  res += return_type->ToString() + " (";
+  res += "'" + return_type->ToString() + " " + name.name + "(";
   for (const ArgEntry& entry : args) {
     res += entry.type->ToString() + " " + entry.symbol.name + ", ";
   }
-  res += ")";
+  res += ")'";
   return res;
 }
 
@@ -40,9 +40,13 @@ bool MethodType::Equals(std::shared_ptr<Type> other) {
   }
   SharedPtr<MethodType> casted_other = std::reinterpret_pointer_cast<MethodType>(other);
 
-  return args == casted_other->args && return_type->Equals(casted_other->return_type);
+  return args == casted_other->args && return_type->Equals(casted_other->return_type) && casted_other->name == name;
 }
 
 const ArgEntry& MethodType::GetArg(int idx) const {
   return args.at(idx);
+}
+
+const Symbol& MethodType::GetName() const {
+  return name;
 }

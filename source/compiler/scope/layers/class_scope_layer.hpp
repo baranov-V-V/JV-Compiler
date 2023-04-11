@@ -5,7 +5,7 @@
 class ClassScopeLayer : public ScopeLayer {
  public:
   explicit ClassScopeLayer(ScopeLayer* parent, SharedPtr<ClassType> type);
-  ~ClassScopeLayer() override;
+  ~ClassScopeLayer() override = default;
 
   [[nodiscard]] SharedPtr<ClassType> GetType() const;
 
