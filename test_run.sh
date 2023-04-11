@@ -1,1 +1,1 @@
-./jvc --debug-level=TRACE --dump-table=pic/table.png --dump-ast-txt=pic/ast.txt --dump-ast=pic/ast.png test/jv_programs/primitive/test_if.jv
+./jvc --debug-level=TRACE --dump-table=pic/table.png --dump-ast-txt=pic/ast.txt --dump-ast=pic/ast.png $1

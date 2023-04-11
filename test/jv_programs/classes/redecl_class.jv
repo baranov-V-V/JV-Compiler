@@ -1,0 +1,29 @@
+class A {
+  public static void main() {
+    int a;
+    int b;
+    a = 3;
+    b = 3;
+    println(a + b);
+  }
+}
+
+class Foo {
+  /*
+  int getA() {
+    return a;
+  }
+
+  void setA(int a_param) {
+    a = a_param;
+  }
+  */
+
+  int a;
+  int b;
+}
+
+class Foo {
+
+  int b;
+}

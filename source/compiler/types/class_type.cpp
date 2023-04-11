@@ -4,7 +4,7 @@ ClassType::ClassType(const Symbol& symbol) : Type(Type::TypeID::ClassTy), name(s
 }
 
 std::string ClassType::ToString() const {
-  return "class \"" + name.name + "\"";
+  return "'" + name.name + "'";
 }
 
 bool ClassType::Equals(std::shared_ptr<Type> other) {

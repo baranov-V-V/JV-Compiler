@@ -5,7 +5,7 @@ SharedPtr<Type> ArrayRef::GetType() const {
 }
 
 std::string ArrayRef::ToString() const {
-  return "Array of type";
+  return type->ToString() + "&";
 }
 
 bool ArrayRef::Equals(const Object* obj) {

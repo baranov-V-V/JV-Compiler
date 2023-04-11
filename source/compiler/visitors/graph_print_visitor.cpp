@@ -44,7 +44,8 @@ void GraphPrintVisitor::Visit(Program* program) {
   PrintEdge<void*, void*>((void*) program, (void*) program->main_class);
 
   if (!program->class_declaration_list->elements.empty()) {
-    program->class_declaration_list->Accept(this);
+    Visit(program->class_declaration_list);
+    //program->class_declaration_list->Accept(this);
     PrintEdge<void*, void*>((void*) program, (void*) program->class_declaration_list);
   }
 
@@ -78,7 +79,7 @@ void GraphPrintVisitor::Visit(DeclarationList* list) {
 }
 
 void GraphPrintVisitor::Visit(MethodDeclaration* declaration) {
-  PrintNode<void*>(fmt::format("Decl [{}] {}", declaration->method_type->ToString(), declaration->identifier.name),
+  PrintNode<void*>(fmt::format("Meth [{}] {}", declaration->method_type->ToString(), declaration->identifier.name),
             declaration);
 
   Visit(declaration->statement_list);
@@ -196,8 +197,8 @@ void GraphPrintVisitor::Visit(LogicOpExpression* expression) {
   expression->lhs->Accept(this);
   expression->rhs->Accept(this);
 
-  PrintEdge<void*, void*>(expression, expression->lhs, "se");
-  PrintEdge<void*, void*>(expression, expression->rhs, "sw");
+  PrintEdge<void*, void*>(expression, expression->lhs, "sw");
+  PrintEdge<void*, void*>(expression, expression->rhs, "se");
 }
 
 void GraphPrintVisitor::Visit(CompareOpExpression* expression) {
@@ -216,13 +217,18 @@ void GraphPrintVisitor::Visit(CompareOpExpression* expression) {
 }
 
 void GraphPrintVisitor::Visit(MathOpExpression* expression) {
-  PrintNode<void*>(fmt::format("{}", GetMathStrOp(expression->operation)), expression);
+  const std::string str_op = GetMathStrOp(expression->operation);
+  if (str_op == "\\") {
+    PrintNode<void*>("\\\\", expression);
+  } else {
+    PrintNode<void*>(str_op, expression);
+  }
 
   expression->lhs->Accept(this);
   expression->rhs->Accept(this);
 
-  PrintEdge<void*, void*>(expression, expression->lhs, "se");
-  PrintEdge<void*, void*>(expression, expression->rhs, "sw");
+  PrintEdge<void*, void*>(expression, expression->lhs, "sw");
+  PrintEdge<void*, void*>(expression, expression->rhs, "se");
 }
 
 void GraphPrintVisitor::Visit(ArrayIdxExpression *expression) {
@@ -269,7 +275,7 @@ void GraphPrintVisitor::Visit(CommaExpressionList* list) {
 }
 
 void GraphPrintVisitor::Visit(MethodCall* call) {
-  PrintNode<void*>(fmt::format("Call {}", call->function_name.name), call);
+  PrintNode<void*>(fmt::format("Call {}()", call->function_name.name), call);
 
   call->caller->Accept(this);
   Visit(call->expression_list);
@@ -280,11 +286,13 @@ void GraphPrintVisitor::Visit(MethodCall* call) {
 
 void GraphPrintVisitor::Visit(AssertStatement* statement) {
   PrintNode<void*>("Assert Stmt", statement);
+  statement->expression->Accept(this);
   PrintEdge<void*, void*>(statement, statement->expression);
 }
 
 void GraphPrintVisitor::Visit(MethodCallStatement* statement) {
   PrintNode<void*>("Method Call Stmt", statement);
+  statement->call->Accept(this);
   PrintEdge<void*, void*>(statement, statement->call);
 }
 

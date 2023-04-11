@@ -239,7 +239,9 @@ method_declaration: type "identifier" "(" comma_formals_list ")" "{" statement_l
 comma_formals_list: formals
   { $$ = std::vector<ArgEntry>(); $$.push_back($1); }
                   | comma_formals_list "," formals
- { $$ = $1; $$.push_back($3); }
+  { $$ = $1; $$.push_back($3); }
+                  |
+  { /* empty */ $$ = $$ = std::vector<ArgEntry>(); }
 ;
 
 formals: type "identifier" { $$ = ArgEntry($1, Symbol($2, driver.GetLocation())); }
@@ -279,9 +281,9 @@ statement: local_variable_statement
   { $$ = new PrintStatement($3); }
          | lvalue "=" expr ";"
   { $$ = new AssignmentStatement($1, $3); }
-  	 | method_call ";"
+  	     | method_call ";"
   { $$ = new MethodCallStatement($1); }
-  	 | "return" expr ";"
+  	     | "return" expr ";"
   { $$ = new ReturnStatement($2); }
 ;
 
@@ -301,7 +303,7 @@ statement_list: statement
               | statement_list statement 
   { $$ = $1; $$->Add($2); }
               |
-  { /*empty*/ }
+  { /* empty */ $$ = new StatementList(); }
 ;
 
 //need rule for this.x
