@@ -128,8 +128,8 @@ void GraphPrintVisitor::Visit(IfElseStatement* statement) {
   PrintNode<void*>("If", statement);
 
   statement->cond_expression->Accept(this);
-  statement->statement_true->Accept(this);
-  statement->statement_false->Accept(this);
+  Visit(statement->statement_true);
+  Visit(statement->statement_false);
 
   //TODO make labels on arrows
 
@@ -142,7 +142,7 @@ void GraphPrintVisitor::Visit(IfStatement* statement) {
   PrintNode<void*>("If", statement);
 
   statement->cond_expression->Accept(this);
-  statement->statement_true->Accept(this);
+  Visit(statement->statement_true);
 
   //TODO make labels on arrows
 
@@ -166,7 +166,7 @@ void GraphPrintVisitor::Visit(WhileStatement* statement) {
   PrintNode<void*>("While", statement);
 
   statement->cond_expression->Accept(this);
-  statement->statement->Accept(this);
+  Visit(statement->statement);
 
   PrintEdge<void*, void*>(statement, statement->cond_expression, "sw");
   PrintEdge<void*, void*>(statement, statement->statement, "se");
@@ -201,13 +201,18 @@ void GraphPrintVisitor::Visit(LogicOpExpression* expression) {
 }
 
 void GraphPrintVisitor::Visit(CompareOpExpression* expression) {
-  PrintNode<void*>(fmt::format("{}", GetCompareStrOp(expression->operation)), expression);
+  const std::string str = GetCompareStrOp(expression->operation);
+  if (str == ">" || str == ">") {
+    PrintNode<void*>(fmt::format("\\{}", str), expression);
+  } else {
+    PrintNode<void*>(str, expression);
+  }
 
   expression->lhs->Accept(this);
   expression->rhs->Accept(this);
 
-  PrintEdge<void*, void*>(expression, expression->lhs, "se");
-  PrintEdge<void*, void*>(expression, expression->rhs, "sw");
+  PrintEdge<void*, void*>(expression, expression->lhs, "sw");
+  PrintEdge<void*, void*>(expression, expression->rhs, "se");
 }
 
 void GraphPrintVisitor::Visit(MathOpExpression* expression) {
@@ -319,18 +324,27 @@ void GraphPrintVisitor::PrintList(ListType* list, const std::string& name, const
     return;
   }
 
-  PrintNode<int>(delimiter, fict_node_no);
+  int fict_node = fict_node_no++;
+  int old_fict = fict_node;
+
+  PrintNode<int>(delimiter, fict_node);
+
   list->elements.at(1)->Accept(this);
-  PrintEdge<int, void*>(fict_node_no, list->elements.at(1), "sw");
-  PrintEdge<void*, int>(list, fict_node_no, "se");
-  ++fict_node_no;
+  
+  PrintEdge<int, void*>(fict_node, list->elements.at(1), "sw");
+
+  PrintEdge<void*, int>(list, fict_node, "se");
 
   for (int i = 2; i < list->elements.size(); ++i) {
-    PrintNode<int>(delimiter, fict_node_no);
+    fict_node = fict_node_no++;
+    PrintNode<int>(delimiter, fict_node);
+
+    PrintEdge<int, int>(old_fict, fict_node, "se");
+    
+    old_fict = fict_node;
     list->elements.at(i)->Accept(this);
-    PrintEdge<int, void*>(fict_node_no, list->elements.at(i), "sw");
-    PrintEdge<int, int>(fict_node_no - 1, fict_node_no, "se");
-    ++fict_node_no;
+
+    PrintEdge<int, void*>(old_fict, list->elements.at(i), "sw");
   }
 }
 

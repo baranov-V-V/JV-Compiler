@@ -1,12 +1,16 @@
 class A {
   public static void main() {
     int a;
-    int b;
+    {
+      int b;
+      b = 2;
+    }
     a = 3;
     b = 5;
     
+    
     if ((a > 2) || (a > 4)) {
-      b = 10;
+      a = 10;
     } else {
       b = 11;
       int a;
@@ -23,7 +27,6 @@ class A {
       bool a;
       a = 3;
       int c;
-
     } else {
       b = 11;
     }
@@ -44,6 +47,6 @@ class A {
     } else {
       println(0);
     }
-
+    
   }
 }
