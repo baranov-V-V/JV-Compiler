@@ -5,7 +5,7 @@
 #include "visitors/empty_visitor.hpp"
 #include "util/visitor_helper.hpp"
 #include "util/program_stack.hpp"
-#include "types/converters/naive_type_converter.hpp"
+#include "types/util/naive_type_converter.hpp"
 #include "scope/tables/class_table.hpp"
 
 class

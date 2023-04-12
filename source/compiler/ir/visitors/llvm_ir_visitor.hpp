@@ -17,6 +17,7 @@
 #include "llvm/IR/Type.h"
 #include "llvm/IR/Verifier.h"
 #include "llvm-c/Core.h"
+#include "scope/tables/symbol_layer_tree.hpp"
 #include <unordered_map>
 #include <string>
 #include <filesystem>
@@ -75,7 +76,10 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
   llvm::Value* Accept(AstNode* ast_node) override;
 
  private:
-  SymbolTable<std::string, llvm::Value*> table;
+  //SymbolTable<std::string, llvm::Value*> table;
+
+  std::unique_ptr<SymbolLayerTree> table;
+  SymbolLayerTree::Iterator current_scope;
 
   ProgramStack<llvm::Value*> stack;
 
