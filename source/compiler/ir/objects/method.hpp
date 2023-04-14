@@ -1,9 +1,9 @@
 #pragma once
 
-#include "object.hpp"
+#include "ir_object.hpp"
 #include "types/method_type.hpp"
 
-class Method : public Object {
+class Method : public IRObject {
  public:
   explicit Method(const SharedPtr<MethodType>& type);
   ~Method() override = default;
@@ -12,7 +12,7 @@ class Method : public Object {
 
   [[nodiscard]] std::string ToString() const override;
 
-  [[nodiscard]] bool Equals(const Object* obj) override;
+  [[nodiscard]] bool Equals(const IRObject* obj) override;
 
  private:
   SharedPtr<MethodType> type;

@@ -11,11 +11,11 @@ SymbolTableVisitor::SymbolTableVisitor() {}
 
 std::unique_ptr<SymbolLayerTree> SymbolTableVisitor::ConstructSymbolTree(Program* program) {
 
-  tree = std::make_unique<SymbolLayerTree>(new ScopeLayer("global"));
+  ClassTableVisitor class_table_visitor;
+  tree = std::make_unique<SymbolLayerTree>(class_table_visitor.ConstructClassTable(program));
   layer_iterator = tree->begin();
 
-  ClassTableVisitor class_table_visitor;
-  class_table = class_table_visitor.ConstructClassTable(program);
+  //class_table = class_table_visitor.ConstructClassTable(program);
 
   Visit(program);
 
@@ -41,7 +41,7 @@ void SymbolTableVisitor::Visit(ClassDeclaration* class_declaration) {
   */
 
   current_class = class_declaration->class_type;
-  class_declaration->declaration_list->Accept(this);
+  Visit(class_declaration->declaration_list);
 
   ScopeGoUp();
 }
@@ -59,7 +59,10 @@ void SymbolTableVisitor::Visit(MethodDeclaration* method_declaration) {
 
   current_method = method_declaration->method_type;
 
-  for (const ArgEntry& entry : method_declaration->method_type->GetArgs()) {
+  CheckRedeclared(current_class, Symbol("__this"));
+  layer_iterator->DeclareVariable(Symbol("__this"), current_class);
+
+  for (const TypeEntry& entry : method_declaration->method_type->GetArgs()) {
     CheckRedeclared(entry.type, entry.symbol);
     layer_iterator->DeclareVariable(entry.symbol, entry.type);
   }

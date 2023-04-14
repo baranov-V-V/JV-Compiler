@@ -17,7 +17,7 @@ class ObjectFactory {
 
   static std::shared_ptr<Boolean> CreateBool();
 
-  static std::shared_ptr<Object> CreatePrimitive(SharedPtr<Type> type);
+  static std::shared_ptr<IRObject> CreatePrimitive(SharedPtr<Type> type);
 
   static std::shared_ptr<ArrayRef> CreateArrayRef(SharedPtr<ArrayType> type);
   static std::shared_ptr<ClassRef> CreateClassRef(SharedPtr<ClassType> type);

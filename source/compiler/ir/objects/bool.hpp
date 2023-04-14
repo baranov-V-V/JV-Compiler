@@ -1,8 +1,8 @@
 #pragma once
 
-#include "object.hpp"
+#include "ir_object.hpp"
 
-class Boolean : public Object {
+class Boolean : public IRObject {
  public:
   Boolean() = default;
   explicit Boolean(bool value);
@@ -13,7 +13,7 @@ class Boolean : public Object {
 
   [[nodiscard]] SharedPtr<Type> GetType() const override;
   [[nodiscard]] std::string ToString() const override;
-  [[nodiscard]] bool Equals(const Object* obj) override;
+  [[nodiscard]] bool Equals(const IRObject* obj) override;
 
  private:
   bool value = false;

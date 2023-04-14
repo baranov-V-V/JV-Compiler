@@ -8,7 +8,7 @@ std::string ArrayRef::ToString() const {
   return type->ToString() + "&";
 }
 
-bool ArrayRef::Equals(const Object* obj) {
+bool ArrayRef::Equals(const IRObject* obj) {
   //TODO(make equals)
   return false;
 }

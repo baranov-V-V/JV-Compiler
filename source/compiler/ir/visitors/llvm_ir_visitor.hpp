@@ -18,6 +18,9 @@
 #include "llvm/IR/Verifier.h"
 #include "llvm-c/Core.h"
 #include "scope/tables/symbol_layer_tree.hpp"
+#include "ir/util/llvm_util.hpp"
+#include "types/util/naive_type_converter.hpp"
+
 #include <unordered_map>
 #include <string>
 #include <filesystem>
@@ -28,7 +31,7 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
   LLVMIRVisitor() = default;
   ~LLVMIRVisitor() override = default;
 
-  void TranslateToIR(Program* program, const std::filesystem::path& path);
+  void TranslateToIR(Program* program, std::unique_ptr<SymbolLayerTree> layer_tree, const std::filesystem::path& path);
 
   void Visit(Program* program) override;
   void Visit(MainClass* main_class) override;
@@ -37,7 +40,7 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
   void Visit(ClassDeclarationList* class_declaration_list) override;
   void Visit(DeclarationList* declaration_list) override;
   void Visit(MethodDeclaration* method_declaration) override;
-  void Visit(VariableDeclaration* variable_declaration) override;
+  void Visit(VariableDeclaration* declaration) override;
 
   void Visit(LogicOpExpression* expression) override;
   void Visit(CompareOpExpression* expression) override;
@@ -76,7 +79,30 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
   llvm::Value* Accept(AstNode* ast_node) override;
 
  private:
-  //SymbolTable<std::string, llvm::Value*> table;
+  void GenerateStandartLib();
+  void GenerateClassesDecl();
+  void GenerateMethodsDecl();
+
+  std::string GenMethodName(SharedPtr<ClassType> class_type, SharedPtr<MethodType> method_type);
+
+  void ScopeGoUp();
+  void ScopeGoDown();
+  void ScopeGoDownWithAlloc();
+
+  llvm::Type* GetLLVMType(const SharedPtr<Type>& type);
+  //const SharedPtr<Type>& GetJVCType(llvm::Type* type);
+  //llvm::Value* CreateCast(llvm::Value* to, llvm::Value* from);
+
+  void CreateStore(std::shared_ptr<IRObject> obj, llvm::Value* value);
+
+  llvm::Value* CreateLoad(std::shared_ptr<IRObject> obj);
+
+  llvm::Value* CreateCast(llvm::Value* value, llvm::Type* type);
+  llvm::Value* CreateCast(llvm::Value* value, const SharedPtr<Type>& type);
+
+  llvm::Type* GetCommonType(llvm::Type* lhs, llvm::Type* rhs);
+
+  void CastToCommonType(llvm::Value* lhs, llvm::Value* rhs);
 
   std::unique_ptr<SymbolLayerTree> table;
   SymbolLayerTree::Iterator current_scope;
@@ -86,6 +112,9 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
   llvm::LLVMContext* context;
   llvm::IRBuilder<>* builder;
   llvm::Module* module;
+
+  SharedPtr<ClassType> current_class;
+  SharedPtr<MethodType> current_method;
 
   void InitializeLLVM(const std::string& module_name);
   void TerminateLLVM();

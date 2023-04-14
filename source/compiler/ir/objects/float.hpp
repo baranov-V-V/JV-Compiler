@@ -1,8 +1,8 @@
 #pragma once
 
-#include "object.hpp"
+#include "ir_object.hpp"
 
-class Float : public Object {
+class Float : public IRObject {
  public:
   Float() = default;
   explicit Float(float value);
@@ -13,7 +13,7 @@ class Float : public Object {
 
   [[nodiscard]] SharedPtr<Type> GetType() const override;
   [[nodiscard]] std::string ToString() const override;
-  [[nodiscard]] bool Equals(const Object* obj) override;
+  [[nodiscard]] bool Equals(const IRObject* obj) override;
 
  private:
   //llvm:Value* value;

@@ -55,6 +55,6 @@ SharedPtr<ClassType> TypeFactory::GetClassTy(const Symbol& class_name) {
 }
 
 SharedPtr<MethodType>
-TypeFactory::GetMethodTy(const Symbol& name, const std::vector<ArgEntry>& args, const SharedPtr<Type>& return_type) {
+TypeFactory::GetMethodTy(const Symbol& name, const std::vector<TypeEntry>& args, const SharedPtr<Type>& return_type) {
   return std::make_shared<MethodType>(name, args, return_type);
 }

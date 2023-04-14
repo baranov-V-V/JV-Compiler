@@ -6,18 +6,21 @@
 #include <map>
 #include "scope/layers/scope_layer.hpp"
 #include "types/util/class_info.hpp"
+#include "class_table.hpp"
 
 class SymbolLayerTree {
  public:
   friend class ScopeLayer;
 
-  explicit SymbolLayerTree(ScopeLayer* root);
+  explicit SymbolLayerTree(std::unique_ptr<ClassTable> class_table);
   ~SymbolLayerTree();
 
   void AddLayer(ScopeLayer* parent, const std::string& name = "anonymous");
   void AddClassLayer(ScopeLayer* parent, SharedPtr<ClassType> type);
 
   void DumpTree(const std::filesystem::path& path);
+
+  [[nodiscard]] const std::unique_ptr<ClassTable>& GetClassTable() const;
 
   //SharedPtr<MethodType> GetMethod(const Symbol& class_name, const Symbol& method_name);
   //ClassInfo GetClass(const Symbol& class_name, const Symbol& method_name);
@@ -52,4 +55,6 @@ class SymbolLayerTree {
 
  private:
   ScopeLayer* root;
+
+  std::unique_ptr<ClassTable> class_table;
 };

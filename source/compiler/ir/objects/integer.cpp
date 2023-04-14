@@ -11,7 +11,7 @@ std::string Integer::ToString() const {
   return TypeFactory::GetIntTy()->ToString() + std::to_string(value);
 }
 
-bool Integer::Equals(const Object* obj) {
+bool Integer::Equals(const IRObject* obj) {
   if (obj->GetType() != this->GetType()) {
     return false;
   }

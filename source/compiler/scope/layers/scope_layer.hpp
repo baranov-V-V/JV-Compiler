@@ -7,7 +7,7 @@
 #include "fmt/os.h"
 
 #include "util/symbol.hpp"
-#include "ir/objects/object.hpp"
+#include "ir/objects/ir_object.hpp"
 #include "types/class_type.hpp"
 #include "types/array_type.hpp"
 
@@ -23,10 +23,11 @@ class ScopeLayer {
   virtual ~ScopeLayer();
   
   void DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type);
-  void DeclareVariable(const Symbol& symbol, const std::shared_ptr<Object>& type);
+  void DeclareVariable(const Symbol& symbol, const std::shared_ptr<IRObject>& type);
 
-  [[nodiscard]] std::shared_ptr<Object>& GetFromCurrent(const Symbol& symbol);
-  [[nodiscard]] const std::shared_ptr<Object>& GetFromAnywhere(const Symbol& symbol) const;
+  [[nodiscard]] std::shared_ptr<IRObject>& GetFromCurrent(const Symbol& symbol);
+  [[nodiscard]] const std::shared_ptr<IRObject>& GetFromAnywhere(const Symbol& symbol) const;
+  [[nodiscard]] std::vector<std::shared_ptr<IRObject>> GetAllFromCurrent() const;
 
   template<class ObjType>
   [[nodiscard]] std::shared_ptr<ObjType>& GetTypedFromCurrent(const Symbol& symbol);
@@ -34,7 +35,7 @@ class ScopeLayer {
   template<class ObjType>
   [[nodiscard]] const std::shared_ptr<ObjType>& GetTypedFromAnywhere(const Symbol& symbol) const;
 
-  void Put(const Symbol& symbol, std::shared_ptr<Object> value);
+  void Put(const Symbol& symbol, std::shared_ptr<IRObject> value);
 
   [[nodiscard]] bool IsDeclaredCurrent(const Symbol& symbol) const;
   [[nodiscard]] bool IsDeclaredAnywhere(const Symbol& symbol) const;
@@ -60,7 +61,7 @@ class ScopeLayer {
   ScopeLayer* parent;
   std::vector<ScopeLayer*> children;
 
-  std::unordered_map<Symbol, std::shared_ptr<Object>> variables;
+  std::unordered_map<Symbol, std::shared_ptr<IRObject>> variables;
 
   ClassScopeLayer* class_scope;
  private:

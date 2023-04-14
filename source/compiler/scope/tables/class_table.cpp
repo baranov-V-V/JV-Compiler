@@ -27,3 +27,7 @@ void ClassTable::AddField(SharedPtr<ClassType> type, const Symbol& symbol, Share
 bool ClassTable::HasInfo(SharedPtr<ClassType> type) const {
   return class_table.contains(type);
 }
+
+const std::unordered_map<SharedPtr<ClassType>, ClassInfo, ClassTypeHash, ClassTypeEq>& ClassTable::GetAllInfo() const {
+  return class_table;
+}

@@ -3,10 +3,10 @@
 #include <unordered_map>
 #include <vector>
 
-#include "object.hpp"
+#include "ir_object.hpp"
 #include "types/array_type.hpp"
 
-class ArrayRef : public Object {
+class ArrayRef : public IRObject {
  public:
   explicit ArrayRef(const SharedPtr<ArrayType>& type) : type(type) {}
 
@@ -15,7 +15,7 @@ class ArrayRef : public Object {
   [[nodiscard]] SharedPtr<Type> GetType() const override;
   [[nodiscard]] std::string ToString() const override;
 
-  bool Equals(const Object* obj) override;
+  bool Equals(const IRObject* obj) override;
 
  private:
   SharedPtr<ArrayType> type;
@@ -37,7 +37,7 @@ std::string ArrayRef<Obj>::ToString() const {
 
 /*
 template<typename Obj>
-bool ArrayRef<Obj>::Equals(const Object* obj) {
+bool ArrayRef<Obj>::Equals(const IRObject* obj) {
   assert(!"not implemented");
   return true;
   /*if (!obj->GetType()->IsArray()) {

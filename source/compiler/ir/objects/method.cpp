@@ -8,7 +8,7 @@ std::string Method::ToString() const {
   return "Method " + type->ToString();
 }
 
-bool Method::Equals(const Object* obj) {
+bool Method::Equals(const IRObject* obj) {
   return false;
 }
 

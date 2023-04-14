@@ -2,12 +2,12 @@
 #include "class_table_visitor.hpp"
 #include "ast/ast.hpp"
 
-ClassTable* ClassTableVisitor::ConstructClassTable(Program* program) {
-  table = new ClassTable();
+std::unique_ptr<ClassTable> ClassTableVisitor::ConstructClassTable(Program* program) {
+  table = std::make_unique<ClassTable>();
 
   program->Accept(this);
 
-  return table;
+  return std::move(table);
 }
 
 void ClassTableVisitor::Visit(MainClass* main_class) {

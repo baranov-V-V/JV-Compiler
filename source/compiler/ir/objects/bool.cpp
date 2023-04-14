@@ -11,7 +11,7 @@ std::string Boolean::ToString() const {
   return TypeFactory::GetBoolTy()->ToString() + (value ? " true" : " false");
 }
 
-bool Boolean::Equals(const Object* obj) {
+bool Boolean::Equals(const IRObject* obj) {
   //TODO(make equals)
   return false;
 }

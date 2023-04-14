@@ -10,7 +10,7 @@ std::string ClassRef::ToString() const {
   return type->ToString() + "&";
 }
 
-bool ClassRef::Equals(const Object* obj) {
+bool ClassRef::Equals(const IRObject* obj) {
   //TODO(make equals)
   return false;
 }

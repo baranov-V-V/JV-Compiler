@@ -17,7 +17,7 @@ std::shared_ptr<ClassRef> ObjectFactory::CreateClassRef(SharedPtr<ClassType> typ
   return std::make_shared<ClassRef>(type);
 }
 
-std::shared_ptr<Object> ObjectFactory::CreatePrimitive(SharedPtr<Type> type) {
+std::shared_ptr<IRObject> ObjectFactory::CreatePrimitive(SharedPtr<Type> type) {
   switch (type->GetTypeId()) {
     case Type::TypeID::IntTy:
       return ObjectFactory::CreateInteger();

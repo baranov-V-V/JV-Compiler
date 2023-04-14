@@ -38,7 +38,7 @@ void ScopeLayer::DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& ty
   }
 }
 
-void ScopeLayer::DeclareVariable(const Symbol& symbol, const std::shared_ptr<Object>& object) {
+void ScopeLayer::DeclareVariable(const Symbol& symbol, const std::shared_ptr<IRObject>& object) {
   variables.insert({symbol, object});
 }
 
@@ -47,18 +47,18 @@ void ScopeLayer::DeclareArray(const Symbol& symbol, const SharedPtr<ArrayType>& 
 }
 
 void ScopeLayer::DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& type) {
-  variables.insert({symbol, std::reinterpret_pointer_cast<Object>(ObjectFactory::CreateClassRef(type))});
+  variables.insert({symbol, std::reinterpret_pointer_cast<IRObject>(ObjectFactory::CreateClassRef(type))});
 }
 
 void ScopeLayer::DeclarePrimitive(const Symbol& symbol, const SharedPtr<Type>& type) {
   variables.insert({symbol, ObjectFactory::CreatePrimitive(type)});
 }
 
-std::shared_ptr<Object>& ScopeLayer::GetFromCurrent(const Symbol& symbol) {
+std::shared_ptr<IRObject>& ScopeLayer::GetFromCurrent(const Symbol& symbol) {
   return variables.at(symbol);
 }
 
-const std::shared_ptr<Object>& ScopeLayer::GetFromAnywhere(const Symbol& symbol) const {
+const std::shared_ptr<IRObject>& ScopeLayer::GetFromAnywhere(const Symbol& symbol) const {
   ScopeLayer* current_scope = const_cast<ScopeLayer*>(this);
 
   while (!current_scope->IsDeclaredCurrent(symbol) && current_scope->parent != nullptr) {
@@ -84,7 +84,7 @@ bool ScopeLayer::IsDeclaredAnywhere(const Symbol& symbol) const {
 
 ScopeLayer::ScopeLayer(ScopeLayer* parent, ClassScopeLayer* class_layer, const std::string& name) : parent(parent), name(name), class_scope(class_layer) {}
 
-void ScopeLayer::Put(const Symbol& symbol, std::shared_ptr<Object> value) {
+void ScopeLayer::Put(const Symbol& symbol, std::shared_ptr<IRObject> value) {
   if (!IsDeclaredCurrent(symbol)) {
     variables.insert({symbol, value});
   }
@@ -119,7 +119,20 @@ void ScopeLayer::GraphVizDump(fmt::ostream& ostream) {
 }
 
 void ScopeLayer::DeclareMethod(const Symbol &symbol, const SharedPtr<MethodType> &type) {
-  variables.insert({symbol, std::reinterpret_pointer_cast<Object>(ObjectFactory::CreateMethod(type))});
+  variables.insert({symbol, std::reinterpret_pointer_cast<IRObject>(ObjectFactory::CreateMethod(type))});
+}
+
+std::vector<std::shared_ptr<IRObject>> ScopeLayer::GetAllFromCurrent() const {
+  std::vector<std::shared_ptr<IRObject>> vec;
+
+  std::transform(
+    variables.begin(),
+    variables.end(),
+    std::back_inserter(vec),
+    [](auto &kv){ return kv.second;}
+  );
+
+  return vec;
 }
 
 template<class ObjType>

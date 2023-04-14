@@ -1,9 +1,9 @@
 #pragma once
 
 #include "types/class_type.hpp"
-#include "object.hpp"
+#include "ir_object.hpp"
 
-class ClassRef : public Object {
+class ClassRef : public IRObject {
  public:
   explicit ClassRef(const SharedPtr<ClassType>& type);
 
@@ -12,9 +12,8 @@ class ClassRef : public Object {
   [[nodiscard]] SharedPtr<Type> GetType() const override;
   [[nodiscard]] std::string ToString() const override;
 
-  bool Equals(const Object* obj) override;
+  bool Equals(const IRObject* obj) override;
 
  private:
-
   SharedPtr<ClassType> type;
 };

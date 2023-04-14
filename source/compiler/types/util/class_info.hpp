@@ -16,18 +16,16 @@ class ClassInfo {
   [[nodiscard]] int GetMethodsNum() const;
   void AddMethodType(const Symbol& symbol, const SharedPtr<MethodType>& method_type);
 
-  [[nodiscard]] const SharedPtr<Type>& GetFieldType(const Symbol& symbol) const;
-  [[nodiscard]] bool HasFieldType(const Symbol& symbol) const;
+  //[[nodiscard]] const SharedPtr<Type>& GetFieldType(const Symbol& symbol) const;
+  //[[nodiscard]] bool HasFieldType(const Symbol& symbol) const;
   [[nodiscard]] int GetFieldsNum() const;
   void AddFieldType(const Symbol& symbol, const SharedPtr<Type>& field_type);
 
-  const std::unordered_map<Symbol, SharedPtr<Type>>& GetAllFields();
-  const std::unordered_map<Symbol, SharedPtr<MethodType>>& GetAllMethods();
+  const std::vector<TypeEntry>& GetAllFields() const;
+  const std::unordered_map<Symbol, SharedPtr<MethodType>>& GetAllMethods() const;
 
  private:
-  //TODO Change to std::multimap, just need to check if method with these params and types exist;
-  //TODO do not do this;
   std::unordered_map<Symbol, SharedPtr<MethodType>> methods;
 
-  std::unordered_map<Symbol, SharedPtr<Type>> fields;
+  std::vector<TypeEntry> fields;
 };

@@ -3,7 +3,8 @@
 #include "symbol_layer_tree.hpp"
 #include "scope/layers/class_scope_layer.hpp"
 
-SymbolLayerTree::SymbolLayerTree(ScopeLayer* global) : root(new ScopeLayer("root")) {
+SymbolLayerTree::SymbolLayerTree(std::unique_ptr<ClassTable> class_table) :
+  root(new ScopeLayer("root")), class_table(std::move(class_table)) {
   AddLayer(this->root, "global");
 }
 
@@ -59,6 +60,10 @@ void SymbolLayerTree::DumpTree(const std::filesystem::path& path) {
   LOG_INFO("graphing done with code: {}", system(command.c_str()));
 
   std::filesystem::remove(dot_file);
+}
+
+const std::unique_ptr<ClassTable>& SymbolLayerTree::GetClassTable() const {
+  return class_table;
 }
 
 SymbolLayerTree::Iterator::Iterator(ScopeLayer* root) : root(root), current_parent(root), curr_idx(0) {

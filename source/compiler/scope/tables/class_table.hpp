@@ -17,6 +17,8 @@ class ClassTable {
 
   [[nodiscard]] bool HasInfo(SharedPtr<ClassType> type) const;
 
+  const std::unordered_map<SharedPtr<ClassType>, ClassInfo, ClassTypeHash, ClassTypeEq>& GetAllInfo() const;
+
   void AddMethod(SharedPtr<ClassType> type, const Symbol& symbol, SharedPtr<MethodType> method_type);
   void AddField(SharedPtr<ClassType> type, const Symbol& symbol, SharedPtr<Type> field);
 

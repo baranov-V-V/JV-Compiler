@@ -3,14 +3,14 @@
 #include <memory>
 #include "method_type.hpp"
 
-MethodType::MethodType(const Symbol& name, const std::vector<ArgEntry>& args, const SharedPtr<Type>& return_type)
+MethodType::MethodType(const Symbol& name, const std::vector<TypeEntry>& args, const SharedPtr<Type>& return_type)
   : Type(Type::TypeID::MethodTy), args(args), return_type(return_type), name(name) {}
 
-const std::vector<ArgEntry>& MethodType::GetArgs() const {
+const std::vector<TypeEntry>& MethodType::GetArgs() const {
   return args;
 }
 
-void MethodType::AddArg(const ArgEntry& arg_entry) {
+void MethodType::AddArg(const TypeEntry& arg_entry) {
   args.push_back(arg_entry);
 }
 
@@ -27,7 +27,7 @@ MethodType::MethodType() : Type(Type::TypeID::MethodTy) {}
 std::string MethodType::ToString() const {
   std::string res;
   res += "'" + return_type->ToString() + " " + name.name + "(";
-  for (const ArgEntry& entry : args) {
+  for (const TypeEntry& entry : args) {
     res += entry.type->ToString() + " " + entry.symbol.name + ", ";
   }
   res += ")'";
@@ -43,7 +43,7 @@ bool MethodType::Equals(std::shared_ptr<Type> other) {
   return args == casted_other->args && return_type->Equals(casted_other->return_type) && casted_other->name == name;
 }
 
-const ArgEntry& MethodType::GetArg(int idx) const {
+const TypeEntry& MethodType::GetArg(int idx) const {
   return args.at(idx);
 }
 

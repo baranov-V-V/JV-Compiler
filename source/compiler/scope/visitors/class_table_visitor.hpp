@@ -13,7 +13,7 @@ class ClassTableVisitor : public EmptyVisitor {
   ~ClassTableVisitor() override = default;
   ClassTableVisitor() = default;
 
-  ClassTable* ConstructClassTable(Program* program);
+  std::unique_ptr<ClassTable> ConstructClassTable(Program* program);
 
   void Visit(ClassDeclaration* class_declaration) override;
   void Visit(ClassDeclarationList* class_declaration_list) override;
@@ -27,6 +27,6 @@ class ClassTableVisitor : public EmptyVisitor {
   void CheckRedeclared(const SharedPtr<ClassType>& class_type);
   void CheckRedeclared(const Symbol& method);
 
-  ClassTable* table;
+  std::unique_ptr<ClassTable> table;
   SharedPtr<ClassType> current_type;
 };

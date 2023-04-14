@@ -50,3 +50,7 @@ bool Type::IsPrimitive() const {
 bool Type::IsMethod() const {
   return id == TypeID::MethodTy;
 }
+
+bool Type::IsVoid() const {
+  return id == TypeID::VoidTy;
+}

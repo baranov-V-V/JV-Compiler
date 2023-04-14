@@ -23,6 +23,7 @@ class Type {
   [[nodiscard]] bool IsPrimitive() const;
   [[nodiscard]] bool IsClass() const;
   [[nodiscard]] bool IsArray() const;
+  [[nodiscard]] bool IsVoid() const;
   [[nodiscard]] bool IsMethod() const;
 
   virtual bool Equals(std::shared_ptr<Type> other);

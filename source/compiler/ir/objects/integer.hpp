@@ -1,8 +1,8 @@
 #pragma once
 
-#include "object.hpp"
+#include "ir_object.hpp"
 
-class Integer : public Object {
+class Integer : public IRObject {
  public:
   Integer() = default;
   explicit Integer(int value);
@@ -13,7 +13,7 @@ class Integer : public Object {
 
   [[nodiscard]] SharedPtr<Type> GetType() const override;
   [[nodiscard]] std::string ToString() const override;
-  [[nodiscard]] bool Equals(const Object* obj) override;
+  [[nodiscard]] bool Equals(const IRObject* obj) override;
 
  private:
   //llvm::Value*;

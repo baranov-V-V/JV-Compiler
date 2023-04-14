@@ -12,19 +12,21 @@ void ClassInfo::AddMethodType(const Symbol& symbol, const SharedPtr<MethodType>&
   methods.insert({symbol, method_type});
 }
 
+/*
 const SharedPtr<Type> &ClassInfo::GetFieldType(const Symbol& symbol) const {
   return fields.at(symbol);
 }
+*/
 
 int ClassInfo::GetFieldsNum() const {
   return fields.size();
 }
 
 void ClassInfo::AddFieldType(const Symbol& symbol, const SharedPtr<Type> &field_type) {
-  fields.insert({symbol, field_type});
+  fields.emplace_back(field_type, symbol);
 }
 
-const std::unordered_map<Symbol, SharedPtr<Type>>& ClassInfo::GetAllFields() {
+const std::vector<TypeEntry>& ClassInfo::GetAllFields() const {
   return fields;
 }
 
@@ -32,10 +34,12 @@ bool ClassInfo::HasMethodType(const Symbol& symbol) const {
   return methods.contains(symbol);
 }
 
+/*
 bool ClassInfo::HasFieldType(const Symbol& symbol) const {
   return fields.contains(symbol);
 }
+*/
 
-const std::unordered_map<Symbol, SharedPtr<MethodType>>& ClassInfo::GetAllMethods() {
+const std::unordered_map<Symbol, SharedPtr<MethodType>>& ClassInfo::GetAllMethods() const {
   return methods;
 }

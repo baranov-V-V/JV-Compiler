@@ -281,11 +281,15 @@ statement: local_variable_statement
   { $$ = new PrintStatement($3); $$->location = driver.GetLocation(); }
          | lvalue "=" expr ";"
   { $$ = new AssignmentStatement($1, $3); $$->location = driver.GetLocation(); }
-  	     | method_call ";"
+  	 | method_call ";"
   { $$ = new MethodCallStatement($1); $$->location = driver.GetLocation(); }
-  	     | "return" expr ";"
+  	 | "return" expr ";"
   { $$ = new ReturnStatement($2); $$->location = driver.GetLocation(); }
 ;
+
+//TODO add empty return;
+//| "return" ";"
+//  { $$ = new ReturnStatement($2); $$->location = driver.GetLocation(); }
 
 //neeeeed expression instead of identifier
 lvalue: "identifier"

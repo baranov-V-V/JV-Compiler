@@ -11,7 +11,7 @@ std::string Float::ToString() const {
   return TypeFactory::GetFloatTy()->ToString() + std::to_string(value);
 }
 
-bool Float::Equals(const Object* obj) {
+bool Float::Equals(const IRObject* obj) {
   //TODO(make equals)
   return false;
 }
