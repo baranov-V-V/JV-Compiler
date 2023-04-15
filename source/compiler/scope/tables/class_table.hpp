@@ -6,9 +6,21 @@
 
 class ClassTable {
  public:
+  struct ClassTypeHash {
+    std::size_t operator()(const SharedPtr<ClassType>& other) const {
+      return std::hash<std::string>()(other->GetName().name);
+    }
+  };
+
+  struct ClassTypeEq {
+    bool operator()(const SharedPtr<ClassType>& lhs, const SharedPtr<ClassType>& rhs) const {
+      return lhs->Equals(rhs);
+    }
+  };
+
   ClassTable() = default;
   ClassTable(const ClassTable&) = delete;
-  ClassTable(ClassTable&&) = default;
+  ClassTable(ClassTable&& table) noexcept;
 
   void CreateClassInfo(SharedPtr<ClassType> type);
 

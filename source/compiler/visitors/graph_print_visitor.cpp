@@ -31,7 +31,7 @@ void GraphPrintVisitor::Print(const std::filesystem::path& filename,
 
   LOG_INFO("graphing done with code: {}", system(command.c_str()));
 
-  //std::filesystem::remove(dot_file);
+  std::filesystem::remove(dot_file);
 }
 
 void GraphPrintVisitor::Visit(Program* program) {

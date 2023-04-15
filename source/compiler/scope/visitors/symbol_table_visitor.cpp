@@ -2,10 +2,10 @@
 
 #include "symbol_table_visitor.hpp"
 #include "compiler/ast/ast.hpp"
-#include "class_table_visitor.hpp"
 
 #include "compiler/scope/layers/class_scope_layer.hpp"
 #include "types/type_factory.hpp"
+#include "class_table_visitor.hpp"
 
 SymbolTableVisitor::SymbolTableVisitor() {}
 
@@ -15,7 +15,7 @@ std::unique_ptr<SymbolLayerTree> SymbolTableVisitor::ConstructSymbolTree(Program
   tree = std::make_unique<SymbolLayerTree>(class_table_visitor.ConstructClassTable(program));
   layer_iterator = tree->begin();
 
-  //class_table = class_table_visitor.ConstructClassTable(program);
+  //tree->GetClassTable() = tree->GetClassTable()_visitor.ConstructClassTable(program);
 
   Visit(program);
 
@@ -27,14 +27,14 @@ void SymbolTableVisitor::Visit(ClassDeclaration* class_declaration) {
   ScopeGoDownClass(class_declaration->class_type);
   
   //put all fields in class layer
-  for (const auto& entry : class_table->GetInfo(class_declaration->class_type).GetAllFields()) {
+  for (const auto& entry : tree->GetClassTable()->GetInfo(class_declaration->class_type).GetAllFields()) {
     CheckRedeclared(entry.type, entry.symbol);
     layer_iterator->DeclareVariable(entry.symbol, entry.type);
   }
 
   /*
   //put all methods in class layer
-  for (const auto& entry : class_table->GetInfo(class_declaration->class_type).GetAllMethods()) {
+  for (const auto& entry : tree->GetClassTable()->GetInfo(class_declaration->class_type).GetAllMethods()) {
     CheckRedeclared(entry.second, entry.first);
     layer_iterator->DeclareVariable(entry.first, entry.second);
   }
@@ -212,20 +212,20 @@ void SymbolTableVisitor::Visit(MethodCall* call) {
   if (!type->IsClass()) {
     COMPILER_ERROR("Method Call of a non-class caller with type []", type->ToString())
   }
-
+  
   //has info about this class
   SharedPtr<ClassType> class_type = std::reinterpret_pointer_cast<ClassType>(type);
-  if (!class_table->HasInfo(class_type)) {
+  if (!tree->GetClassTable()->HasInfo(class_type)) {
     COMPILER_ERROR("Method Call of a non-existent class with type {}", class_type->ToString());
   }
 
   // method exists
-  if (!class_table->GetInfo(class_type).HasMethodType(call->function_name)) {
+  if (!tree->GetClassTable()->GetInfo(class_type).HasMethodType(call->function_name)) {
     COMPILER_ERROR("Call of a non-existent method {}", call->function_name.name);
   }
 
   // check num args
-  SharedPtr<MethodType> method_type = class_table->GetInfo(class_type).GetMethodType(call->function_name);
+  SharedPtr<MethodType> method_type = tree->GetClassTable()->GetInfo(class_type).GetMethodType(call->function_name);
   int args_count = method_type->GetArgsNum();
   if (args_count != call->expression_list->elements.size()) {
     COMPILER_ERROR("Call of method has {} args, expected: {}", call->expression_list->elements.size(), args_count);
@@ -341,7 +341,7 @@ void SymbolTableVisitor::Visit(IdentifierLValue* statement) {
 }
 
 void SymbolTableVisitor::Visit(FieldDeclaration* declaration) {
-  //pass, already checked in class_table_visitor
+  //pass, already checked in tree->GetClassTable()_visitor
 }
 
 void SymbolTableVisitor::ScopeGoUp() {

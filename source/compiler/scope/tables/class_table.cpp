@@ -28,6 +28,10 @@ bool ClassTable::HasInfo(SharedPtr<ClassType> type) const {
   return class_table.contains(type);
 }
 
-const std::unordered_map<SharedPtr<ClassType>, ClassInfo, ClassTypeHash, ClassTypeEq>& ClassTable::GetAllInfo() const {
+const std::unordered_map<SharedPtr<ClassType>, ClassInfo, ClassTable::ClassTypeHash, ClassTable::ClassTypeEq>& ClassTable::GetAllInfo() const {
   return class_table;
+}
+
+ClassTable::ClassTable(ClassTable&& table) noexcept : class_table(std::move(table.class_table)) {
+
 }

@@ -79,7 +79,6 @@ SymbolTableVisitor : public Visitor, public VisitorHelper<SharedPtr<Type>> {
   ProgramStack<SharedPtr<Type>> stack;
 
   SymbolLayerTree::Iterator layer_iterator;
-  ClassTable* class_table;
 
   //TODO change to unique_pte
   std::unique_ptr<SymbolLayerTree> tree;
