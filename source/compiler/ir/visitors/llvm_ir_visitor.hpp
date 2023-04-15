@@ -102,7 +102,7 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
 
   llvm::Type* GetCommonType(llvm::Type* lhs, llvm::Type* rhs);
 
-  void CastToCommonType(llvm::Value* lhs, llvm::Value* rhs);
+  void CastToCommonType(llvm::Value** lhs, llvm::Value** rhs);
 
   std::unique_ptr<SymbolLayerTree> table;
   SymbolLayerTree::Iterator current_scope;

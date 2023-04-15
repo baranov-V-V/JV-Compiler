@@ -494,7 +494,7 @@ void LLVMIRVisitor::Visit(CompareOpExpression* expression) {
   LOG_DEBUG("before common: lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetCompareStrOp(expression->operation),
             rhs->getType()->getTypeID())
 
-  CastToCommonType(lhs, rhs);
+  CastToCommonType(&lhs, &rhs);
 
   LOG_DEBUG("after common: lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetCompareStrOp(expression->operation),
             rhs->getType()->getTypeID())
@@ -560,7 +560,7 @@ void LLVMIRVisitor::Visit(MathOpExpression* expression) {
   LOG_DEBUG("before common: lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetMathStrOp(expression->operation),
             rhs->getType()->getTypeID())
 
-  CastToCommonType(lhs, rhs);
+  CastToCommonType(&lhs, &rhs);
 
   LOG_DEBUG("after common: lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetMathStrOp(expression->operation),
             rhs->getType()->getTypeID())
@@ -800,28 +800,48 @@ llvm::Type* LLVMIRVisitor::GetLLVMType(const SharedPtr<Type>& type) {
 }
 
 void LLVMIRVisitor::CreateStore(std::shared_ptr<IRObject> obj, llvm::Value* value) {
-
+    assert(!"not  used");
+    //obj->Set(builder->CreateStore(value, obj->Get()));
 }
 
 llvm::Value* LLVMIRVisitor::CreateLoad(std::shared_ptr<IRObject> obj) {
-  return nullptr;
+  return builder->CreateLoad(GetLLVMType(obj->GetType()), obj->Get());
 }
 
 llvm::Value* LLVMIRVisitor::CreateCast(llvm::Value* value, llvm::Type* type) {
-  if (value->getType()->getTypeID() == type->getTypeID()) {
-    value->getType()->getIntegerBitWidth()
+  if (value->getType()->isIntegerTy() && type->isIntegerTy()) {
+      if (value->getType()->getIntegerBitWidth() != type->getIntegerBitWidth()) {
+          return builder->CreateIntCast(value, type, true);
+      } else {
+          return value;
+      }
+  } else if (value->getType()->isFloatTy() && type->isIntegerTy()) {
+      //TODO make float to int
+      return value;
+  } else if (value->getType()->isIntegerTy() && type->isFloatTy()) {
+      //TODO make int to float
+      return value;
   }
-  return nullptr;
+    LOG_DEBUG("returning uncasted default value")
+  return value;
 }
 
 llvm::Value* LLVMIRVisitor::CreateCast(llvm::Value* value, const SharedPtr<Type>& type) {
-  return nullptr;
+  return CreateCast(value, GetLLVMType(type));
 }
 
 llvm::Type* LLVMIRVisitor::GetCommonType(llvm::Type* lhs, llvm::Type* rhs) {
-  return nullptr;
+    if (lhs->isFloatTy() || rhs->isFloatTy()) {
+        return lhs;
+    }
+
+    // no floating here
+    return llvm::Type::getIntNTy(*context, std::max(lhs->getIntegerBitWidth(), rhs->getIntegerBitWidth()));
 }
 
-void LLVMIRVisitor::CastToCommonType(llvm::Value* lhs, llvm::Value* rhs) {
+void LLVMIRVisitor::CastToCommonType(llvm::Value** lhs, llvm::Value** rhs) {
+    llvm::Type* common_type = GetCommonType((*lhs)->getType(), (*rhs)->getType());
 
+    *lhs = CreateCast(*lhs, common_type);
+    *rhs = CreateCast(*rhs, common_type);
 }
