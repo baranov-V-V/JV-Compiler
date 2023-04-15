@@ -42,7 +42,7 @@ void LLVMIRVisitor::Visit(MainClass* main_class) {
 
   llvm::Function* main = llvm::Function::Create(
     function_type,
-    llvm::Function::InternalLinkage,
+    llvm::Function::ExternalLinkage,
     "main",
     module
   );
@@ -52,6 +52,10 @@ void LLVMIRVisitor::Visit(MainClass* main_class) {
   builder->SetInsertPoint(entry);
   Visit(main_class->statement_list);
   builder->CreateRetVoid();
+
+  llvm::verifyFunction(*main);
+
+  pass_manager->run(*main);
 
   ScopeGoUp();
 }
@@ -79,7 +83,7 @@ void LLVMIRVisitor::Visit(MethodDeclaration* method_declaration) {
   ScopeGoDown();
   LOG_DEBUG("In Method Declaration")
 
-  assert(!"not ready");
+  //assert(!"not ready");
 
   //emit method
   current_method = method_declaration->method_type;
@@ -102,6 +106,9 @@ void LLVMIRVisitor::Visit(MethodDeclaration* method_declaration) {
   stack.Pop();
 
   llvm::verifyFunction(*method);
+
+  pass_manager->run(*method);
+
   ScopeGoUp();
 }
 
@@ -315,12 +322,12 @@ void LLVMIRVisitor::Visit(PrintStatement* statement) {
   std::string string = {};
 
   if (value->getType()->isIntegerTy()) {
-    string = "%d";
+    string = "%d\n";
     value = CreateCast(value, builder->getInt32Ty());
   }
 
   if (value->getType()->isFloatTy()) {
-    string = "%f";
+    string = "%f\n";
     value = CreateCast(value, builder->getFloatTy());
   }
 
@@ -435,10 +442,21 @@ void LLVMIRVisitor::InitializeLLVM(const std::string& module_name) {
   context = new llvm::LLVMContext();
   module = new llvm::Module(module_name, *context);
   builder = new llvm::IRBuilder<>(*context);
+
+  pass_manager = new llvm::legacy::FunctionPassManager(module);
+
+  pass_manager->add(llvm::createPromoteMemoryToRegisterPass());
+  pass_manager->add(llvm::createInstructionCombiningPass());
+  pass_manager->add(llvm::createReassociatePass());
+  pass_manager->add(llvm::createGVNPass());
+  pass_manager->add(llvm::createCFGSimplificationPass());
+  pass_manager->doInitialization();
 }
 
 void LLVMIRVisitor::TerminateLLVM() {
   LOG_TRACE("Terminating LLVM context")
+
+  delete pass_manager;
 
   delete builder;
   delete module;

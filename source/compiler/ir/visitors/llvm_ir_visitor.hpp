@@ -13,9 +13,14 @@
 #include "llvm/IR/Function.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/LegacyPassManager.h" //new
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Type.h"
 #include "llvm/IR/Verifier.h"
+#include "llvm/Transforms/InstCombine/InstCombine.h" ////new
+#include "llvm/Transforms/Scalar.h" //new
+#include "llvm/Transforms/Scalar/GVN.h"//new
+#include "llvm/Transforms/Utils.h"//new
 #include "llvm-c/Core.h"
 #include "scope/tables/symbol_layer_tree.hpp"
 #include "ir/util/llvm_util.hpp"
@@ -112,6 +117,7 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
   llvm::LLVMContext* context;
   llvm::IRBuilder<>* builder;
   llvm::Module* module;
+  llvm::legacy::FunctionPassManager* pass_manager;
 
   SharedPtr<ClassType> current_class;
   SharedPtr<MethodType> current_method;

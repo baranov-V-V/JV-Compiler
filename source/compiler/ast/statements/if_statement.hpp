@@ -1,6 +1,7 @@
 #pragma once
 
 #include "compiler/ast/statements/statement.hpp"
+#include "compiler/ast/statements/statement_list.hpp"
 #include "compiler/ast/expressions/expression.hpp"
 #include "compiler/visitors/visitor.hpp"
 

@@ -85,7 +85,7 @@ void Driver::IrGen(const std::filesystem::path& filepath) {
   if (program == nullptr) {
     LOG_CRITICAL("No program pointer in IrGen")
   }
-  visitor.TranslateToIR(program, filepath);
+  visitor.TranslateToIR(program, std::move(layer_tree), filepath);
 }
 
 void Driver::SetTraceScan(bool trace) { trace_scanning = trace; }

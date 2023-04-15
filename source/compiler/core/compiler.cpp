@@ -24,7 +24,6 @@ void Compiler::Compile(int argc, char** argv) {
     driver.PrintSymbolTree(table_png);
   }
 
-
   std::filesystem::path tmp_dir = file_in.parent_path().append("tmp");
   if (!std::filesystem::exists(tmp_dir)) {
     if (!std::filesystem::create_directory(tmp_dir)) {

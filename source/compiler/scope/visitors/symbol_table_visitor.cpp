@@ -28,8 +28,8 @@ void SymbolTableVisitor::Visit(ClassDeclaration* class_declaration) {
   
   //put all fields in class layer
   for (const auto& entry : class_table->GetInfo(class_declaration->class_type).GetAllFields()) {
-    CheckRedeclared(entry.second, entry.first);
-    layer_iterator->DeclareVariable(entry.first, entry.second);
+    CheckRedeclared(entry.type, entry.symbol);
+    layer_iterator->DeclareVariable(entry.symbol, entry.type);
   }
 
   /*

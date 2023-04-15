@@ -15,7 +15,7 @@
   #include "../types/type_factory.hpp"
 
   class Type;
-  class ArgEntry;
+  class TypeEntry;
   class Scanner;
   class Driver;
 }
@@ -161,8 +161,8 @@
 
 %nterm <Expression*> expr
 %nterm <CommaExpressionList*> comma_expr_list
-%nterm <ArgEntry> formals
-%nterm <std::vector<ArgEntry>> comma_formals_list
+%nterm <TypeEntry> formals
+%nterm <std::vector<TypeEntry>> comma_formals_list
 %nterm <MethodCall*> method_call
 
 %nterm <SharedPtr<Type>> type
@@ -237,14 +237,14 @@ method_declaration: type "identifier" "(" comma_formals_list ")" "{" statement_l
 ;
 
 comma_formals_list: formals
-  { $$ = std::vector<ArgEntry>(); $$.push_back($1); }
+  { $$ = std::vector<TypeEntry>(); $$.push_back($1); }
                   | comma_formals_list "," formals
   { $$ = $1; $$.push_back($3); }
                   |
-  { /* empty */ $$ = $$ = std::vector<ArgEntry>(); }
+  { /* empty */ $$ = $$ = std::vector<TypeEntry>(); }
 ;
 
-formals: type "identifier" { $$ = ArgEntry($1, Symbol($2, driver.GetLocation())); }
+formals: type "identifier" { $$ = TypeEntry($1, Symbol($2, driver.GetLocation())); }
 ;
 
 type: simple_type { $$ = $1; }

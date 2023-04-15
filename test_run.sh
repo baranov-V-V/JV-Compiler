@@ -1,1 +1,1 @@
-./jvc --debug-level=TRACE --dump-table=pic/table.png --dump-ast-txt=pic/ast.txt --dump-ast=pic/ast.png $1
+./jvc --debug-level=TRACE --dump-table=pic/table.png --dump-ast-txt=pic/ast.txt --dump-ast=pic/ast.png --emit-llvm $1
