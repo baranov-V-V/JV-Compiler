@@ -1,0 +1,32 @@
+class A {
+    public static void main() {
+        Foo foo;
+        foo = new Foo();
+        int a;
+        a = 3;
+        foo.SetA(a);
+        a = 2;
+        a = foo.GetA();
+        println(a);
+        foo.DoPrint();
+    }
+}
+
+class Foo {
+    int a;
+    bool b;
+
+    Foo* foo;
+
+    void DoPrint() {
+        println(a + 1111);
+    }
+
+    void SetA(int new_a) {
+        a = new_a;
+    }
+
+    int GetA() {
+        return a;
+    }
+}

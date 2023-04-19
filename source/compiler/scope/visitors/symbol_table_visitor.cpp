@@ -27,14 +27,14 @@ void SymbolTableVisitor::Visit(ClassDeclaration* class_declaration) {
   ScopeGoDownClass(class_declaration->class_type);
   
   //put all fields in class layer
-  for (const auto& entry : class_table->GetInfo(class_declaration->class_type).GetAllFields()) {
+  for (const auto& entry : tree->GetClassTable()->GetInfo(class_declaration->class_type).GetAllFields()) {
     CheckRedeclared(entry.type, entry.symbol);
-    layer_iterator->DeclareVariable(entry.symbol, entry.type);
+    layer_iterator->DeclareVariable(entry.symbol, entry.type, IRObject::ScopeType::Field);
   }
 
   /*
   //put all methods in class layer
-  for (const auto& entry : class_table->GetInfo(class_declaration->class_type).GetAllMethods()) {
+  for (const auto& entry : tree->GetClassTable()->GetInfo(class_declaration->class_type).GetAllMethods()) {
     CheckRedeclared(entry.second, entry.first);
     layer_iterator->DeclareVariable(entry.first, entry.second);
   }
@@ -42,6 +42,7 @@ void SymbolTableVisitor::Visit(ClassDeclaration* class_declaration) {
 
   current_class = class_declaration->class_type;
   Visit(class_declaration->declaration_list);
+  current_class = nullptr;
 
   ScopeGoUp();
 }
@@ -158,7 +159,7 @@ void SymbolTableVisitor::Visit(MethodCallExpression* expression) {
 
 void SymbolTableVisitor::Visit(NewArrayExpression* expression) {
   SharedPtr<Type> size_type = Accept(expression->size);
-  
+
   if (size_type->IsInteger()) {
     COMPILER_ERROR("In new expression: size of array expected [int], got: [{}]", size_type->ToString())
   }
@@ -215,17 +216,17 @@ void SymbolTableVisitor::Visit(MethodCall* call) {
 
   //has info about this class
   SharedPtr<ClassType> class_type = std::reinterpret_pointer_cast<ClassType>(type);
-  if (!class_table->HasInfo(class_type)) {
+  if (!tree->GetClassTable()->HasInfo(class_type)) {
     COMPILER_ERROR("Method Call of a non-existent class with type {}", class_type->ToString());
   }
 
   // method exists
-  if (!class_table->GetInfo(class_type).HasMethodType(call->function_name)) {
+  if (!tree->GetClassTable()->GetInfo(class_type).HasMethodType(call->function_name)) {
     COMPILER_ERROR("Call of a non-existent method {}", call->function_name.name);
   }
 
   // check num args
-  SharedPtr<MethodType> method_type = class_table->GetInfo(class_type).GetMethodType(call->function_name);
+  SharedPtr<MethodType> method_type = tree->GetClassTable()->GetInfo(class_type).GetMethodType(call->function_name);
   int args_count = method_type->GetArgsNum();
   if (args_count != call->expression_list->elements.size()) {
     COMPILER_ERROR("Call of method has {} args, expected: {}", call->expression_list->elements.size(), args_count);

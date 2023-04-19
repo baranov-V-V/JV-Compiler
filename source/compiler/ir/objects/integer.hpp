@@ -4,7 +4,7 @@
 
 class Integer : public IRObject {
  public:
-  Integer() = default;
+  Integer(IRObject::ScopeType scope_type);
   explicit Integer(int value);
   ~Integer() override = default;
 
@@ -16,6 +16,4 @@ class Integer : public IRObject {
   [[nodiscard]] bool Equals(const IRObject* obj) override;
 
  private:
-  //llvm::Value*;
-  int value = 0;
 };

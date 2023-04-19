@@ -17,10 +17,10 @@
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Type.h"
 #include "llvm/IR/Verifier.h"
-#include "llvm/Transforms/InstCombine/InstCombine.h" ////new
-#include "llvm/Transforms/Scalar.h" //new
-#include "llvm/Transforms/Scalar/GVN.h"//new
-#include "llvm/Transforms/Utils.h"//new
+#include "llvm/Transforms/InstCombine/InstCombine.h"
+#include "llvm/Transforms/Scalar.h"
+#include "llvm/Transforms/Scalar/GVN.h"
+#include "llvm/Transforms/Utils.h"
 #include "llvm-c/Core.h"
 #include "scope/tables/symbol_layer_tree.hpp"
 #include "ir/util/llvm_util.hpp"
@@ -89,10 +89,10 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
   void GenerateMethodsDecl();
 
   std::string GenMethodName(SharedPtr<ClassType> class_type, SharedPtr<MethodType> method_type);
+  std::string GenMethodName(SharedPtr<ClassType> class_type, const std::string& method_name);
 
   void ScopeGoUp();
   void ScopeGoDown();
-  void ScopeGoDownWithAlloc();
 
   llvm::Type* GetLLVMType(const SharedPtr<Type>& type);
   //const SharedPtr<Type>& GetJVCType(llvm::Type* type);
@@ -114,6 +114,8 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
 
   ProgramStack<llvm::Value*> stack;
 
+  llvm::Value* current_this;
+
   llvm::LLVMContext* context;
   llvm::IRBuilder<>* builder;
   llvm::Module* module;
@@ -121,6 +123,8 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
 
   SharedPtr<ClassType> current_class;
   SharedPtr<MethodType> current_method;
+
+  SharedPtr<ClassType> last_expr_class;
 
   void InitializeLLVM(const std::string& module_name);
   void TerminateLLVM();

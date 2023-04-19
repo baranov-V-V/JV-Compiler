@@ -1,7 +1,5 @@
 #include "class_ref.hpp"
 
-ClassRef::ClassRef(const SharedPtr<ClassType>& type) : type(type) {}
-
 SharedPtr<Type> ClassRef::GetType() const {
   return type;
 }
@@ -13,4 +11,9 @@ std::string ClassRef::ToString() const {
 bool ClassRef::Equals(const IRObject* obj) {
   //TODO(make equals)
   return false;
+}
+
+ClassRef::ClassRef(const SharedPtr<ClassType>& type, IRObject::ScopeType scope_type) :
+  type(type), IRObject(scope_type) {
+
 }

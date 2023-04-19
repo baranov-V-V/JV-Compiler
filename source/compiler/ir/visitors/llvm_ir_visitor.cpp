@@ -55,7 +55,8 @@ void LLVMIRVisitor::Visit(MainClass* main_class) {
 
   llvm::verifyFunction(*main);
 
-  pass_manager->run(*main);
+  //TODO make flag
+  //pass_manager->run(*main);
 
   ScopeGoUp();
 }
@@ -79,35 +80,40 @@ void LLVMIRVisitor::Visit(DeclarationList* declaration_list) {
   declaration_list->Accept(this);
 }
 
-void LLVMIRVisitor::Visit(MethodDeclaration* method_declaration) {
+void LLVMIRVisitor::Visit(MethodDeclaration* method) {
   ScopeGoDown();
   LOG_DEBUG("In Method Declaration")
 
-  //assert(!"not ready");
+  current_method = method->method_type;
 
-  //emit method
-  current_method = method_declaration->method_type;
-
-  llvm::Function* method = module->getFunction(GenMethodName(current_class, method_declaration->method_type));
-  llvm::BasicBlock* entry = llvm::BasicBlock::Create(*context, "entry", method);
+  llvm::Function* llvm_method = module->getFunction(GenMethodName(current_class, method->method_type));
+  llvm::BasicBlock* entry = llvm::BasicBlock::Create(*context, "entry", llvm_method);
   builder->SetInsertPoint(entry);
 
-  //TODO alloca all variables of this scope;
+  //deal with this
+  llvm::Type* type = llvm_method->getFunctionType()->getParamType(0);
+  std::shared_ptr<IRObject> obj = current_scope->GetFromCurrent(Symbol("__this"));
+  obj->Set(builder->CreateAlloca(type, nullptr, "__this"));
+  builder->CreateStore(llvm_method->getArg(0), obj->Get());
+  current_this = obj->Get();
 
-  // initialise var env with function params
-  for (const auto & arg : current_method->GetArgs()) {
-    //llvm::Type *paramType = method->getFunctionType()->getParamType(paramNo);
-    //
-    //builder->CreateStore();
-    //current_scope->GetFromAnywhere(arg.symbol)->Set();
+  // alloc params on stack
+  for (int arg_no = 0; arg_no < method->method_type->GetArgsNum(); ++arg_no) {
+    llvm::Type* type = llvm_method->getFunctionType()->getParamType(arg_no + 1);
+    std::shared_ptr<IRObject> obj = current_scope->GetFromCurrent(method->method_type->GetArg(arg_no).symbol);
+    obj->Set(builder->CreateAlloca(type, nullptr, method->method_type->GetArg(arg_no).symbol.name));
+    builder->CreateStore(llvm_method->getArg(arg_no + 1), obj->Get());
   }
 
+  Visit(method->statement_list);
 
+  //TODO do we need it?
   stack.Pop();
 
-  llvm::verifyFunction(*method);
+  llvm::verifyFunction(*llvm_method);
 
-  pass_manager->run(*method);
+  //TODO add flag
+  //pass_manager->run(*method);
 
   ScopeGoUp();
 }
@@ -121,16 +127,11 @@ void LLVMIRVisitor::Visit(VariableDeclaration* declaration) {
 
   llvm::IRBuilder<> tmp(&block, block.begin());
 
-  //current_scope->GetFromCurrent(declaration->identifier);
-  //CreateStore(current_scope->GetFromCurrent(declaration->identifier), )
-
-  //llvm::Value* variable = tmp.CreateAlloca(builder->getInt32Ty(), nullptr, declaration->identifier.name);
-
   std::shared_ptr<IRObject> obj = current_scope->GetFromCurrent(declaration->identifier);
-  obj->Set(tmp.CreateAlloca(builder->getInt32Ty(), nullptr, declaration->identifier.name));
+
+  obj->Set(tmp.CreateAlloca(GetLLVMType(declaration->type), nullptr, declaration->identifier.name));
 
   stack.Put(obj->Get());
-  //table.Insert(declaration->identifier.name, variable);
 }
 
 void LLVMIRVisitor::Visit(TrueExpression* expression) {
@@ -138,11 +139,6 @@ void LLVMIRVisitor::Visit(TrueExpression* expression) {
 
   llvm::Value* val = llvm::ConstantInt::getSigned((llvm::Type::getInt8Ty(*context)), 1);
   stack.Put(val);
-
-  //llvm::AllocaInst* alloca = builder->CreateAlloca(builder->getInt8Ty());
-  //llvm::Value* value = builder->getInt8(1);
-  //builder->CreateAlignedStore(value, alloca, 1);
-  //stack.Put(alloca);
 }
 
 void LLVMIRVisitor::Visit(FalseExpression* expression) {
@@ -150,20 +146,17 @@ void LLVMIRVisitor::Visit(FalseExpression* expression) {
 
   llvm::Value* val = llvm::ConstantInt::getSigned((llvm::Type::getInt8Ty(*context)), 0);
   stack.Put(val);
-
-  //llvm::AllocaInst* alloca = builder->CreateAlloca(builder->getInt8Ty());
-  //llvm::Value* value = builder->getInt8(0);
-  //builder->CreateAlignedStore(value, alloca, 1);
-  //stack.Put(alloca);
 }
 
 void LLVMIRVisitor::Visit(IdentifierExpression* expression) {
   LOG_DEBUG("In Identifier Expression: {}", expression->identifier.name)
 
-  stack.Put(CreateLoad(current_scope->GetFromAnywhere(expression->identifier)));
-  //current_scope->GetFromAnywhere()->Get()
-  //stack.GetData().push_back(class_table.Get(expression->identifier));
-  //stack.Put(table.Get(expression->identifier.name));
+  std::shared_ptr<IRObject> obj = current_scope->GetFromAnywhere(expression->identifier);
+  if (obj->GetType()->IsClass()) {
+    last_expr_class = std::reinterpret_pointer_cast<ClassType>(obj->GetType());
+  }
+
+  stack.Put(CreateLoad(obj));
 }
 
 void LLVMIRVisitor::Visit(IntegerExpression* expression) {
@@ -171,27 +164,13 @@ void LLVMIRVisitor::Visit(IntegerExpression* expression) {
 
   llvm::Value* val = llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), expression->value);
   stack.Put(val);
-
-  //llvm::AllocaInst* alloca = builder->CreateAlloca(builder->getInt32Ty());
-  //llvm::Value* value = builder->getInt32(expression->value);
-  //builder->CreateStore(value, alloca);
-
-  //stack.Put(alloca);
-  //stack.GetData().push_back(alloca);
 }
 
 void LLVMIRVisitor::Visit(NotExpression* expression) {
   LOG_DEBUG("In Not Expression")
 
-  //llvm::AllocaInst* alloca = builder->CreateAlloca(builder->getInt1Ty());
-  //llvm::Value* true_val = builder->getInt1(true);
-  //builder->CreateStore(value, alloca);
-  //stack.Put(alloca);
   llvm::Value* val = Accept(expression->expression);
   stack.Put(builder->CreateNot(val, "not"));
-
-  //llvm::Value* result = builder->CreateNot(val, "not");
-  //stack.Put(builder->CreateXor(val, true_val));
 }
 
 void LLVMIRVisitor::Visit(AssignmentStatement* statement) {
@@ -203,11 +182,6 @@ void LLVMIRVisitor::Visit(AssignmentStatement* statement) {
   llvm::Value* expr = Accept(statement->expression);
 
   stack.Put(builder->CreateStore(CreateCast(expr, var->getType()), var));
-
-  //llvm::LoadInst* load_expr = builder->CreateLoad(builder->getInt32Ty(), expr);
-  //llvm::Value* var = class_table.Get(statement->identifier);
-
-  //stack.Put(builder->CreateStore(load_expr, var));
 }
 
 void LLVMIRVisitor::Visit(IfElseStatement* statement) {
@@ -216,7 +190,6 @@ void LLVMIRVisitor::Visit(IfElseStatement* statement) {
 
   llvm::Value* cond_expr = CreateCast(Accept(statement->cond_expression), builder->getInt8Ty());
 
-  //llvm::Value* cmp = builder->CreateAlignedLoad(builder->getInt8Ty(), Accept(statement->cond_expression), true);
   llvm::Value* bool_cond_value = builder->CreateIntCast(cond_expr, builder->getInt1Ty(), true);
 
   llvm::Value* cmp = builder->CreateICmpEQ(bool_cond_value, llvm::ConstantInt::getTrue(*context), "ifcond");
@@ -236,10 +209,8 @@ void LLVMIRVisitor::Visit(IfElseStatement* statement) {
   ScopeGoUp();
 
   stack.Pop();
-  //Accept(statement->statement_true);
-  builder->CreateBr(merge_block);
 
-  //then_block = builder->GetInsertBlock();
+  builder->CreateBr(merge_block);
 
   function->getBasicBlockList().push_back(else_block);
   builder->SetInsertPoint(else_block);
@@ -252,20 +223,10 @@ void LLVMIRVisitor::Visit(IfElseStatement* statement) {
 
   builder->CreateBr(merge_block);
 
-  //else_block = builder->GetInsertBlock();
-
   function->getBasicBlockList().push_back(merge_block);
   builder->SetInsertPoint(merge_block);
 
   stack.Put(merge_block);
-  //LOG_DEBUG("then_value: {}", then_value->getType()->getTypeID());
-  //LOG_DEBUG("else_value: {}", else_value->getType()->getTypeID());
-
-  //llvm::PHINode* phi_node = builder->CreatePHI(then_value->getType(), 2, "iftmp");
-
-  //phi_node->addIncoming(then_value, then_block);
-  //phi_node->addIncoming(else_value, else_block);
-  //stack.Put(phi_node);
 }
 
 void LLVMIRVisitor::Visit(IfStatement* statement) {
@@ -274,7 +235,6 @@ void LLVMIRVisitor::Visit(IfStatement* statement) {
 
   llvm::Value* cond_expr = CreateCast(Accept(statement->cond_expression), builder->getInt8Ty());
 
-  //llvm::Value* cond_value = builder->CreateAlignedLoad(builder->getInt8Ty(), Accept(statement->cond_expression), true);
   llvm::Value* bool_cond_value = builder->CreateIntCast(cond_expr, builder->getInt1Ty(), true);
   llvm::Value* cmp = builder->CreateICmpEQ(bool_cond_value, llvm::ConstantInt::getTrue(*context), "ifcond");
 
@@ -293,24 +253,16 @@ void LLVMIRVisitor::Visit(IfStatement* statement) {
   ScopeGoUp();
 
   stack.Pop();
-  //llvm::Value* then_value = Accept(statement->statement_true);
   builder->CreateBr(merge_block);
 
   function->getBasicBlockList().push_back(else_block);
   builder->SetInsertPoint(else_block);
   builder->CreateBr(merge_block);
 
-  //then_block = builder->GetInsertBlock();
-
   function->getBasicBlockList().push_back(merge_block);
   builder->SetInsertPoint(merge_block);
 
   stack.Put(merge_block);
-  //llvm::PHINode* phi_node = builder->CreatePHI(llvm::SharedPtr<Type>::getInt32Ty(*context), 1, "iftmp");
-  //llvm::PHINode* phi_node = builder->CreatePHI(then_value->getType(), 1, "iftmp");
-
-  //phi_node->addIncoming(then_value, then_block);
-  //stack.Put(phi_node);
 }
 
 void LLVMIRVisitor::Visit(PrintStatement* statement) {
@@ -331,18 +283,12 @@ void LLVMIRVisitor::Visit(PrintStatement* statement) {
     value = CreateCast(value, builder->getFloatTy());
   }
 
-  //std::string string = "%d\n";
   llvm::Constant* fmt = llvm::ConstantDataArray::getString(*context, string);
 
   llvm::AllocaInst* alloca = builder->CreateAlloca(fmt->getType());
   builder->CreateStore(fmt, alloca);
 
-  // cast string to char*
   llvm::Value* formatted_string = builder->CreateBitCast(alloca, builder->getInt8PtrTy());
-
-  //llvm::Value* pointer = Accept(statement->expression);
-
-  //llvm::LoadInst* value = builder->CreateLoad(builder->getInt32Ty(), pointer);
 
   llvm::Function* printf_function = module->getFunction("printf");
 
@@ -368,13 +314,8 @@ void LLVMIRVisitor::Visit(WhileStatement* statement) {
   LOG_DEBUG("In While Statement")
   stack.Pop();
 
-  //builder->CreateAlloca(builder->getInt1Ty(), llvm::ConstantInt::getTrue(*context), "nop");
-  //builder->CreateAdd(llvm::ConstantInt::getTrue(*context), llvm::ConstantInt::getTrue(*context), "nop");
-
   llvm::Function* function = builder->GetInsertBlock()->getParent();
 
-  // Create blocks for the then and else cases.  Insert the 'then' block at the
-  // end of the function.
   llvm::BasicBlock* while_cond = llvm::BasicBlock::Create(*context, "prewhile");
   llvm::BasicBlock* while_body  = llvm::BasicBlock::Create(*context, "while");
   llvm::BasicBlock* while_merge  = llvm::BasicBlock::Create(*context, "merge");
@@ -387,7 +328,6 @@ void LLVMIRVisitor::Visit(WhileStatement* statement) {
   builder->SetInsertPoint(while_cond);
 
   llvm::Value* cond_value = CreateCast(Accept(statement->cond_expression), builder->getInt8Ty());
-  //llvm::Value* cond_value = builder->CreateAlignedLoad(builder->getInt8Ty(), Accept(statement->cond_expression), true);
   llvm::Value* bool_cond_value = builder->CreateIntCast(cond_value, builder->getInt1Ty(), true);
 
   builder->CreateCondBr(bool_cond_value, while_body, while_merge);
@@ -404,7 +344,6 @@ void LLVMIRVisitor::Visit(WhileStatement* statement) {
   */
 
   builder->CreateBr(while_cond);
-  //llvm::Value* cond_br = builder->CreateCondBr(Accept(statement->cond_expression), while_body, while_merge);
 
   builder->SetInsertPoint(while_merge);
 
@@ -417,11 +356,9 @@ void LLVMIRVisitor::Visit(StatementList* statement) {
 }
 
 void LLVMIRVisitor::Visit(LocalVariableStatement* statement) {
-  LOG_DEBUG("In Local Var Declaration: int {}", statement->variable_declaration->identifier.name)
   stack.Pop();
 
   statement->variable_declaration->Accept(this);
-  //stack.Put(table.Get(statement->variable_declaration->identifier.name));
 }
 
 void LLVMIRVisitor::Visit(StatementListStatement* statement) {
@@ -469,17 +406,6 @@ void LLVMIRVisitor::Visit(LogicOpExpression* expression) {
   llvm::Value* lhs = CreateCast(Accept(expression->lhs), builder->getInt8Ty());
   llvm::Value* rhs = CreateCast(Accept(expression->rhs), builder->getInt8Ty());
 
-  /*
-  LOG_DEBUG("before common: lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetLogicStrOp(expression->operation),
-            rhs->getType()->getTypeID())
-
-  CastToCommonType(lhs, rhs);
-
-  LOG_DEBUG("after common: lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetLogicStrOp(expression->operation),
-            rhs->getType()->getTypeID())
-  */
-  //llvm::LoadInst* lhs = builder->CreateLoad(builder->getInt8Ty(), lhs);
-  //llvm::LoadInst* rhs = builder->CreateLoad(builder->getInt8Ty(), rhs);
   llvm::Value* result = nullptr;
 
   switch(expression->operation) {
@@ -492,15 +418,10 @@ void LLVMIRVisitor::Visit(LogicOpExpression* expression) {
       break;
 
     default:
-      LOG_CRITICAL("uknown logic op: {}", (int) expression->operation);
+    LOG_CRITICAL("uknown logic op: {}", (int) expression->operation);
   }
 
-  //llvm::AllocaInst* alloca_result = builder->CreateAlloca(builder->getInt8Ty());
-  //builder->CreateAlignedStore(result, alloca_result, 1);
-
   stack.Put(CreateCast(result, builder->getInt8Ty()));
-
-  //stack.Put(alloca_result);
 }
 
 void LLVMIRVisitor::Visit(CompareOpExpression* expression) {
@@ -518,9 +439,6 @@ void LLVMIRVisitor::Visit(CompareOpExpression* expression) {
             rhs->getType()->getTypeID())
 
   llvm::Value* result = nullptr;
-
-  //llvm::Value* lhs = builder->CreateIntCast(builder->CreateAlignedLoad(builder->getInt32Ty(), lhs, 4), builder->getInt32Ty(), true);
-  //llvm::Value* rhs = builder->CreateIntCast(builder->CreateAlignedLoad(builder->getInt32Ty(), rhs, 4), builder->getInt32Ty(), true);
 
   switch(expression->operation) {
     case CompareOperation::EQUAL:
@@ -556,17 +474,10 @@ void LLVMIRVisitor::Visit(CompareOpExpression* expression) {
       break;
 
     default:
-      LOG_CRITICAL("uknown compare op: {}", (int) expression->operation);
+    LOG_CRITICAL("uknown compare op: {}", (int) expression->operation);
   }
 
   stack.Put(result);
-
-  /*
-  llvm::AllocaInst* alloca_result = builder->CreateAlloca(builder->getInt8Ty());
-  builder->CreateStore(builder->CreateIntCast(result, builder->getInt8Ty(), true), alloca_result);
-
-  stack.Put(alloca_result);
-  */
 }
 
 void LLVMIRVisitor::Visit(MathOpExpression* expression) {
@@ -584,8 +495,6 @@ void LLVMIRVisitor::Visit(MathOpExpression* expression) {
             rhs->getType()->getTypeID())
 
   llvm::Value* result = nullptr;
-  //llvm::Value* lhs = builder->CreateAlignedLoad(builder->getInt32Ty(), lhs, 4);
-  //llvm::Value* rhs = builder->CreateAlignedLoad(builder->getInt32Ty(), rhs, 4);
 
   switch(expression->operation) {
     case MathOperation::PLUS:
@@ -629,15 +538,10 @@ void LLVMIRVisitor::Visit(MathOpExpression* expression) {
       break;
 
     default:
-      LOG_CRITICAL("uknown math op: {}", (int) expression->operation);
+    LOG_CRITICAL("uknown math op: {}", (int) expression->operation);
   }
 
   stack.Put(result);
-
-  //llvm::AllocaInst* alloca_result = builder->CreateAlloca(builder->getInt32Ty());
-  //builder->CreateStore(result, alloca_result);
-
-  //stack.Put(alloca_result);
 }
 
 void LLVMIRVisitor::Visit(ArrayIdxExpression *expression) {
@@ -648,28 +552,52 @@ void LLVMIRVisitor::Visit(LengthExpression *expression) {
   assert(!"not supported");
 }
 
-void LLVMIRVisitor::Visit(MethodCallExpression *expression) {
-  assert(!"not supported");
+void LLVMIRVisitor::Visit(MethodCallExpression* expression) {
+  expression->call->Accept(this);
 }
 
 void LLVMIRVisitor::Visit(NewArrayExpression *expression) {
   assert(!"not supported");
 }
 
-void LLVMIRVisitor::Visit(NewClassExpression *expression) {
-  assert(!"not supported");
+void LLVMIRVisitor::Visit(NewClassExpression* expression) {
+  llvm::Type* class_type = GetLLVMType(expression->type);
+
+  // hack - calculate the size of an object in bytes by getting the address of
+  // the 1st element of an array that starts at NULL (which has address 0) and
+  // casting it to an int
+  //get size
+  llvm::Value* tmp_class_ptr = builder->CreateConstGEP1_64(
+    llvm::Constant::getNullValue(class_type->getPointerTo()), 1, "class size"
+    );
+  llvm::Value* class_size = builder->CreatePointerCast(tmp_class_ptr, llvm::Type::getInt64Ty(*context));
+
+  llvm::Value* void_ptr = builder->CreateCall(module->getFunction("malloc"), class_size);
+  llvm::Value* class_ptr = builder->CreateBitCast(void_ptr, class_type);
+
+  stack.Put(class_ptr);
 }
 
 void LLVMIRVisitor::Visit(ThisExpression *expression) {
-  assert(!"not supported");
+  last_expr_class = current_class;
+  stack.Put(current_this);
 }
 
-void LLVMIRVisitor::Visit(CommaExpressionList *program) {
-  assert(!"not supported");
+void LLVMIRVisitor::Visit(CommaExpressionList* list) {
+  assert(!"not used");
 }
 
-void LLVMIRVisitor::Visit(MethodCall *program) {
-  assert(!"not supported");
+void LLVMIRVisitor::Visit(MethodCall* call) {
+  llvm::Value* this_arg = Accept(call->caller);
+  llvm::Function* method = module->getFunction(GenMethodName(last_expr_class, call->function_name.name));
+
+  std::vector<llvm::Value*> args{this_arg};
+  for (int arg_no = 1; arg_no < method->arg_size(); ++arg_no) {
+    llvm::Value* arg_val = Accept(call->expression_list->elements.at(arg_no - 1));
+    args.push_back(CreateCast(arg_val, method->getArg(arg_no)->getType()));
+  }
+
+  stack.Put(builder->CreateCall(method, args, GenMethodName(last_expr_class, call->function_name.name) + " call"));
 }
 
 void LLVMIRVisitor::Visit(AssertStatement *statement) {
@@ -677,19 +605,42 @@ void LLVMIRVisitor::Visit(AssertStatement *statement) {
 }
 
 void LLVMIRVisitor::Visit(MethodCallStatement *statement) {
-  assert(!"not supported");
+  statement->call->Accept(this);
+  stack.Pop();
 }
 
 void LLVMIRVisitor::Visit(ArrayLValue *statement) {
   assert(!"not supported");
 }
 
-void LLVMIRVisitor::Visit(FieldLValue *statement) {
+void LLVMIRVisitor::Visit(FieldLValue* statement) {
   assert(!"pass");
+  //not used
 }
 
-void LLVMIRVisitor::Visit(IdentifierLValue *statement) {
-  stack.Put(current_scope->GetFromAnywhere(statement->name)->Get());
+void LLVMIRVisitor::Visit(IdentifierLValue* statement) {
+  std::shared_ptr<IRObject> obj = current_scope->GetFromAnywhere(statement->name);
+  if (obj->IsLocal()) {
+    stack.Put(obj->Get());
+  } else if (obj->IsField()) {
+    stack.Put(builder->CreateGEP(
+      module->getTypeByName(current_class->GetName().name),
+      builder->CreateLoad(GetLLVMType(current_class), current_this),
+      llvm::ArrayRef<llvm::Value*> ({
+        llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 0),
+        llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), table->GetClassTable()->GetInfo(current_class).GetFieldNo(statement->name))})
+      )
+    );
+    /*
+     *
+    stack.Put(builder->CreateStructGEP(
+      builder->CreateLoad(module->getTypeByName(current_class->GetName().name), builder->CreateLoad(current_this->getType(), current_this)), /*all field are private so ptr to only current this
+    table->GetClassTable()->GetInfo(current_class).GetFieldNo(statement->name)
+      )
+    );
+    */
+  }
+  //create load from
 }
 
 void LLVMIRVisitor::Visit(FieldDeclaration* declaration) {
@@ -708,24 +659,11 @@ void LLVMIRVisitor::GenerateStandartLib() {
     "printf",
     *module
   );
-  /*
-  module->getOrInsertFunction(
-    "println",
-    llvm::FunctionType::get(llvm::IntegerType::getInt32Ty(*context),
-                            llvm::Type::getInt8PtrTy(*context),
-    true));
-  */
-  /*
-  module->getOrInsertFunction(
-    "malloc",
-    llvm::FunctionType::get(llvm::Type::getInt8PtrTy(*context),
-                            llvm::IntegerType::getInt64Ty(*context),
-                            false));
-  */
+
   //TODO use GC_malloc
   llvm::FunctionType* malloc_type = llvm::FunctionType::get(
-    builder->getInt64Ty(),
-    {llvm::Type::getInt8PtrTy(*context)},
+    builder->getInt8PtrTy(),
+    {builder->getInt64Ty()},
     false
   );
 
@@ -744,22 +682,14 @@ void LLVMIRVisitor::ScopeGoDown() {
   current_scope.GoDown();
 }
 
-void LLVMIRVisitor::ScopeGoDownWithAlloc() {
-  current_scope.GoDown();
-  /*
-  for (const auto& object : current_scope->GetAllFromCurrent()) {
-    
-  }
-  */
-}
-
 void LLVMIRVisitor::GenerateClassesDecl() {
   for (const auto& entry : table->GetClassTable()->GetAllInfo()) {
+    LOG_DEBUG("Created {}", entry.first->ToString())
     llvm::StructType::create(*context, llvm::StringRef(entry.first->GetName().name));
   }
 
   for (const auto& entry : table->GetClassTable()->GetAllInfo()) {
-    llvm::StructType* class_type = module->getTypeByName(llvm::StringRef(entry.first->GetName().name));
+    llvm::StructType* class_type = module->getTypeByName(entry.first->GetName().name);
     std::vector<llvm::Type*> fields_types;
     for (const auto& field : entry.second.GetAllFields()) {
       fields_types.push_back(GetLLVMType(field.type));
@@ -796,6 +726,11 @@ std::string LLVMIRVisitor::GenMethodName(SharedPtr<ClassType> class_type, Shared
   return class_type->GetName().name + "@" + method_type->GetName().name;
 }
 
+std::string LLVMIRVisitor::GenMethodName(SharedPtr<ClassType> class_type,
+                                         const std::string& method_name) {
+  return class_type->GetName().name + "@" + method_name;
+}
+
 llvm::Type* LLVMIRVisitor::GetLLVMType(const SharedPtr<Type>& type) {
   if (type->IsClass()) {
     return module->getTypeByName(llvm::StringRef(
@@ -818,8 +753,8 @@ llvm::Type* LLVMIRVisitor::GetLLVMType(const SharedPtr<Type>& type) {
 }
 
 void LLVMIRVisitor::CreateStore(std::shared_ptr<IRObject> obj, llvm::Value* value) {
-    assert(!"not  used");
-    //obj->Set(builder->CreateStore(value, obj->Get()));
+  assert(!"not used");
+  //obj->Set(builder->CreateStore(value, obj->Get()));
 }
 
 llvm::Value* LLVMIRVisitor::CreateLoad(std::shared_ptr<IRObject> obj) {
@@ -828,19 +763,20 @@ llvm::Value* LLVMIRVisitor::CreateLoad(std::shared_ptr<IRObject> obj) {
 
 llvm::Value* LLVMIRVisitor::CreateCast(llvm::Value* value, llvm::Type* type) {
   if (value->getType()->isIntegerTy() && type->isIntegerTy()) {
-      if (value->getType()->getIntegerBitWidth() != type->getIntegerBitWidth()) {
-          return builder->CreateIntCast(value, type, true);
-      } else {
-          return value;
-      }
+    if (value->getType()->getIntegerBitWidth() != type->getIntegerBitWidth()) {
+      return builder->CreateIntCast(value, type, true);
+    } else {
+      return value;
+    }
   } else if (value->getType()->isFloatTy() && type->isIntegerTy()) {
-      //TODO make float to int
-      return value;
+    //TODO make float to int
+    return value;
   } else if (value->getType()->isIntegerTy() && type->isFloatTy()) {
-      //TODO make int to float
-      return value;
+    //TODO make int to float
+    return value;
   }
-    LOG_DEBUG("returning uncasted default value")
+
+  LOG_DEBUG("returning uncasted default value")
   return value;
 }
 
@@ -849,17 +785,17 @@ llvm::Value* LLVMIRVisitor::CreateCast(llvm::Value* value, const SharedPtr<Type>
 }
 
 llvm::Type* LLVMIRVisitor::GetCommonType(llvm::Type* lhs, llvm::Type* rhs) {
-    if (lhs->isFloatTy() || rhs->isFloatTy()) {
-        return lhs;
-    }
+  if (lhs->isFloatTy() || rhs->isFloatTy()) {
+    return lhs;
+  }
 
-    // no floating here
-    return llvm::Type::getIntNTy(*context, std::max(lhs->getIntegerBitWidth(), rhs->getIntegerBitWidth()));
+  // no floating here
+  return llvm::Type::getIntNTy(*context, std::max(lhs->getIntegerBitWidth(), rhs->getIntegerBitWidth()));
 }
 
 void LLVMIRVisitor::CastToCommonType(llvm::Value** lhs, llvm::Value** rhs) {
-    llvm::Type* common_type = GetCommonType((*lhs)->getType(), (*rhs)->getType());
+  llvm::Type* common_type = GetCommonType((*lhs)->getType(), (*rhs)->getType());
 
-    *lhs = CreateCast(*lhs, common_type);
-    *rhs = CreateCast(*rhs, common_type);
+  *lhs = CreateCast(*lhs, common_type);
+  *rhs = CreateCast(*rhs, common_type);
 }

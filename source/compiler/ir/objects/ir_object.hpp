@@ -8,7 +8,13 @@
 
 class IRObject {
  public:
-  IRObject() = default;
+  enum class ScopeType {
+    Field,
+    Local,
+    Global
+  };
+
+  explicit IRObject(IRObject::ScopeType type = ScopeType::Local);
   virtual ~IRObject() = default;
 
   [[nodiscard]] virtual SharedPtr<Type> GetType() const = 0;
@@ -17,8 +23,14 @@ class IRObject {
   [[nodiscard]] llvm::Value* Get() const;
   void Set(llvm::Value* object);
 
+  [[nodiscard]] ScopeType GetScopeType() const;
+  [[nodiscard]] bool IsLocal() const;
+  [[nodiscard]] bool IsGlobal() const;
+  [[nodiscard]] bool IsField() const;
+
   [[nodiscard]] virtual bool Equals(const IRObject* obj) = 0;
 
  private:
-  llvm::Value* object;
+  IRObject::ScopeType scope_type;
+  llvm::Value* object = nullptr;
 };

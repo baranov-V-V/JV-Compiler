@@ -5,7 +5,7 @@
 
 class ClassRef : public IRObject {
  public:
-  explicit ClassRef(const SharedPtr<ClassType>& type);
+  explicit ClassRef(const SharedPtr<ClassType>& type, IRObject::ScopeType scope_type);
 
   ~ClassRef() override = default;
 
@@ -15,5 +15,6 @@ class ClassRef : public IRObject {
   bool Equals(const IRObject* obj) override;
 
  private:
+  //value is pointer to heap-allocated class
   SharedPtr<ClassType> type;
 };

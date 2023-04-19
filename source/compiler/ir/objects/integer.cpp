@@ -1,28 +1,23 @@
 #include "integer.hpp"
 #include "types/type_factory.hpp"
 
-Integer::Integer(int value) : value(value) {}
-
 SharedPtr<Type> Integer::GetType() const {
   return TypeFactory::GetIntTy();
 }
 
 std::string Integer::ToString() const {
-  return TypeFactory::GetIntTy()->ToString() + std::to_string(value);
+  return TypeFactory::GetIntTy()->ToString();
 }
 
 bool Integer::Equals(const IRObject* obj) {
+  return true;
   if (obj->GetType() != this->GetType()) {
     return false;
   }
   Integer* casted_obj = (Integer*) obj;
-  return casted_obj->value == this->value;
+  //return casted_obj->value == this->value;
 }
 
-int Integer::GetValue() const {
-  return value;
-}
+Integer::Integer(IRObject::ScopeType scope_type) : IRObject(scope_type) {
 
-void Integer::SetValue(int value) {
-  Integer::value = value;
 }

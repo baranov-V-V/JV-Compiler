@@ -24,8 +24,12 @@ class ClassInfo {
   const std::vector<TypeEntry>& GetAllFields() const;
   const std::unordered_map<Symbol, SharedPtr<MethodType>>& GetAllMethods() const;
 
+  [[nodiscard]] int GetFieldNo(const Symbol& symbol) const;
+
  private:
   std::unordered_map<Symbol, SharedPtr<MethodType>> methods;
 
+  //fields start from 0
+  std::unordered_map<Symbol, int> id_to_field;
   std::vector<TypeEntry> fields;
 };

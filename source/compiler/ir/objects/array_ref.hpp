@@ -8,7 +8,7 @@
 
 class ArrayRef : public IRObject {
  public:
-  explicit ArrayRef(const SharedPtr<ArrayType>& type) : type(type) {}
+  explicit ArrayRef(const SharedPtr<ArrayType>& type, ScopeType scope_type) : type(type), IRObject(scope_type) {}
 
   ~ArrayRef() override = default;
 

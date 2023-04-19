@@ -7,9 +7,9 @@
 class WhileStatement: public Statement {
  public:
   WhileStatement(Expression* expr, StatementList* stmt);
-  virtual ~WhileStatement() override;
+  ~WhileStatement() override;
 
-  virtual void Accept(Visitor* visitor) override;
+  void Accept(Visitor* visitor) override;
 
   Expression* cond_expression;
   StatementList* statement;

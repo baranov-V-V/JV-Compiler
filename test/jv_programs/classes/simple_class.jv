@@ -1,0 +1,11 @@
+class A {
+  public static void main() {
+    Foo foo;
+    foo = new Foo();
+  }
+}
+
+class Foo {
+ int a;
+ int b;
+}

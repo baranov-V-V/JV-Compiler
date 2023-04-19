@@ -11,7 +11,7 @@ std::unique_ptr<ClassTable> ClassTableVisitor::ConstructClassTable(Program* prog
 }
 
 void ClassTableVisitor::Visit(MainClass* main_class) {
-  table->CreateClassInfo(main_class->type);
+  //table->CreateClassInfo(main_class->type);
 }
 
 void ClassTableVisitor::Visit(Program* program) {

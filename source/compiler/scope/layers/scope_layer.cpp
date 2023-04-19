@@ -26,32 +26,28 @@ ScopeLayer* ScopeLayer::GetParent() const {
   return parent;
 }
 
-void ScopeLayer::DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type) {
+void ScopeLayer::DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type, IRObject::ScopeType scope_type) {
   if (type->IsArray()) {
-    DeclareArray(symbol, std::reinterpret_pointer_cast<ArrayType>(type));
+    DeclareArray(symbol, std::reinterpret_pointer_cast<ArrayType>(type), scope_type);
   } else if (type->IsClass()) {
-    DeclareClass(symbol, std::reinterpret_pointer_cast<ClassType>(type));
+    DeclareClass(symbol, std::reinterpret_pointer_cast<ClassType>(type), scope_type);
   } else if (type->IsMethod()) {
-    DeclareMethod(symbol, std::reinterpret_pointer_cast<MethodType>(type));
+    DeclareMethod(symbol, std::reinterpret_pointer_cast<MethodType>(type), scope_type);
   } else {
-    DeclarePrimitive(symbol, type);
+    DeclarePrimitive(symbol, type, scope_type);
   }
 }
 
-void ScopeLayer::DeclareVariable(const Symbol& symbol, const std::shared_ptr<IRObject>& object) {
-  variables.insert({symbol, object});
+void ScopeLayer::DeclareArray(const Symbol& symbol, const SharedPtr<ArrayType>& type, IRObject::ScopeType scope_type) {
+  variables.insert({symbol, ObjectFactory::CreateArrayRef(type, scope_type)});
 }
 
-void ScopeLayer::DeclareArray(const Symbol& symbol, const SharedPtr<ArrayType>& type) {
-  variables.insert({symbol, ObjectFactory::CreateArrayRef(type)});
+void ScopeLayer::DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& type, IRObject::ScopeType scope_type) {
+  variables.insert({symbol, std::reinterpret_pointer_cast<IRObject>(ObjectFactory::CreateClassRef(type, scope_type))});
 }
 
-void ScopeLayer::DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& type) {
-  variables.insert({symbol, std::reinterpret_pointer_cast<IRObject>(ObjectFactory::CreateClassRef(type))});
-}
-
-void ScopeLayer::DeclarePrimitive(const Symbol& symbol, const SharedPtr<Type>& type) {
-  variables.insert({symbol, ObjectFactory::CreatePrimitive(type)});
+void ScopeLayer::DeclarePrimitive(const Symbol& symbol, const SharedPtr<Type>& type, IRObject::ScopeType scope_type) {
+  variables.insert({symbol, ObjectFactory::CreatePrimitive(type, scope_type)});
 }
 
 std::shared_ptr<IRObject>& ScopeLayer::GetFromCurrent(const Symbol& symbol) {
@@ -118,8 +114,8 @@ void ScopeLayer::GraphVizDump(fmt::ostream& ostream) {
   }
 }
 
-void ScopeLayer::DeclareMethod(const Symbol &symbol, const SharedPtr<MethodType> &type) {
-  variables.insert({symbol, std::reinterpret_pointer_cast<IRObject>(ObjectFactory::CreateMethod(type))});
+void ScopeLayer::DeclareMethod(const Symbol &symbol, const SharedPtr<MethodType> &type, IRObject::ScopeType scope_type) {
+  variables.insert({symbol, std::reinterpret_pointer_cast<IRObject>(ObjectFactory::CreateMethod(type, scope_type))});
 }
 
 std::vector<std::shared_ptr<IRObject>> ScopeLayer::GetAllFromCurrent() const {

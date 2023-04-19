@@ -1,0 +1,15 @@
+class A {
+    public static void main() {
+        Foo foo;
+        foo = new Foo();
+    }
+}
+
+class Foo {
+    int a;
+    bool b;
+
+    Foo foo;
+    Foo more_foo;
+    int c;
+}

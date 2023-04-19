@@ -249,7 +249,8 @@ void GraphPrintVisitor::Visit(LengthExpression *expression) {
 }
 
 void GraphPrintVisitor::Visit(MethodCallExpression* expression) {
-  PrintNode<void*>("Method Call Expr", expression);
+  PrintNode<void*>("Method Call Stmt", expression);
+  expression->call->Accept(this);
   PrintEdge<void*, void*>(expression, expression->call);
 }
 

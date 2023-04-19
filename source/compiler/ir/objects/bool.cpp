@@ -1,14 +1,12 @@
 #include "bool.hpp"
 #include "types/type_factory.hpp"
 
-Boolean::Boolean(bool value) : value(value) {}
-
 SharedPtr<Type> Boolean::GetType() const {
   return TypeFactory::GetBoolTy();
 }
 
 std::string Boolean::ToString() const {
-  return TypeFactory::GetBoolTy()->ToString() + (value ? " true" : " false");
+  return TypeFactory::GetBoolTy()->ToString();
 }
 
 bool Boolean::Equals(const IRObject* obj) {
@@ -16,10 +14,6 @@ bool Boolean::Equals(const IRObject* obj) {
   return false;
 }
 
-bool Boolean::GetValue() const {
-  return value;
-}
+Boolean::Boolean(IRObject::ScopeType scope_type) : IRObject(scope_type) {
 
-void Boolean::SetValue(bool value) {
-  Boolean::value = value;
 }

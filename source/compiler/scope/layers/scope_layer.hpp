@@ -22,8 +22,8 @@ class ScopeLayer {
   explicit ScopeLayer(ScopeLayer* parent, ClassScopeLayer* class_layer, const std::string& name = "anonymous");
   virtual ~ScopeLayer();
   
-  void DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type);
-  void DeclareVariable(const Symbol& symbol, const std::shared_ptr<IRObject>& type);
+  void DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type, IRObject::ScopeType scope_type = IRObject::ScopeType::Local);
+  //void DeclareVariable(const Symbol& symbol, const std::shared_ptr<IRObject>& type);
 
   [[nodiscard]] std::shared_ptr<IRObject>& GetFromCurrent(const Symbol& symbol);
   [[nodiscard]] const std::shared_ptr<IRObject>& GetFromAnywhere(const Symbol& symbol) const;
@@ -66,8 +66,8 @@ class ScopeLayer {
   ClassScopeLayer* class_scope;
  private:
 
-  void DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& type);
-  void DeclareArray(const Symbol& symbol, const SharedPtr<ArrayType>& type);
-  void DeclarePrimitive(const Symbol& symbol, const SharedPtr<Type>& type);
-  void DeclareMethod(const Symbol& symbol, const SharedPtr<MethodType>& type);
+  void DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& type, IRObject::ScopeType scope_type);
+  void DeclareArray(const Symbol& symbol, const SharedPtr<ArrayType>& type, IRObject::ScopeType scope_type);
+  void DeclarePrimitive(const Symbol& symbol, const SharedPtr<Type>& type, IRObject::ScopeType scope_type);
+  void DeclareMethod(const Symbol& symbol, const SharedPtr<MethodType>& type, IRObject::ScopeType scope_type);
 };

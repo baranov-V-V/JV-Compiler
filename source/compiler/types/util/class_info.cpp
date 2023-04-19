@@ -24,6 +24,7 @@ int ClassInfo::GetFieldsNum() const {
 
 void ClassInfo::AddFieldType(const Symbol& symbol, const SharedPtr<Type> &field_type) {
   fields.emplace_back(field_type, symbol);
+  id_to_field.emplace(symbol, fields.size() - 1);
 }
 
 const std::vector<TypeEntry>& ClassInfo::GetAllFields() const {
@@ -42,4 +43,8 @@ bool ClassInfo::HasFieldType(const Symbol& symbol) const {
 
 const std::unordered_map<Symbol, SharedPtr<MethodType>>& ClassInfo::GetAllMethods() const {
   return methods;
+}
+
+int ClassInfo::GetFieldNo(const Symbol& symbol) const {
+  return id_to_field.at(symbol);
 }
