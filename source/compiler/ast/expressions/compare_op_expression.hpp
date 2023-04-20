@@ -6,6 +6,7 @@
 class CompareOpExpression : public Expression {
  public:
   CompareOpExpression(Expression* lhs, CompareOperation operation, Expression* rhs);
+
   ~CompareOpExpression() override;
 
   void Accept(Visitor* visitor) override;

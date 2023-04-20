@@ -5,7 +5,7 @@ DeclarationList::DeclarationList(Declaration* declaration) {
 }
 
 void DeclarationList::Accept(Visitor* visitor) {
-  for (Declaration* element : elements) {
+  for (Declaration* element: elements) {
     element->Accept(visitor);
   }
 }

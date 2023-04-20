@@ -1,10 +1,10 @@
-#include "compiler/core/logger.hpp"
+#include "core/logger.hpp"
 
 #include <fstream>
 
-#include "compiler/exceptions/compilation_exception.hpp"
-#include "compiler/parser/driver.hpp"
-#include "compiler/core/compiler.hpp"
+#include "exceptions/compilation_exception.hpp"
+#include "parser/driver.hpp"
+#include "core/compiler.hpp"
 
 int main(int argc, char** argv) {
   Compiler compiler;

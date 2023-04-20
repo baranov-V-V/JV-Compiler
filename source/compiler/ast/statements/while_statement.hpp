@@ -1,12 +1,13 @@
 #pragma once
 
-#include "compiler/ast/expressions/expression.hpp"
-#include "compiler/ast/statements/statement_list.hpp"
-#include "compiler/visitors/visitor.hpp"
+#include "ast/expressions/expression.hpp"
+#include "ast/statements/statement_list.hpp"
+#include "visitors/visitor.hpp"
 
-class WhileStatement: public Statement {
+class WhileStatement : public Statement {
  public:
   WhileStatement(Expression* expr, StatementList* stmt);
+
   ~WhileStatement() override;
 
   void Accept(Visitor* visitor) override;

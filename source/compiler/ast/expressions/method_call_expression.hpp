@@ -5,6 +5,7 @@
 class MethodCallExpression : public Expression {
  public:
   explicit MethodCallExpression(MethodCall* call);
+
   ~MethodCallExpression() override;
 
   void Accept(Visitor* visitor) override;

@@ -1,5 +1,5 @@
 #include "file_print_visitor.hpp"
-#include "compiler/ast/ast.hpp"
+#include "ast/ast.hpp"
 
 #define PRINT_TABBED(str) PrintTabs(); stream << str << std::endl;
 #define EXECUTE_TABBED(code) PrintTabs(); code
@@ -51,8 +51,9 @@ void FilePrintVisitor::Visit(DeclarationList* declaration_list) {
 void FilePrintVisitor::Visit(MethodDeclaration* method_declaration) {
   PRINT_TABBED("Method Declaration")
   VISIT_TABBED(
-    EXECUTE_TABBED(stream << "type" << (int) method_declaration->method_type->GetReturnType()->GetTypeId() <<
-    " " << method_declaration->identifier.name << "()" << std::endl; )
+    EXECUTE_TABBED(
+      stream << "type" << (int) method_declaration->method_type->GetReturnType()->GetTypeId() <<
+             " " << method_declaration->identifier.name << "()" << std::endl; )
   )
 }
 
@@ -60,7 +61,7 @@ void FilePrintVisitor::Visit(VariableDeclaration* variable_declaration) {
   PRINT_TABBED("Variable declaration")
   EXECUTE_TABBED(
     stream << "Decl type(" << (int) variable_declaration->type->GetTypeId() << ") " <<
-    variable_declaration->identifier.name << std::endl;
+           variable_declaration->identifier.name << std::endl;
   )
 }
 
@@ -168,18 +169,18 @@ void FilePrintVisitor::PrintTabs() {
 void FilePrintVisitor::Visit(LogicOpExpression* expression) {
   PRINT_TABBED("Logic Op Expr")
   VISIT_TABBED(
-      expression->lhs->Accept(this);
-      PRINT_TABBED(GetLogicStrOp(expression->operation))
-      expression->rhs->Accept(this);
+    expression->lhs->Accept(this);
+    PRINT_TABBED(GetLogicStrOp(expression->operation))
+    expression->rhs->Accept(this);
   )
 }
 
 void FilePrintVisitor::Visit(CompareOpExpression* expression) {
   PRINT_TABBED("Compare Op Expr")
   VISIT_TABBED(
-      expression->lhs->Accept(this);
-      PRINT_TABBED(GetCompareStrOp(expression->operation))
-      expression->rhs->Accept(this);
+    expression->lhs->Accept(this);
+    PRINT_TABBED(GetCompareStrOp(expression->operation))
+    expression->rhs->Accept(this);
   )
 }
 
@@ -219,7 +220,7 @@ void FilePrintVisitor::Visit(NewArrayExpression* expression) {
   VISIT_TABBED(
     EXECUTE_TABBED(
       stream << (int) expression->type.get()->GetTypeId() << std::endl;
-    )
+  )
     expression->size->Accept(this);
   )
 }
@@ -228,8 +229,8 @@ void FilePrintVisitor::Visit(NewClassExpression* expression) {
   PRINT_TABBED("NewClassExpression")
   VISIT_TABBED(
     EXECUTE_TABBED(
-       stream << expression->type.get()->ToString() << std::endl;
-    )
+      stream << expression->type.get()->ToString() << std::endl;
+  )
   )
 }
 

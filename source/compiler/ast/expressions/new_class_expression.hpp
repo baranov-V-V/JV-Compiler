@@ -6,6 +6,7 @@
 class NewClassExpression : public Expression {
  public:
   explicit NewClassExpression(SharedPtr<ClassType> type);
+
   ~NewClassExpression() override = default;
 
   void Accept(Visitor* visitor) override;

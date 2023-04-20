@@ -6,6 +6,7 @@
 class Method : public IRObject {
  public:
   explicit Method(const SharedPtr<MethodType>& type);
+
   ~Method() override = default;
 
   [[nodiscard]] SharedPtr<Type> GetType() const override;

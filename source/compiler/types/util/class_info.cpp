@@ -1,6 +1,6 @@
 #include "class_info.hpp"
 
-const SharedPtr<MethodType> &ClassInfo::GetMethodType(const Symbol& symbol) const {
+const SharedPtr<MethodType>& ClassInfo::GetMethodType(const Symbol& symbol) const {
   return methods.at(symbol);
 }
 
@@ -22,7 +22,7 @@ int ClassInfo::GetFieldsNum() const {
   return fields.size();
 }
 
-void ClassInfo::AddFieldType(const Symbol& symbol, const SharedPtr<Type> &field_type) {
+void ClassInfo::AddFieldType(const Symbol& symbol, const SharedPtr<Type>& field_type) {
   fields.emplace_back(field_type, symbol);
   id_to_field.emplace(symbol, fields.size() - 1);
 }

@@ -39,6 +39,9 @@ enum class MathOperation {
 };
 
 const char* GetMathStrOp(MathOperation bin_op);
+
 const char* GetLogicStrOp(LogicOperation bin_op);
+
 const char* GetCompareStrOp(CompareOperation bin_op);
+
 const char* GetBinOp(BinOperation bin_op);

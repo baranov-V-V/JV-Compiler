@@ -1,12 +1,13 @@
 #pragma once
 
-#include "compiler/ast/expressions/expression.hpp"
-#include "compiler/ast/core/binary_operations.hpp"
-#include "compiler/visitors/visitor.hpp"
+#include "ast/expressions/expression.hpp"
+#include "ast/core/binary_operations.hpp"
+#include "visitors/visitor.hpp"
 
-class [[deprecated]] BinOpExpression: public Expression {
+class [[deprecated]] BinOpExpression : public Expression {
  public:
   BinOpExpression(Expression* lhs, BinOperation op, Expression* rhs);
+
   ~BinOpExpression() override;
 
   void Accept(Visitor* visitor) override;

@@ -7,6 +7,7 @@
 class IdentifierLValue : public LValue {
  public:
   explicit IdentifierLValue(const Symbol& name);
+
   ~IdentifierLValue() override = default;
 
   void Accept(Visitor* visitor) override;

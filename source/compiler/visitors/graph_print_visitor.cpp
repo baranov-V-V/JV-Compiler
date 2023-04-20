@@ -1,7 +1,7 @@
-#include "compiler/core/logger.hpp"
+#include "core/logger.hpp"
 
 #include "graph_print_visitor.hpp"
-#include "compiler/ast/ast.hpp"
+#include "ast/ast.hpp"
 
 #include <iostream>
 
@@ -12,8 +12,8 @@ void GraphPrintVisitor::Print(const std::filesystem::path& filename,
   std::filesystem::path dot_file(filename);
 
   dot_file.replace_extension("dot");
-  std::string command = "dot -Tpng " + dot_file.string() + " -o " + filename.string(); 
-  
+  std::string command = "dot -Tpng " + dot_file.string() + " -o " + filename.string();
+
   LOG_DEBUG("dot file : {}", dot_file.string());
   LOG_DEBUG("png file : {}", filename.string());
 
@@ -69,7 +69,7 @@ void GraphPrintVisitor::Visit(ClassDeclaration* class_declaration) {
 void GraphPrintVisitor::Visit(ClassDeclarationList* class_declaration_list) {
   PrintNode<void*>("Class Declarations", class_declaration_list);
   class_declaration_list->Accept(this);
-  for (ClassDeclaration* declaration : class_declaration_list->elements) {
+  for (ClassDeclaration* declaration: class_declaration_list->elements) {
     PrintEdge<void*, void*>((void*) class_declaration_list, (void*) declaration);
   }
 }
@@ -79,7 +79,7 @@ void GraphPrintVisitor::Visit(DeclarationList* list) {
 }
 
 void GraphPrintVisitor::Visit(MethodDeclaration* declaration) {
-  PrintNode<void*>(fmt::format("Meth {}", declaration->method_type->ToString()),declaration);
+  PrintNode<void*>(fmt::format("Meth {}", declaration->method_type->ToString()), declaration);
 
   Visit(declaration->statement_list);
 
@@ -177,9 +177,13 @@ void GraphPrintVisitor::Visit(StatementList* statement) {
 }
 
 void GraphPrintVisitor::Visit(LocalVariableStatement* statement) {
-  PrintNode<void*>(fmt::format("Decl [{}] {}",
-                        statement->variable_declaration->type->ToString(),
-                        statement->variable_declaration->identifier.name), statement);
+  PrintNode<void*>(
+    fmt::format(
+      "Decl [{}] {}",
+      statement->variable_declaration->type->ToString(),
+      statement->variable_declaration->identifier.name
+    ), statement
+  );
 }
 
 void GraphPrintVisitor::Visit(StatementListStatement* statement) {
@@ -230,7 +234,7 @@ void GraphPrintVisitor::Visit(MathOpExpression* expression) {
   PrintEdge<void*, void*>(expression, expression->rhs, "se");
 }
 
-void GraphPrintVisitor::Visit(ArrayIdxExpression *expression) {
+void GraphPrintVisitor::Visit(ArrayIdxExpression* expression) {
   PrintNode<void*>("Array operator[]", expression);
 
   expression->expr->Accept(this);
@@ -240,7 +244,7 @@ void GraphPrintVisitor::Visit(ArrayIdxExpression *expression) {
   PrintEdge<void*, void*>(expression, expression->expr, "sw");
 }
 
-void GraphPrintVisitor::Visit(LengthExpression *expression) {
+void GraphPrintVisitor::Visit(LengthExpression* expression) {
   PrintNode<void*>("Length Expr", expression);
 
   expression->identifier->Accept(this);
@@ -301,7 +305,7 @@ void GraphPrintVisitor::Visit(ArrayLValue* statement) {
   PrintEdge<void*, void*>(statement, statement->idx, "se");
 }
 
-void GraphPrintVisitor::Visit(FieldLValue *statement) {
+void GraphPrintVisitor::Visit(FieldLValue* statement) {
   //pass
 }
 
@@ -310,8 +314,10 @@ void GraphPrintVisitor::Visit(IdentifierLValue* statement) {
 }
 
 void GraphPrintVisitor::Visit(FieldDeclaration* declaration) {
-  PrintNode<void*>(fmt::format("Field [{}] {}", declaration->type->ToString(), declaration->identifier.name),
-            (void*) declaration);
+  PrintNode<void*>(
+    fmt::format("Field [{}] {}", declaration->type->ToString(), declaration->identifier.name),
+    (void*) declaration
+  );
 }
 
 template<class ListType>
@@ -338,7 +344,7 @@ void GraphPrintVisitor::PrintList(ListType* list, const std::string& name, const
   PrintNode<int>(delimiter, fict_node);
 
   list->elements.at(1)->Accept(this);
-  
+
   PrintEdge<int, void*>(fict_node, list->elements.at(1), "sw");
 
   PrintEdge<void*, int>(list, fict_node, "se");
@@ -348,7 +354,7 @@ void GraphPrintVisitor::PrintList(ListType* list, const std::string& name, const
     PrintNode<int>(delimiter, fict_node);
 
     PrintEdge<int, int>(old_fict, fict_node, "se");
-    
+
     old_fict = fict_node;
     list->elements.at(i)->Accept(this);
 

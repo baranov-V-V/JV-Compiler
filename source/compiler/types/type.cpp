@@ -34,7 +34,7 @@ std::string Type::ToString() const {
       return "bool";
 
     default:
-      LOG_CRITICAL("Unknown basic type [{}]", (int) id)
+    LOG_CRITICAL("Unknown basic type [{}]", (int) id)
   }
 }
 

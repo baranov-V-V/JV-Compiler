@@ -72,7 +72,8 @@ SymbolLayerTree::Iterator::Iterator(ScopeLayer* root) : root(root), current_pare
 SymbolLayerTree::Iterator::Iterator(ScopeLayer* root, ScopeLayer* parent, int idx) :
   root(root), current_parent(parent), curr_idx(idx) {}
 
-SymbolLayerTree::Iterator::Iterator(ScopeLayer* root, ScopeLayer* parent) : root(root), current_parent(root), curr_idx(0) {}
+SymbolLayerTree::Iterator::Iterator(ScopeLayer* root, ScopeLayer* parent)
+  : root(root), current_parent(root), curr_idx(0) {}
 
 
 ScopeLayer* SymbolLayerTree::Iterator::operator*() const {

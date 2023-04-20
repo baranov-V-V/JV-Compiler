@@ -1,6 +1,6 @@
 #include "compiler_flags.hpp"
 
-#include "compiler/core/compiler.hpp"
+#include "core/compiler.hpp"
 
 #include <optional>
 
@@ -18,9 +18,10 @@ void TraseScanFlag::Apply(Compiler* compiler) const {
   compiler->GetDriver().SetTraceScan(trace);
 }
 
-AstDumpTxtFlag::AstDumpTxtFlag() : 
-  filename("dump-ast-txt", llvm::cl::desc("AST text dump"), llvm::cl::value_desc("filename"),
-            llvm::cl::init("")) {}
+AstDumpTxtFlag::AstDumpTxtFlag() :
+  filename(
+    "dump-ast-txt", llvm::cl::desc("AST text dump"), llvm::cl::value_desc("filename"),
+    llvm::cl::init("")) {}
 
 void AstDumpTxtFlag::Apply(Compiler* compiler) const {
   //LOG_DEBUG("ast dump val: {}", filename.getValue())
@@ -28,21 +29,26 @@ void AstDumpTxtFlag::Apply(Compiler* compiler) const {
 }
 
 AstDumpPngFlag::AstDumpPngFlag() :
-  filename("dump-ast", llvm::cl::desc("AST graphviz dump"), llvm::cl::value_desc("filename"),
-           llvm::cl::init("")) {}
+  filename(
+    "dump-ast", llvm::cl::desc("AST graphviz dump"), llvm::cl::value_desc("filename"),
+    llvm::cl::init("")) {}
 
 void AstDumpPngFlag::Apply(Compiler* compiler) const {
   compiler->SetDumpPng(filename.getValue());
 }
 
 CompileOutputFlag::CompileOutputFlag() :
-  output_filename("o", llvm::cl::desc("Specify dump output filename"), llvm::cl::value_desc("filename"), llvm::cl::init("a.out")) {}
+  output_filename(
+    "o",
+    llvm::cl::desc("Specify dump output filename"),
+    llvm::cl::value_desc("filename"),
+    llvm::cl::init("a.out")) {}
 
 void CompileOutputFlag::Apply(Compiler* compiler) const {
   compiler->SetFileOut(output_filename.getValue());
 }
 
-CompileInputFlag::CompileInputFlag() : 
+CompileInputFlag::CompileInputFlag() :
   filename(llvm::cl::Positional, llvm::cl::desc("<input file>"), llvm::cl::Required) {}
 
 void CompileInputFlag::Apply(Compiler* compiler) const {
@@ -50,7 +56,7 @@ void CompileInputFlag::Apply(Compiler* compiler) const {
 }
 
 CompilerFlags::~CompilerFlags() {
-  for (CompilerFlag* flag : flags) {
+  for (CompilerFlag* flag: flags) {
     delete flag;
   }
 }
@@ -72,15 +78,15 @@ void CompilerFlags::ReadFromCommandLine(int argc, char** argv) {
 }
 
 void CompilerFlags::Apply(Compiler* compiler) {
-  for (const CompilerFlag* flag : flags) {
+  for (const CompilerFlag* flag: flags) {
     flag->Apply(compiler);
   }
 }
 
 void CompilerFlags::PreprocessFlags() {
-  llvm::StringMap<llvm::cl::Option*> &Map = llvm::cl::getRegisteredOptions();
+  llvm::StringMap<llvm::cl::Option*>& Map = llvm::cl::getRegisteredOptions();
 
-  llvm::cl::SetVersionPrinter([](llvm::raw_ostream& ostream)->void { ostream << Compiler::GetVersion() << "\n\n"; });
+  llvm::cl::SetVersionPrinter([](llvm::raw_ostream& ostream) -> void { ostream << Compiler::GetVersion() << "\n\n"; });
 
   Map["color"]->setHiddenFlag(llvm::cl::OptionHidden::Hidden);
   Map["help"]->setDescription("Display available options");
@@ -92,28 +98,32 @@ void CompilerDebugLevelFlag::Apply(Compiler* compiler) const {
 }
 
 CompilerDebugLevelFlag::CompilerDebugLevelFlag() :
-  debug_level("debug-level", llvm::cl::desc("Choose debug level:"),
-              llvm::cl::init(CRITICAL),
-              llvm::cl::values(
-                  clEnumVal(OFF, "No debug"),
-                  clEnumVal(TRACE, "Enable trace level information"),
-                  clEnumVal(DEBUG, "Enable debug level information"),
-                  clEnumVal(INFO, "Enable info level information"),
-                  clEnumVal(WARN, "Enable warn level information"),
-                  clEnumVal(ERROR, "Enable error level information"),
-                  clEnumVal(CRITICAL, "Enable critical level information"))) {
+  debug_level(
+    "debug-level", llvm::cl::desc("Choose debug level:"),
+    llvm::cl::init(CRITICAL),
+    llvm::cl::values(
+      clEnumVal(OFF, "No debug"),
+      clEnumVal(TRACE, "Enable trace level information"),
+      clEnumVal(DEBUG, "Enable debug level information"),
+      clEnumVal(INFO, "Enable info level information"),
+      clEnumVal(WARN, "Enable warn level information"),
+      clEnumVal(ERROR, "Enable error level information"),
+      clEnumVal(CRITICAL, "Enable critical level information")
+    )) {
 }
 
 void CompilerEmitLLVM::Apply(Compiler* compiler) const {
   compiler->NeedEmitLLVM(emit);
 }
 
-CompilerEmitLLVM::CompilerEmitLLVM() : emit("emit-llvm", llvm::cl::desc("Show llvm ir representation"),
-                                            llvm::cl::init(false)) {}
+CompilerEmitLLVM::CompilerEmitLLVM() : emit(
+  "emit-llvm", llvm::cl::desc("Show llvm ir representation"),
+  llvm::cl::init(false)) {}
 
 SymbolTableDumpFlag::SymbolTableDumpFlag() :
-  filename("dump-table", llvm::cl::desc("Specify symbol table output filename"), llvm::cl::value_desc("filename"),
-  llvm::cl::init("")) {}
+  filename(
+    "dump-table", llvm::cl::desc("Specify symbol table output filename"), llvm::cl::value_desc("filename"),
+    llvm::cl::init("")) {}
 
 void SymbolTableDumpFlag::Apply(Compiler* compiler) const {
   compiler->SetDumpTable(filename.getValue());

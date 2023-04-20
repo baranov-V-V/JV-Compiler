@@ -10,6 +10,7 @@ class ClassRef : public IRObject {
   ~ClassRef() override = default;
 
   [[nodiscard]] SharedPtr<Type> GetType() const override;
+
   [[nodiscard]] std::string ToString() const override;
 
   bool Equals(const IRObject* obj) override;

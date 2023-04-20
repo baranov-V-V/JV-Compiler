@@ -1,16 +1,17 @@
 #pragma once
 
-#include "compiler/ast/core/basic_list.hpp"
-#include "compiler/ast/statements/statement_list.hpp"
-#include "compiler/ast/statements/statement.hpp"
-#include "compiler/visitors/visitor.hpp"
+#include "ast/core/basic_list.hpp"
+#include "ast/statements/statement_list.hpp"
+#include "ast/statements/statement.hpp"
+#include "visitors/visitor.hpp"
 
-class StatementListStatement: public Statement {
+class StatementListStatement : public Statement {
  public:
-  StatementListStatement(StatementList* statement_list);
-  virtual ~StatementListStatement() = default;
-  
-  virtual void Accept(Visitor* visitor) override;
+  explicit StatementListStatement(StatementList* statement_list);
+
+  ~StatementListStatement() override = default;
+
+  void Accept(Visitor* visitor) override;
 
   StatementList* statement_list;
 };

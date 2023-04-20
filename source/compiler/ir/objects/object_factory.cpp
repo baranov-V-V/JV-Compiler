@@ -29,7 +29,7 @@ std::shared_ptr<IRObject> ObjectFactory::CreatePrimitive(SharedPtr<Type> type, I
       return ObjectFactory::CreateBool(scope_type);
 
     default:
-      LOG_CRITICAL("Not primitive type {}", type->ToString())
+    LOG_CRITICAL("Not primitive type {}", type->ToString())
   }
 }
 

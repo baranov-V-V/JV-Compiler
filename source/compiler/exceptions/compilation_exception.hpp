@@ -2,10 +2,11 @@
 
 #include <exception>
 
- class CompilationException : public std::exception {
-  public:
-    CompilationException() = default;
-   ~CompilationException() override = default;
+class CompilationException : public std::exception {
+ public:
+  CompilationException() = default;
 
-   const char* what() const noexcept override;
- };
+  ~CompilationException() override = default;
+
+  [[nodiscard]] const char* what() const noexcept override;
+};

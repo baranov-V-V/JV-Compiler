@@ -27,7 +27,7 @@ MethodType::MethodType() : Type(Type::TypeID::MethodTy) {}
 std::string MethodType::ToString() const {
   std::string res;
   res += "'" + return_type->ToString() + " " + name.name + "(";
-  for (const TypeEntry& entry : args) {
+  for (const TypeEntry& entry: args) {
     res += entry.type->ToString() + " " + entry.symbol.name + ", ";
   }
   res += ")'";

@@ -5,6 +5,7 @@
 class ThisExpression : public Expression {
  public:
   ThisExpression() = default;
+
   ~ThisExpression() override = default;
 
   void Accept(Visitor* visitor) override;

@@ -6,6 +6,7 @@
 class MethodCallStatement : public Statement {
  public:
   explicit MethodCallStatement(MethodCall* call);
+
   ~MethodCallStatement() override;
 
   void Accept(Visitor* visitor) override;

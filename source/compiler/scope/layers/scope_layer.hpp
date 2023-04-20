@@ -18,15 +18,21 @@ class ClassScopeLayer;
 class ScopeLayer {
  public:
   explicit ScopeLayer(const std::string& name = "anonymous");
+
   explicit ScopeLayer(ScopeLayer* parent, const std::string& name = "anonymous");
+
   explicit ScopeLayer(ScopeLayer* parent, ClassScopeLayer* class_layer, const std::string& name = "anonymous");
+
   virtual ~ScopeLayer();
-  
-  void DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type, IRObject::ScopeType scope_type = IRObject::ScopeType::Local);
+
+  void DeclareVariable(const Symbol& symbol, const SharedPtr<Type>& type,
+                       IRObject::ScopeType scope_type = IRObject::ScopeType::Local);
   //void DeclareVariable(const Symbol& symbol, const std::shared_ptr<IRObject>& type);
 
   [[nodiscard]] std::shared_ptr<IRObject>& GetFromCurrent(const Symbol& symbol);
+
   [[nodiscard]] const std::shared_ptr<IRObject>& GetFromAnywhere(const Symbol& symbol) const;
+
   [[nodiscard]] std::vector<std::shared_ptr<IRObject>> GetAllFromCurrent() const;
 
   template<class ObjType>
@@ -38,12 +44,15 @@ class ScopeLayer {
   void Put(const Symbol& symbol, std::shared_ptr<IRObject> value);
 
   [[nodiscard]] bool IsDeclaredCurrent(const Symbol& symbol) const;
+
   [[nodiscard]] bool IsDeclaredAnywhere(const Symbol& symbol) const;
 
   void AddChild(ScopeLayer* child);
 
   [[nodiscard]] int GetChildNum() const;
+
   [[nodiscard]] ScopeLayer* GetChild(int idx) const;
+
   [[nodiscard]] ScopeLayer* GetParent() const;
 
   ClassScopeLayer* GetClassScope();
@@ -67,7 +76,10 @@ class ScopeLayer {
  private:
 
   void DeclareClass(const Symbol& symbol, const SharedPtr<ClassType>& type, IRObject::ScopeType scope_type);
+
   void DeclareArray(const Symbol& symbol, const SharedPtr<ArrayType>& type, IRObject::ScopeType scope_type);
+
   void DeclarePrimitive(const Symbol& symbol, const SharedPtr<Type>& type, IRObject::ScopeType scope_type);
+
   void DeclareMethod(const Symbol& symbol, const SharedPtr<MethodType>& type, IRObject::ScopeType scope_type);
 };

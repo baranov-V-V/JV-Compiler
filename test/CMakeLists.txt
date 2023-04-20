@@ -29,5 +29,5 @@ function(add_compiler_test name)
   add_test(NAME ${name} COMMAND ${name})
 endfunction()
 
-#add_compiler_test(test_interpreter)
-#add_compiler_test(test_ir)
+add_compiler_test(test_interpreter)
+add_compiler_test(test_ir)

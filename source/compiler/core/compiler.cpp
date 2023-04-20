@@ -1,6 +1,6 @@
 #include <string>
 
-#include "compiler/core/logger.hpp"
+#include "core/logger.hpp"
 
 #include "compiler.hpp"
 #include "exceptions/compilation_exception.hpp"
@@ -104,9 +104,9 @@ void Compiler::NeedEmitLLVM(bool need_emit) {
 }
 
 const char* Compiler::GetVersion() {
-  return "jvc (JV-Complier) version 1.0-SNAPSHOT (x86_64)" ;
+  return "jvc (JV-Complier) version 1.0-SNAPSHOT (x86_64)";
 }
 
-void Compiler::SetDumpTable(const std::filesystem::path &dump_png) {
+void Compiler::SetDumpTable(const std::filesystem::path& dump_png) {
   this->table_png = dump_png;
 }

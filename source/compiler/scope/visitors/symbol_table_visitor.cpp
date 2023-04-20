@@ -1,10 +1,10 @@
-#include "compiler/core/logger.hpp"
+#include "core/logger.hpp"
 
 #include "symbol_table_visitor.hpp"
-#include "compiler/ast/ast.hpp"
+#include "ast/ast.hpp"
 #include "class_table_visitor.hpp"
 
-#include "compiler/scope/layers/class_scope_layer.hpp"
+#include "scope/layers/class_scope_layer.hpp"
 #include "types/type_factory.hpp"
 
 SymbolTableVisitor::SymbolTableVisitor() {}
@@ -25,9 +25,9 @@ std::unique_ptr<SymbolLayerTree> SymbolTableVisitor::ConstructSymbolTree(Program
 
 void SymbolTableVisitor::Visit(ClassDeclaration* class_declaration) {
   ScopeGoDownClass(class_declaration->class_type);
-  
+
   //put all fields in class layer
-  for (const auto& entry : tree->GetClassTable()->GetInfo(class_declaration->class_type).GetAllFields()) {
+  for (const auto& entry: tree->GetClassTable()->GetInfo(class_declaration->class_type).GetAllFields()) {
     CheckRedeclared(entry.type, entry.symbol);
     layer_iterator->DeclareVariable(entry.symbol, entry.type, IRObject::ScopeType::Field);
   }
@@ -63,7 +63,7 @@ void SymbolTableVisitor::Visit(MethodDeclaration* method_declaration) {
   CheckRedeclared(current_class, Symbol("__this"));
   layer_iterator->DeclareVariable(Symbol("__this"), current_class);
 
-  for (const TypeEntry& entry : method_declaration->method_type->GetArgs()) {
+  for (const TypeEntry& entry: method_declaration->method_type->GetArgs()) {
     CheckRedeclared(entry.type, entry.symbol);
     layer_iterator->DeclareVariable(entry.symbol, entry.type);
   }
@@ -378,7 +378,7 @@ void SymbolTableVisitor::WarnNarrowing(SharedPtr<Type> to, SharedPtr<Type> from)
 }
 
 void SymbolTableVisitor::CheckHasCommonType(SharedPtr<Type> lhs,
-                                         SharedPtr<Type> rhs) {
+                                            SharedPtr<Type> rhs) {
   if (!converter.HasCommonType(lhs, rhs)) {
     COMPILER_ERROR("Types [{}], [{}] doesnt have common type", lhs->ToString(), rhs->ToString())
   }

@@ -13,9 +13,11 @@ class SymbolLayerTree {
   friend class ScopeLayer;
 
   explicit SymbolLayerTree(std::unique_ptr<ClassTable> class_table);
+
   ~SymbolLayerTree();
 
   void AddLayer(ScopeLayer* parent, const std::string& name = "anonymous");
+
   void AddClassLayer(ScopeLayer* parent, SharedPtr<ClassType> type);
 
   void DumpTree(const std::filesystem::path& path);
@@ -28,15 +30,21 @@ class SymbolLayerTree {
   class Iterator : public std::iterator<std::input_iterator_tag, ScopeLayer*, int, ScopeLayer*, ScopeLayer*> {
    public:
     Iterator() = default;
+
     explicit Iterator(ScopeLayer* root);
+
     explicit Iterator(ScopeLayer* root, ScopeLayer* parent, int idx);
+
     explicit Iterator(ScopeLayer* root, ScopeLayer* parent);
 
     Iterator& operator++();
+
     ScopeLayer* operator*() const;
+
     ScopeLayer* operator->() const;
 
     void GoDown();
+
     void GoUp();
 
    private:
@@ -51,6 +59,7 @@ class SymbolLayerTree {
   };
 
   Iterator begin();
+
   Iterator end();
 
  private:

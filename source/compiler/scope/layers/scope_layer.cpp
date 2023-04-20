@@ -1,15 +1,16 @@
-#include "compiler/core/logger.hpp"
+#include "core/logger.hpp"
 
-#include "compiler/ir/objects/object_factory.hpp"
+#include "ir/objects/object_factory.hpp"
 #include "scope_layer.hpp"
 #include "class_scope_layer.hpp"
 
 ScopeLayer::ScopeLayer(const std::string& name) : parent(nullptr), class_scope(nullptr), name(name) {}
 
-ScopeLayer::ScopeLayer(ScopeLayer* parent, const std::string& name) : parent(parent), name(name), class_scope(parent->class_scope) {}
+ScopeLayer::ScopeLayer(ScopeLayer* parent, const std::string& name)
+  : parent(parent), name(name), class_scope(parent->class_scope) {}
 
 ScopeLayer::~ScopeLayer() {
-  for (ScopeLayer* layer : children) {
+  for (ScopeLayer* layer: children) {
     delete layer;
   }
 }
@@ -78,7 +79,8 @@ bool ScopeLayer::IsDeclaredAnywhere(const Symbol& symbol) const {
   return current_scope->IsDeclaredCurrent(symbol);
 }
 
-ScopeLayer::ScopeLayer(ScopeLayer* parent, ClassScopeLayer* class_layer, const std::string& name) : parent(parent), name(name), class_scope(class_layer) {}
+ScopeLayer::ScopeLayer(ScopeLayer* parent, ClassScopeLayer* class_layer, const std::string& name)
+  : parent(parent), name(name), class_scope(class_layer) {}
 
 void ScopeLayer::Put(const Symbol& symbol, std::shared_ptr<IRObject> value) {
   if (!IsDeclaredCurrent(symbol)) {
@@ -99,22 +101,26 @@ void ScopeLayer::GraphVizDump(fmt::ostream& ostream) {
 
   for (const auto& entry: variables) {
     if (entry.second->GetType()->IsMethod()) {
-      ostream.print("\tnode{} [label=\"<Type> {}\"];\n",
-                    (void*) &entry.first, entry.second->GetType()->ToString());
+      ostream.print(
+        "\tnode{} [label=\"<Type> {}\"];\n",
+        (void*) &entry.first, entry.second->GetType()->ToString());
     } else {
-      ostream.print("\tnode{} [label=\"<Type> {}|<Var> {}\"];\n",
-                    (void*) &entry.first, entry.second->GetType()->ToString(), entry.first.name);
+      ostream.print(
+        "\tnode{} [label=\"<Type> {}|<Var> {}\"];\n",
+        (void*) &entry.first, entry.second->GetType()->ToString(), entry.first.name
+      );
     }
     ostream.print("\t\tnode{}:sw -> node{} [color=\"grey14\"];\n", (void*) this, (void*) &entry.first);
   }
 
-  for (ScopeLayer* layer : children) {
+  for (ScopeLayer* layer: children) {
     layer->GraphVizDump(ostream);
-      ostream.print("\t\tnode{}:se -> node{} [color=\"grey14\"];\n", (void*) this, (void*) layer);
+    ostream.print("\t\tnode{}:se -> node{} [color=\"grey14\"];\n", (void*) this, (void*) layer);
   }
 }
 
-void ScopeLayer::DeclareMethod(const Symbol &symbol, const SharedPtr<MethodType> &type, IRObject::ScopeType scope_type) {
+void
+ScopeLayer::DeclareMethod(const Symbol& symbol, const SharedPtr<MethodType>& type, IRObject::ScopeType scope_type) {
   variables.insert({symbol, std::reinterpret_pointer_cast<IRObject>(ObjectFactory::CreateMethod(type, scope_type))});
 }
 
@@ -125,7 +131,7 @@ std::vector<std::shared_ptr<IRObject>> ScopeLayer::GetAllFromCurrent() const {
     variables.begin(),
     variables.end(),
     std::back_inserter(vec),
-    [](auto &kv){ return kv.second;}
+    [](auto& kv) { return kv.second; }
   );
 
   return vec;

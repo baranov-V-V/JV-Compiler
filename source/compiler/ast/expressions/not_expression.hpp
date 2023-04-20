@@ -3,12 +3,13 @@
 #include <memory>
 #include <string>
 
-#include "compiler/ast/expressions/expression.hpp"
-#include "compiler/visitors/visitor.hpp"
+#include "ast/expressions/expression.hpp"
+#include "visitors/visitor.hpp"
 
-class NotExpression: public Expression {
+class NotExpression : public Expression {
  public:
   NotExpression(Expression* expr);
+
   virtual ~NotExpression();
 
   virtual void Accept(Visitor* visitor) override;

@@ -5,7 +5,7 @@ void SetLogLevel(LOG_LEVEL level) {
     case OFF:
       spdlog::set_level(spdlog::level::off);
       break;
-    
+
     case TRACE:
       spdlog::set_level(spdlog::level::trace);
       break;
@@ -29,7 +29,7 @@ void SetLogLevel(LOG_LEVEL level) {
     case CRITICAL:
       spdlog::set_level(spdlog::level::critical);
       break;
-    
+
     default:
       fmt::print(stderr, "unknown logger level [{}]", level);
       break;

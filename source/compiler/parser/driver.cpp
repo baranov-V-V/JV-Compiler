@@ -1,18 +1,18 @@
-#include "compiler/core/logger.hpp"
+#include "core/logger.hpp"
 #include "driver.hpp"
 
-#include "compiler/visitors/interpreter.hpp"
-#include "compiler/visitors/file_print_visitor.hpp"
-#include "compiler/visitors/graph_print_visitor.hpp"
+#include "visitors/interpreter.hpp"
+#include "visitors/file_print_visitor.hpp"
+#include "visitors/graph_print_visitor.hpp"
 #include "ir/visitors/llvm_ir_visitor.hpp"
 
-#include "compiler/ast/program/program.hpp"
+#include "ast/program/program.hpp"
 #include "exceptions/compilation_exception.hpp"
 #include "scope/visitors/symbol_table_visitor.hpp"
 #include <cstdio>
 
-Driver::Driver() : trace_parsing(false), trace_scanning(false), 
-  scanner(*this), parser(scanner, *this), program(nullptr) {
+Driver::Driver() : trace_parsing(false), trace_scanning(false),
+                   scanner(*this), parser(scanner, *this), program(nullptr) {
 }
 
 Driver::~Driver() {
@@ -36,7 +36,7 @@ void Driver::Parse(const std::filesystem::path& f) {
 
   this->file_in = f.native();
   location.initialize(&file_in);
-  
+
   ScanBegin();
   parser.set_debug_level(trace_parsing);
   int res = parser();
@@ -95,8 +95,8 @@ void Driver::SetTraceParse(bool trace) {
 }
 
 void Driver::PrintSymbolTree(const std::filesystem::path& filepath) const {
-    LOG_DEBUG("Start Print")
-    layer_tree->DumpTree(filepath);
+  LOG_DEBUG("Start Print")
+  layer_tree->DumpTree(filepath);
 }
 
 void Driver::BuildLayerTree() {

@@ -6,6 +6,7 @@
 class LengthExpression : public Expression {
  public:
   explicit LengthExpression(Expression* identifier);
+
   ~LengthExpression() override;
 
   void Accept(Visitor* visitor) override;

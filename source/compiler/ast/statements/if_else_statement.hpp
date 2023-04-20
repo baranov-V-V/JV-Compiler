@@ -1,13 +1,14 @@
 #pragma once
 
-#include "compiler/ast/statements/statement.hpp"
-#include "compiler/ast/statements/statement_list.hpp"
-#include "compiler/ast/expressions/expression.hpp"
-#include "compiler/visitors/visitor.hpp"
+#include "ast/statements/statement.hpp"
+#include "ast/statements/statement_list.hpp"
+#include "ast/expressions/expression.hpp"
+#include "visitors/visitor.hpp"
 
-class IfElseStatement: public Statement {
+class IfElseStatement : public Statement {
  public:
   IfElseStatement(Expression* expr, StatementList* statement_true, StatementList* statement_false);
+
   ~IfElseStatement() override;
 
   void Accept(Visitor* visitor) override;

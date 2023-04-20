@@ -12,16 +12,21 @@ class ClassInfo {
   //ClassInfo(const std::vector<SharedPtr<MethodType>>& methods, const std::vector<SharedPtr<Type>>& fields);
 
   [[nodiscard]] const SharedPtr<MethodType>& GetMethodType(const Symbol& symbol) const;
+
   [[nodiscard]] bool HasMethodType(const Symbol& symbol) const;
+
   [[nodiscard]] int GetMethodsNum() const;
+
   void AddMethodType(const Symbol& symbol, const SharedPtr<MethodType>& method_type);
 
   //[[nodiscard]] const SharedPtr<Type>& GetFieldType(const Symbol& symbol) const;
   //[[nodiscard]] bool HasFieldType(const Symbol& symbol) const;
   [[nodiscard]] int GetFieldsNum() const;
+
   void AddFieldType(const Symbol& symbol, const SharedPtr<Type>& field_type);
 
   const std::vector<TypeEntry>& GetAllFields() const;
+
   const std::unordered_map<Symbol, SharedPtr<MethodType>>& GetAllMethods() const;
 
   [[nodiscard]] int GetFieldNo(const Symbol& symbol) const;

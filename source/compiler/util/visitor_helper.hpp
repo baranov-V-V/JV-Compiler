@@ -1,6 +1,6 @@
 #pragma once
 
-#include "compiler/ast/core/ast_node.hpp"
+#include "ast/core/ast_node.hpp"
 
 template<typename T>
 class VisitorHelper {

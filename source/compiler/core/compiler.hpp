@@ -3,23 +3,27 @@
 #include <filesystem>
 #include <vector>
 
-#include "compiler/core/logger.hpp"
+#include "core/logger.hpp"
 
-#include "compiler/util/compiler_flags.hpp"
-#include "compiler/parser/driver.hpp"
+#include "util/compiler_flags.hpp"
+#include "parser/driver.hpp"
 
 class Compiler {
  public:
   Compiler() = default;
-  
+
   void Compile(int argc, char** argv);
-  
-        Driver& GetDriver();
+
+  Driver& GetDriver();
+
   const Driver& GetDriver() const;
 
   void SetFileOut(const std::filesystem::path& file_out);
+
   void SetFileIn(const std::filesystem::path& file_in);
+
   void SetDumpTxt(const std::filesystem::path& dump_txt);
+
   void SetDumpPng(const std::filesystem::path& dump_png);
 
   void SetDumpTable(const std::filesystem::path& dump_png);

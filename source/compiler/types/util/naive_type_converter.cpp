@@ -23,8 +23,8 @@ bool NaiveTypeConverter::IsNarrowingConvertable(SharedPtr<Type> to, SharedPtr<Ty
   }
 
   return (to->GetTypeId() == Type::TypeID::IntTy && from->GetTypeId() == Type::TypeID::FloatTy) ||
-    (from->GetTypeId() == Type::TypeID::IntTy && to->GetTypeId() == Type::TypeID::FloatTy) ||
-    to->GetTypeId() == Type::TypeID::BoolTy;
+         (from->GetTypeId() == Type::TypeID::IntTy && to->GetTypeId() == Type::TypeID::FloatTy) ||
+         to->GetTypeId() == Type::TypeID::BoolTy;
 }
 
 SharedPtr<Type> NaiveTypeConverter::CommonType(SharedPtr<Type> lhs, SharedPtr<Type> rhs) {

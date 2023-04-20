@@ -8,6 +8,7 @@
 class ArrayLValue : public LValue {
  public:
   ArrayLValue(const Symbol& identifier, Expression* idx);
+
   ~ArrayLValue() override;
 
   void Accept(Visitor* visitor) override;

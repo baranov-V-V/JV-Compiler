@@ -1,11 +1,12 @@
-#include "compiler/core/logger.hpp"
+#include "core/logger.hpp"
 
 #include "llvm_ir_visitor.hpp"
-#include "compiler/ast/ast.hpp"
+#include "ast/ast.hpp"
 
 #include <iostream>
 
-void LLVMIRVisitor::TranslateToIR(Program* program, std::unique_ptr<SymbolLayerTree> layer_tree, const std::filesystem::path& path) {
+void LLVMIRVisitor::TranslateToIR(Program* program, std::unique_ptr<SymbolLayerTree> layer_tree,
+                                  const std::filesystem::path& path) {
   LOG_TRACE("path: {}", path.native());
 
   this->table = std::move(layer_tree);
@@ -40,11 +41,11 @@ void LLVMIRVisitor::Visit(MainClass* main_class) {
     llvm::Type::getVoidTy(*context), false
   );
 
-  llvm::Function* main = llvm::Function::Create(
+  llvm::Function * main = llvm::Function::Create(
     function_type,
     llvm::Function::ExternalLinkage,
     "main",
-    module
+  module
   );
 
   llvm::BasicBlock* entry = llvm::BasicBlock::Create(*context, "entry", main);
@@ -216,8 +217,8 @@ void LLVMIRVisitor::Visit(IfElseStatement* statement) {
 
   llvm::Function* function = builder->GetInsertBlock()->getParent();
 
-  llvm::BasicBlock* then_block  = llvm::BasicBlock::Create(*context, "then", function);
-  llvm::BasicBlock* else_block  = llvm::BasicBlock::Create(*context, "else");
+  llvm::BasicBlock* then_block = llvm::BasicBlock::Create(*context, "then", function);
+  llvm::BasicBlock* else_block = llvm::BasicBlock::Create(*context, "else");
   llvm::BasicBlock* merge_block = llvm::BasicBlock::Create(*context, "ifcontinue");
 
   builder->CreateCondBr(cmp, then_block, else_block);
@@ -260,8 +261,8 @@ void LLVMIRVisitor::Visit(IfStatement* statement) {
 
   llvm::Function* function = builder->GetInsertBlock()->getParent();
 
-  llvm::BasicBlock* then_block  = llvm::BasicBlock::Create(*context, "then", function);
-  llvm::BasicBlock* else_block  = llvm::BasicBlock::Create(*context, "else");
+  llvm::BasicBlock* then_block = llvm::BasicBlock::Create(*context, "then", function);
+  llvm::BasicBlock* else_block = llvm::BasicBlock::Create(*context, "else");
   llvm::BasicBlock* merge_block = llvm::BasicBlock::Create(*context, "ifcontinue");
 
   builder->CreateCondBr(cmp, then_block, else_block);
@@ -337,8 +338,8 @@ void LLVMIRVisitor::Visit(WhileStatement* statement) {
   llvm::Function* function = builder->GetInsertBlock()->getParent();
 
   llvm::BasicBlock* while_cond = llvm::BasicBlock::Create(*context, "prewhile");
-  llvm::BasicBlock* while_body  = llvm::BasicBlock::Create(*context, "while");
-  llvm::BasicBlock* while_merge  = llvm::BasicBlock::Create(*context, "merge");
+  llvm::BasicBlock* while_body = llvm::BasicBlock::Create(*context, "while");
+  llvm::BasicBlock* while_merge = llvm::BasicBlock::Create(*context, "merge");
   function->getBasicBlockList().push_back(while_cond);
   function->getBasicBlockList().push_back(while_body);
   function->getBasicBlockList().push_back(while_merge);
@@ -428,7 +429,7 @@ void LLVMIRVisitor::Visit(LogicOpExpression* expression) {
 
   llvm::Value* result = nullptr;
 
-  switch(expression->operation) {
+  switch (expression->operation) {
     case LogicOperation::OR:
       result = builder->CreateOr(lhs, rhs, "tmp_or");
       break;
@@ -450,17 +451,21 @@ void LLVMIRVisitor::Visit(CompareOpExpression* expression) {
   llvm::Value* lhs = Accept(expression->lhs);
   llvm::Value* rhs = Accept(expression->rhs);
 
-  LOG_DEBUG("before common: lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetCompareStrOp(expression->operation),
+  LOG_DEBUG("before common: lhs_id({}) {} rhs_id({})",
+            lhs->getType()->getTypeID(),
+            GetCompareStrOp(expression->operation),
             rhs->getType()->getTypeID())
 
   CastToCommonType(&lhs, &rhs);
 
-  LOG_DEBUG("after common: lhs_id({}) {} rhs_id({})", lhs->getType()->getTypeID(), GetCompareStrOp(expression->operation),
+  LOG_DEBUG("after common: lhs_id({}) {} rhs_id({})",
+            lhs->getType()->getTypeID(),
+            GetCompareStrOp(expression->operation),
             rhs->getType()->getTypeID())
 
   llvm::Value* result = nullptr;
 
-  switch(expression->operation) {
+  switch (expression->operation) {
     case CompareOperation::EQUAL:
       if (lhs->getType()->isIntegerTy()) {
         result = builder->CreateICmpEQ(lhs, rhs, "eq");
@@ -516,7 +521,7 @@ void LLVMIRVisitor::Visit(MathOpExpression* expression) {
 
   llvm::Value* result = nullptr;
 
-  switch(expression->operation) {
+  switch (expression->operation) {
     case MathOperation::PLUS:
       if (lhs->getType()->isIntegerTy()) {
         result = builder->CreateAdd(lhs, rhs, "add");
@@ -564,11 +569,11 @@ void LLVMIRVisitor::Visit(MathOpExpression* expression) {
   stack.Put(result);
 }
 
-void LLVMIRVisitor::Visit(ArrayIdxExpression *expression) {
+void LLVMIRVisitor::Visit(ArrayIdxExpression* expression) {
   assert(!"not supported");
 }
 
-void LLVMIRVisitor::Visit(LengthExpression *expression) {
+void LLVMIRVisitor::Visit(LengthExpression* expression) {
   assert(!"not supported");
 }
 
@@ -576,7 +581,7 @@ void LLVMIRVisitor::Visit(MethodCallExpression* expression) {
   expression->call->Accept(this);
 }
 
-void LLVMIRVisitor::Visit(NewArrayExpression *expression) {
+void LLVMIRVisitor::Visit(NewArrayExpression* expression) {
   assert(!"not supported");
 }
 
@@ -589,7 +594,7 @@ void LLVMIRVisitor::Visit(NewClassExpression* expression) {
   //get size
   llvm::Value* tmp_class_ptr = builder->CreateConstGEP1_64(
     llvm::Constant::getNullValue(class_type->getPointerTo()), 1, "class size"
-    );
+  );
   llvm::Value* class_size = builder->CreatePointerCast(tmp_class_ptr, llvm::Type::getInt64Ty(*context));
 
   llvm::Value* void_ptr = builder->CreateCall(module->getFunction("malloc"), class_size);
@@ -598,7 +603,7 @@ void LLVMIRVisitor::Visit(NewClassExpression* expression) {
   stack.Put(class_ptr);
 }
 
-void LLVMIRVisitor::Visit(ThisExpression *expression) {
+void LLVMIRVisitor::Visit(ThisExpression* expression) {
   last_expr_class = current_class;
   stack.Put(current_this);
 }
@@ -624,16 +629,16 @@ void LLVMIRVisitor::Visit(MethodCall* call) {
   }
 }
 
-void LLVMIRVisitor::Visit(AssertStatement *statement) {
+void LLVMIRVisitor::Visit(AssertStatement* statement) {
   assert(!"not supported");
 }
 
-void LLVMIRVisitor::Visit(MethodCallStatement *statement) {
+void LLVMIRVisitor::Visit(MethodCallStatement* statement) {
   statement->call->Accept(this);
   stack.Pop();
 }
 
-void LLVMIRVisitor::Visit(ArrayLValue *statement) {
+void LLVMIRVisitor::Visit(ArrayLValue* statement) {
   assert(!"not supported");
 }
 
@@ -648,12 +653,15 @@ void LLVMIRVisitor::Visit(IdentifierLValue* statement) {
     stack.Put(obj->Get());
   } else if (obj->IsField()) {
     stack.Put(builder->CreateGEP(
-      module->getTypeByName(current_class->GetName().name),
+    module->getTypeByName(current_class->GetName().name),
       builder->CreateLoad(GetLLVMType(current_class), current_this),
-      llvm::ArrayRef<llvm::Value*> ({
-        llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 0),
-        llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), table->GetClassTable()->GetInfo(current_class).GetFieldNo(statement->name))})
+      llvm::ArrayRef<llvm::Value*>(
+        {
+          llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 0),
+          llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)),
+                                       table->GetClassTable()->GetInfo(current_class).GetFieldNo(statement->name))}
       )
+    )
     );
     /*
      *
@@ -707,15 +715,15 @@ void LLVMIRVisitor::ScopeGoDown() {
 }
 
 void LLVMIRVisitor::GenerateClassesDecl() {
-  for (const auto& entry : table->GetClassTable()->GetAllInfo()) {
+  for (const auto& entry: table->GetClassTable()->GetAllInfo()) {
     LOG_DEBUG("Created {}", entry.first->ToString())
     llvm::StructType::create(*context, llvm::StringRef(entry.first->GetName().name));
   }
 
-  for (const auto& entry : table->GetClassTable()->GetAllInfo()) {
+  for (const auto& entry: table->GetClassTable()->GetAllInfo()) {
     llvm::StructType* class_type = module->getTypeByName(entry.first->GetName().name);
     std::vector<llvm::Type*> fields_types;
-    for (const auto& field : entry.second.GetAllFields()) {
+    for (const auto& field: entry.second.GetAllFields()) {
       fields_types.push_back(GetLLVMType(field.type));
     }
     class_type->setBody(llvm::ArrayRef<llvm::Type*>(fields_types));
@@ -723,12 +731,12 @@ void LLVMIRVisitor::GenerateClassesDecl() {
 }
 
 void LLVMIRVisitor::GenerateMethodsDecl() {
-  for (const auto & class_entry : table->GetClassTable()->GetAllInfo()) {
-    for (const auto& method_entry : class_entry.second.GetAllMethods()) {
+  for (const auto& class_entry: table->GetClassTable()->GetAllInfo()) {
+    for (const auto& method_entry: class_entry.second.GetAllMethods()) {
       //first arg is class
       std::vector<llvm::Type*> param_types({GetLLVMType(class_entry.first)});
 
-      for (const auto& param_entry : method_entry.second->GetArgs()) {
+      for (const auto& param_entry: method_entry.second->GetArgs()) {
         param_types.push_back(GetLLVMType(param_entry.type));
       }
 
@@ -738,9 +746,10 @@ void LLVMIRVisitor::GenerateMethodsDecl() {
         false
       );
 
-      llvm::Function::Create(method_type, llvm::Function::InternalLinkage,
-                             GenMethodName(class_entry.first, method_entry.second),
-                             *module);
+      llvm::Function::Create(
+        method_type, llvm::Function::InternalLinkage,
+        GenMethodName(class_entry.first, method_entry.second),
+        *module);
 
     }
   }
@@ -757,8 +766,10 @@ std::string LLVMIRVisitor::GenMethodName(SharedPtr<ClassType> class_type,
 
 llvm::Type* LLVMIRVisitor::GetLLVMType(const SharedPtr<Type>& type) {
   if (type->IsClass()) {
-    return module->getTypeByName(llvm::StringRef(
-      std::reinterpret_pointer_cast<ClassType>(type)->GetName().name))->getPointerTo();
+    return module->getTypeByName(
+      llvm::StringRef(
+        std::reinterpret_pointer_cast<ClassType>(type)->GetName().name
+      ))->getPointerTo();
   } else {
     switch (type->GetTypeId()) {
       case Type::TypeID::VoidTy:

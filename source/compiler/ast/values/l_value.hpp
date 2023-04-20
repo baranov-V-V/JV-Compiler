@@ -5,6 +5,7 @@
 class LValue : public AstNode {
  public:
   LValue() = default;
+
   ~LValue() override = default;
 
   virtual void Accept(Visitor* visitor) override = 0;

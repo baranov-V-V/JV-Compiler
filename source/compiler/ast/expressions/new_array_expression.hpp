@@ -6,6 +6,7 @@
 class NewArrayExpression : public Expression {
  public:
   NewArrayExpression(SharedPtr<Type> type, Expression* size);
+
   ~NewArrayExpression() override;
 
   void Accept(Visitor* visitor) override;

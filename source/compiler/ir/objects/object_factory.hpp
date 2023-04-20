@@ -17,10 +17,15 @@ class ObjectFactory {
 
   static std::shared_ptr<Boolean> CreateBool(IRObject::ScopeType scope_type = IRObject::ScopeType::Local);
 
-  static std::shared_ptr<IRObject> CreatePrimitive(SharedPtr<Type> type, IRObject::ScopeType scope_type = IRObject::ScopeType::Local);
+  static std::shared_ptr<IRObject>
+  CreatePrimitive(SharedPtr<Type> type, IRObject::ScopeType scope_type = IRObject::ScopeType::Local);
 
-  static std::shared_ptr<ArrayRef> CreateArrayRef(SharedPtr<ArrayType> type, IRObject::ScopeType scope_type = IRObject::ScopeType::Local);
-  static std::shared_ptr<ClassRef> CreateClassRef(SharedPtr<ClassType> type, IRObject::ScopeType scope_type = IRObject::ScopeType::Local);
+  static std::shared_ptr<ArrayRef>
+  CreateArrayRef(SharedPtr<ArrayType> type, IRObject::ScopeType scope_type = IRObject::ScopeType::Local);
 
-  static std::shared_ptr<Method> CreateMethod(SharedPtr<MethodType> type, IRObject::ScopeType scope_type = IRObject::ScopeType::Local);
+  static std::shared_ptr<ClassRef>
+  CreateClassRef(SharedPtr<ClassType> type, IRObject::ScopeType scope_type = IRObject::ScopeType::Local);
+
+  static std::shared_ptr<Method>
+  CreateMethod(SharedPtr<MethodType> type, IRObject::ScopeType scope_type = IRObject::ScopeType::Local);
 };

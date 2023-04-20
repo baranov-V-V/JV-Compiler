@@ -1,4 +1,4 @@
-#include "compiler/core/logger.hpp"
+#include "core/logger.hpp"
 #include "class_table.hpp"
 
 void ClassTable::CreateClassInfo(SharedPtr<ClassType> type) {

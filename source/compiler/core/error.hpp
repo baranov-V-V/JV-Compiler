@@ -3,7 +3,7 @@
 #include "fmt/core.h"
 #include "fmt/color.h"
 
-#include "compiler/exceptions/compilation_exception.hpp"
+#include "exceptions/compilation_exception.hpp"
 
 #define COMPILER_ERROR(...) \
 fmt::print("[{}:{}] jvc: ", __FILE__, __LINE__);          \

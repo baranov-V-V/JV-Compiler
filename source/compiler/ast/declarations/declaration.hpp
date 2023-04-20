@@ -2,13 +2,14 @@
 
 #include <string>
 
-#include "compiler/ast/core/ast_node.hpp"
-#include "compiler/visitors/visitor.hpp"
+#include "ast/core/ast_node.hpp"
+#include "visitors/visitor.hpp"
 #include "util/symbol.hpp"
 
-class Declaration: public AstNode {
+class Declaration : public AstNode {
  public:
   explicit Declaration(Symbol identifier);
+
   ~Declaration() override = default;
 
   void Accept(Visitor* visitor) override = 0;

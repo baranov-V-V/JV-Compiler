@@ -5,7 +5,7 @@
 #include "fmt/core.h"
 #include "fmt/color.h"
 
-#include "compiler/exceptions/compilation_exception.hpp"
+#include "exceptions/compilation_exception.hpp"
 
 enum LOG_LEVEL : int {
   OFF = 0,

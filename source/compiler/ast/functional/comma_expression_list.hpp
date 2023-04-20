@@ -6,7 +6,9 @@
 class CommaExpressionList : public BasicList<Expression> {
  public:
   CommaExpressionList() = default;
+
   explicit CommaExpressionList(Expression* expression);
+
   ~CommaExpressionList() override = default;
 
   void Accept(Visitor* visitor) override;
