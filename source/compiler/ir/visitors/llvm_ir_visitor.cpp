@@ -107,8 +107,11 @@ void LLVMIRVisitor::Visit(MethodDeclaration* method) {
 
   Visit(method->statement_list);
 
-  //TODO do we need it?
   stack.Pop();
+
+  if (current_method->GetReturnType()->IsVoid()) {
+    stack.Put(builder->CreateRetVoid());
+  }
 
   llvm::verifyFunction(*llvm_method);
 
@@ -156,7 +159,24 @@ void LLVMIRVisitor::Visit(IdentifierExpression* expression) {
     last_expr_class = std::reinterpret_pointer_cast<ClassType>(obj->GetType());
   }
 
-  stack.Put(CreateLoad(obj));
+  llvm::Value* ptr_val = nullptr;
+
+  if (obj->IsLocal()) {
+    ptr_val = obj->Get();
+  } else if (obj->IsField()) {
+    ptr_val = builder->CreateGEP(
+    module->getTypeByName(current_class->GetName().name),
+      builder->CreateLoad(GetLLVMType(current_class), current_this),
+      llvm::ArrayRef<llvm::Value*>(
+        {
+          llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 0),
+          llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)),
+                                       table->GetClassTable()->GetInfo(current_class).GetFieldNo(expression->identifier))}
+      )
+    );
+  }
+
+  stack.Put(builder->CreateLoad(GetLLVMType(obj->GetType()), ptr_val));
 }
 
 void LLVMIRVisitor::Visit(IntegerExpression* expression) {
@@ -597,7 +617,11 @@ void LLVMIRVisitor::Visit(MethodCall* call) {
     args.push_back(CreateCast(arg_val, method->getArg(arg_no)->getType()));
   }
 
-  stack.Put(builder->CreateCall(method, args, GenMethodName(last_expr_class, call->function_name.name) + " call"));
+  if (method->getReturnType()->isVoidTy()) {
+    stack.Put(builder->CreateCall(method, args));
+  } else {
+    stack.Put(builder->CreateCall(method, args, GenMethodName(last_expr_class, call->function_name.name) + " call"));
+  }
 }
 
 void LLVMIRVisitor::Visit(AssertStatement *statement) {

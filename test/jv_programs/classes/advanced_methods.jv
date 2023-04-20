@@ -2,13 +2,19 @@ class A {
     public static void main() {
         Foo foo;
         foo = new Foo();
+        Foo foo_inner;
+        foo_inner = new Foo();
         int a;
         a = 3;
         foo.SetA(a);
+        foo_inner.SetA(10);
+        foo.SetFoo(foo_inner);
         a = 2;
         a = foo.GetA();
-        println(a);
         foo.DoPrint();
+        foo_inner.SetA(15);
+        foo.DoPrint();
+        println(foo.GetFoo().GetA());
     }
 }
 
@@ -16,11 +22,7 @@ class Foo {
     int a;
     bool b;
 
-    Foo* foo;
-
-    void DoPrint() {
-        println(a + 1111);
-    }
+    Foo foo;
 
     void SetA(int new_a) {
         a = new_a;
@@ -28,5 +30,18 @@ class Foo {
 
     int GetA() {
         return a;
+    }
+
+    void DoPrint() {
+        println(a);
+        println(foo.GetA() + 1111);
+    }
+
+    void SetFoo(Foo new_foo) {
+        foo = new_foo;
+    }
+
+    Foo GetFoo() {
+        return foo;
     }
 }
