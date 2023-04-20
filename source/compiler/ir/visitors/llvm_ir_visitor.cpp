@@ -201,7 +201,7 @@ void LLVMIRVisitor::Visit(AssignmentStatement* statement) {
   llvm::Value* var = Accept(statement->value);
   llvm::Value* expr = Accept(statement->expression);
 
-  stack.Put(builder->CreateStore(CreateCast(expr, var->getType()), var));
+  stack.Put(builder->CreateStore(CreateCast(expr, var->getType()->getPointerElementType()), var));
 }
 
 void LLVMIRVisitor::Visit(IfElseStatement* statement) {
@@ -788,7 +788,8 @@ llvm::Value* LLVMIRVisitor::CreateLoad(std::shared_ptr<IRObject> obj) {
 llvm::Value* LLVMIRVisitor::CreateCast(llvm::Value* value, llvm::Type* type) {
   if (value->getType()->isIntegerTy() && type->isIntegerTy()) {
     if (value->getType()->getIntegerBitWidth() != type->getIntegerBitWidth()) {
-      return builder->CreateIntCast(value, type, true);
+      return builder->CreateSExtOrTrunc(value, type);
+      //return builder->CreateIntCast(value, type, true);
     } else {
       return value;
     }
