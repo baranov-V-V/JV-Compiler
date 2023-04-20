@@ -32,8 +32,6 @@ class Driver {
 
   void PrintSymbolTree(const std::filesystem::path& filepath) const;
 
-  void Run() const;
-
   void IrGen(const std::filesystem::path& filepath);
 
   void BuildLayerTree();

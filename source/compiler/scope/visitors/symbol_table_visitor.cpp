@@ -6,6 +6,7 @@
 
 #include "scope/layers/class_scope_layer.hpp"
 #include "types/type_factory.hpp"
+#include "core/error.hpp"
 
 SymbolTableVisitor::SymbolTableVisitor() {}
 

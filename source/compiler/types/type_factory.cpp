@@ -1,6 +1,7 @@
 #include "core/logger.hpp"
 
 #include "type_factory.hpp"
+#include "core/error.hpp"
 
 SharedPtr<Type> TypeFactory::GetVoidTy() {
   return std::make_shared<Type>(Type::TypeID::VoidTy);

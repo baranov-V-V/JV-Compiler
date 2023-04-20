@@ -1,4 +1,6 @@
 #include "core/logger.hpp"
+#include "core/error.hpp"
+
 #include "class_table_visitor.hpp"
 #include "ast/ast.hpp"
 

@@ -2,7 +2,6 @@
 
 #include "visitors/visitor.hpp"
 #include "util/program_stack.hpp"
-#include "util/symbol_table.hpp"
 #include "util/visitor_helper.hpp"
 
 #include "llvm/ADT/APFloat.h"
@@ -23,7 +22,6 @@
 #include "llvm/Transforms/Utils.h"
 #include "llvm-c/Core.h"
 #include "scope/tables/symbol_layer_tree.hpp"
-#include "ir/util/llvm_util.hpp"
 #include "types/util/naive_type_converter.hpp"
 
 #include <unordered_map>

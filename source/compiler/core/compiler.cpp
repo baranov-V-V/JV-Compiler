@@ -4,6 +4,7 @@
 
 #include "compiler.hpp"
 #include "exceptions/compilation_exception.hpp"
+#include "core/error.hpp"
 
 void Compiler::Compile(int argc, char** argv) {
   ParseArgs(argc, argv);

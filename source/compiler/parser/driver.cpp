@@ -1,15 +1,14 @@
 #include "core/logger.hpp"
-#include "driver.hpp"
+#include "core/error.hpp"
 
-#include "visitors/interpreter.hpp"
+#include "driver.hpp"
 #include "visitors/file_print_visitor.hpp"
 #include "visitors/graph_print_visitor.hpp"
-#include "ir/visitors/llvm_ir_visitor.hpp"
 
+#include "ir/visitors/llvm_ir_visitor.hpp"
 #include "ast/program/program.hpp"
 #include "exceptions/compilation_exception.hpp"
 #include "scope/visitors/symbol_table_visitor.hpp"
-#include <cstdio>
 
 Driver::Driver() : trace_parsing(false), trace_scanning(false),
                    scanner(*this), parser(scanner, *this), program(nullptr) {
@@ -73,11 +72,6 @@ void Driver::PrintTreePng(const std::filesystem::path& filepath) const {
   }
   GraphPrintVisitor visitor;
   visitor.Print(filepath, program);
-}
-
-void Driver::Run() const {
-  Interpreter interpreter;
-  interpreter.Run(program);
 }
 
 void Driver::IrGen(const std::filesystem::path& filepath) {

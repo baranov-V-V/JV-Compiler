@@ -4,55 +4,53 @@
 
 #include <optional>
 
-TraseParseFlag::TraseParseFlag() :
-  trace("p", llvm::cl::desc("Enable tracing of parser part"), llvm::cl::init(false)) {}
+TraceParseFlag::TraceParseFlag() :
+  BoolFlag(llvm::StringRef(TraceParseFlag::GetName()), llvm::cl::desc("Enable tracing of parser part"), llvm::cl::init(false)) {}
 
-void TraseParseFlag::Apply(Compiler* compiler) const {
-  compiler->GetDriver().SetTraceParse(trace);
+const char* TraceParseFlag::GetName() {
+  return "p";
 }
 
-TraseScanFlag::TraseScanFlag() :
-  trace("s", llvm::cl::desc("Enable tracing of scanner part"), llvm::cl::init(false)) {}
 
-void TraseScanFlag::Apply(Compiler* compiler) const {
-  compiler->GetDriver().SetTraceScan(trace);
+TraceScanFlag::TraceScanFlag() :
+  BoolFlag(llvm::StringRef(TraceScanFlag::GetName()), llvm::cl::desc("Enable tracing of scanner part"), llvm::cl::init(false)) {}
+
+const char* TraceScanFlag::GetName() {
+  return "s";
 }
 
 AstDumpTxtFlag::AstDumpTxtFlag() :
-  filename(
-    "dump-ast-txt", llvm::cl::desc("AST text dump"), llvm::cl::value_desc("filename"),
+  PathFlag(llvm::StringRef(AstDumpTxtFlag::GetName()), llvm::cl::desc("AST text dump"), llvm::cl::value_desc("filename"),
     llvm::cl::init("")) {}
 
-void AstDumpTxtFlag::Apply(Compiler* compiler) const {
-  //LOG_DEBUG("ast dump val: {}", filename.getValue())
-  compiler->SetDumpTxt(filename.getValue());
+const char* AstDumpTxtFlag::GetName() {
+  return "dump-ast-txt";
 }
 
 AstDumpPngFlag::AstDumpPngFlag() :
-  filename(
-    "dump-ast", llvm::cl::desc("AST graphviz dump"), llvm::cl::value_desc("filename"),
+  PathFlag(llvm::StringRef(AstDumpPngFlag::GetName()), llvm::cl::desc("AST graphviz dump"), llvm::cl::value_desc("filename"),
     llvm::cl::init("")) {}
 
-void AstDumpPngFlag::Apply(Compiler* compiler) const {
-  compiler->SetDumpPng(filename.getValue());
+const char* AstDumpPngFlag::GetName() {
+  return "dump-ast";
 }
 
 CompileOutputFlag::CompileOutputFlag() :
-  output_filename(
-    "o",
+  PathFlag(
+    llvm::StringRef(CompileOutputFlag::GetName()),
     llvm::cl::desc("Specify dump output filename"),
     llvm::cl::value_desc("filename"),
     llvm::cl::init("a.out")) {}
 
-void CompileOutputFlag::Apply(Compiler* compiler) const {
-  compiler->SetFileOut(output_filename.getValue());
+const char* CompileOutputFlag::GetName() {
+  return "o";
 }
 
 CompileInputFlag::CompileInputFlag() :
-  filename(llvm::cl::Positional, llvm::cl::desc("<input file>"), llvm::cl::Required) {}
+  PathFlag(llvm::cl::Positional, llvm::cl::desc("<input file>"), llvm::cl::Required) {}
 
-void CompileInputFlag::Apply(Compiler* compiler) const {
-  compiler->SetFileIn(filename.getValue());
+const char* CompileInputFlag::GetName() {
+  return "in";
 }
 
 CompilerFlags::~CompilerFlags() {
@@ -65,8 +63,8 @@ void CompilerFlags::InitFlags() {
   flags.push_back(new CompilerDebugLevelFlag());
   flags.push_back(new CompileInputFlag());
   flags.push_back(new SymbolTableDumpFlag());
-  flags.push_back(new TraseParseFlag());
-  flags.push_back(new TraseScanFlag());
+  flags.push_back(new TraceParseFlag());
+  flags.push_back(new TraceScanFlag());
   flags.push_back(new AstDumpTxtFlag());
   flags.push_back(new AstDumpPngFlag());
   flags.push_back(new CompileOutputFlag());
@@ -75,12 +73,6 @@ void CompilerFlags::InitFlags() {
 
 void CompilerFlags::ReadFromCommandLine(int argc, char** argv) {
   llvm::cl::ParseCommandLineOptions(argc, argv, "This is a small java-like language compiler");
-}
-
-void CompilerFlags::Apply(Compiler* compiler) {
-  for (const CompilerFlag* flag: flags) {
-    flag->Apply(compiler);
-  }
 }
 
 void CompilerFlags::PreprocessFlags() {
@@ -93,13 +85,15 @@ void CompilerFlags::PreprocessFlags() {
   Map["help-list"]->setDescription("Display list of available options");
 }
 
+/*
 void CompilerDebugLevelFlag::Apply(Compiler* compiler) const {
   compiler->SetDebugLevel(debug_level.getValue());
 }
+*/
 
 CompilerDebugLevelFlag::CompilerDebugLevelFlag() :
   debug_level(
-    "debug-level", llvm::cl::desc("Choose debug level:"),
+    llvm::StringRef(CompilerDebugLevelFlag::GetName()), llvm::cl::desc("Choose debug level:"),
     llvm::cl::init(CRITICAL),
     llvm::cl::values(
       clEnumVal(OFF, "No debug"),
@@ -112,19 +106,59 @@ CompilerDebugLevelFlag::CompilerDebugLevelFlag() :
     )) {
 }
 
-void CompilerEmitLLVM::Apply(Compiler* compiler) const {
-  compiler->NeedEmitLLVM(emit);
+bool CompilerDebugLevelFlag::IsSet() const {
+  return true;
 }
 
-CompilerEmitLLVM::CompilerEmitLLVM() : emit(
-  "emit-llvm", llvm::cl::desc("Show llvm ir representation"),
+const char* CompilerDebugLevelFlag::GetName() {
+  return "debug-level";
+}
+
+CompilerEmitLLVM::CompilerEmitLLVM() : BoolFlag(
+  llvm::StringRef(CompilerEmitLLVM::GetName()), llvm::cl::desc("Show llvm ir representation"),
   llvm::cl::init(false)) {}
 
+const char* CompilerEmitLLVM::GetName() {
+  return "emit-llvm";
+}
+
 SymbolTableDumpFlag::SymbolTableDumpFlag() :
-  filename(
-    "dump-table", llvm::cl::desc("Specify symbol table output filename"), llvm::cl::value_desc("filename"),
+  PathFlag(
+    llvm::StringRef(SymbolTableDumpFlag::GetName()), llvm::cl::desc("Specify symbol table output filename"), llvm::cl::value_desc("filename"),
     llvm::cl::init("")) {}
 
-void SymbolTableDumpFlag::Apply(Compiler* compiler) const {
-  compiler->SetDumpTable(filename.getValue());
+const char* SymbolTableDumpFlag::GetName() {
+  return "dump-table";
+}
+
+Flags::Flags() {
+
+}
+
+void Flags::InitFlags() {
+
+}
+
+void Flags::PreprocessFlags() {
+
+}
+
+void Flags::ReadFromCommandLine(int argc, char** argv) {
+
+}
+
+Flags::~Flags() {
+  std::for_each(flags.begin(), flags.end(), [](const auto& item){ delete item.second; });
+}
+
+bool BoolFlag::IsSet() const {
+  return opt.getValue();
+}
+
+bool PathFlag::IsSet() const {
+  return !str_opt.getValue().empty();
+}
+
+std::filesystem::path PathFlag::GetPath() const {
+  return str_opt.getValue();
 }

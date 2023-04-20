@@ -1,8 +1,8 @@
 #pragma once
 
+#include "spdlog/spdlog.h"
 #include "fmt/core.h"
 #include "fmt/color.h"
-
 #include "exceptions/compilation_exception.hpp"
 
 #define COMPILER_ERROR(...) \
