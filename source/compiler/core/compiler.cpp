@@ -1,10 +1,10 @@
 #include <string>
 
 #include "core/logger.hpp"
+#include "core/error.hpp"
 
 #include "compiler.hpp"
 #include "exceptions/compilation_exception.hpp"
-#include "core/error.hpp"
 
 void Compiler::Compile(int argc, char** argv) {
   ParseArgs(argc, argv);
@@ -69,45 +69,20 @@ Driver& Compiler::GetDriver() {
 
 const Driver& Compiler::GetDriver() const { return driver; }
 
-void Compiler::SetFileOut(const std::filesystem::path& file_out) {
-  this->file_out = file_out;
-}
-
-void Compiler::SetFileIn(const std::filesystem::path& file_in) {
-  this->file_in = file_in;
-}
-
-void Compiler::SetDumpTxt(const std::filesystem::path& dump_txt) {
-  this->dump_txt = dump_txt;
-}
-
-void Compiler::SetDumpPng(const std::filesystem::path& dump_png) {
-  this->dump_png = dump_png;
-}
-
 void Compiler::ParseArgs(int argc, char** argv) {
   if (argc < 2) {
     COMPILER_ERROR("no input files\ncompilation terminated.\n")
   }
 
-  compiler_flags.InitFlags();
-  compiler_flags.PreprocessFlags();
-  compiler_flags.ReadFromCommandLine(argc, argv);
-  compiler_flags.Apply(this);
-}
+  Flags::Instance().InitFlags();
+  Flags::Instance().PreprocessFlags();
+  Flags::Instance().ReadFromCommandLine(argc, argv);
 
-void Compiler::SetDebugLevel(LOG_LEVEL level) const {
-  SET_LOG_LEVEL(level)
-}
-
-void Compiler::NeedEmitLLVM(bool need_emit) {
-  this->need_emit = need_emit;
+  file_in = Flags::Instance().GetFlag<CompileInputFlag>()->GetPath();
+  file_out = Flags::Instance().GetFlag<CompileOutputFlag>()->GetPath();
+  SET_LOG_LEVEL(Flags::Instance().GetFlag<CompilerDebugLevelFlag>()->GetLevel())
 }
 
 const char* Compiler::GetVersion() {
   return "jvc (JV-Complier) version 1.0-SNAPSHOT (x86_64)";
-}
-
-void Compiler::SetDumpTable(const std::filesystem::path& dump_png) {
-  this->table_png = dump_png;
 }

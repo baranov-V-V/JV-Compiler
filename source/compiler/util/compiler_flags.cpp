@@ -11,7 +11,6 @@ const char* TraceParseFlag::GetName() {
   return "p";
 }
 
-
 TraceScanFlag::TraceScanFlag() :
   BoolFlag(llvm::StringRef(TraceScanFlag::GetName()), llvm::cl::desc("Enable tracing of scanner part"), llvm::cl::init(false)) {}
 
@@ -53,38 +52,6 @@ const char* CompileInputFlag::GetName() {
   return "in";
 }
 
-CompilerFlags::~CompilerFlags() {
-  for (CompilerFlag* flag: flags) {
-    delete flag;
-  }
-}
-
-void CompilerFlags::InitFlags() {
-  flags.push_back(new CompilerDebugLevelFlag());
-  flags.push_back(new CompileInputFlag());
-  flags.push_back(new SymbolTableDumpFlag());
-  flags.push_back(new TraceParseFlag());
-  flags.push_back(new TraceScanFlag());
-  flags.push_back(new AstDumpTxtFlag());
-  flags.push_back(new AstDumpPngFlag());
-  flags.push_back(new CompileOutputFlag());
-  flags.push_back(new CompilerEmitLLVM());
-}
-
-void CompilerFlags::ReadFromCommandLine(int argc, char** argv) {
-  llvm::cl::ParseCommandLineOptions(argc, argv, "This is a small java-like language compiler");
-}
-
-void CompilerFlags::PreprocessFlags() {
-  llvm::StringMap<llvm::cl::Option*>& Map = llvm::cl::getRegisteredOptions();
-
-  llvm::cl::SetVersionPrinter([](llvm::raw_ostream& ostream) -> void { ostream << Compiler::GetVersion() << "\n\n"; });
-
-  Map["color"]->setHiddenFlag(llvm::cl::OptionHidden::Hidden);
-  Map["help"]->setDescription("Display available options");
-  Map["help-list"]->setDescription("Display list of available options");
-}
-
 /*
 void CompilerDebugLevelFlag::Apply(Compiler* compiler) const {
   compiler->SetDebugLevel(debug_level.getValue());
@@ -114,6 +81,10 @@ const char* CompilerDebugLevelFlag::GetName() {
   return "debug-level";
 }
 
+LOG_LEVEL CompilerDebugLevelFlag::GetLevel() const {
+  return debug_level.getValue();
+}
+
 CompilerEmitLLVM::CompilerEmitLLVM() : BoolFlag(
   llvm::StringRef(CompilerEmitLLVM::GetName()), llvm::cl::desc("Show llvm ir representation"),
   llvm::cl::init(false)) {}
@@ -131,20 +102,30 @@ const char* SymbolTableDumpFlag::GetName() {
   return "dump-table";
 }
 
-Flags::Flags() {
-
-}
-
 void Flags::InitFlags() {
-
+  flags.emplace(CompilerDebugLevelFlag::GetName(), new CompilerDebugLevelFlag());
+  flags.emplace(CompileInputFlag::GetName(), new CompileInputFlag());
+  flags.emplace(SymbolTableDumpFlag::GetName(), new SymbolTableDumpFlag());
+  flags.emplace(TraceParseFlag::GetName(), new TraceParseFlag());
+  flags.emplace(TraceScanFlag::GetName(), new TraceScanFlag());
+  flags.emplace(AstDumpTxtFlag::GetName(), new AstDumpTxtFlag());
+  flags.emplace(AstDumpPngFlag::GetName(), new AstDumpPngFlag());
+  flags.emplace(CompileOutputFlag::GetName(), new CompileOutputFlag());
+  flags.emplace(CompilerEmitLLVM::GetName(), new CompilerEmitLLVM());
 }
 
 void Flags::PreprocessFlags() {
+  llvm::StringMap<llvm::cl::Option*>& Map = llvm::cl::getRegisteredOptions();
 
+  llvm::cl::SetVersionPrinter([](llvm::raw_ostream& ostream) -> void { ostream << Compiler::GetVersion() << "\n\n"; });
+
+  Map["color"]->setHiddenFlag(llvm::cl::OptionHidden::Hidden);
+  Map["help"]->setDescription("Display available options");
+  Map["help-list"]->setDescription("Display list of available options");
 }
 
 void Flags::ReadFromCommandLine(int argc, char** argv) {
-
+  llvm::cl::ParseCommandLineOptions(argc, argv, "This is a small java-like language compiler");
 }
 
 Flags::~Flags() {
@@ -161,4 +142,25 @@ bool PathFlag::IsSet() const {
 
 std::filesystem::path PathFlag::GetPath() const {
   return str_opt.getValue();
+}
+
+CompilerOptimizeLevelFlag::CompilerOptimizeLevelFlag() :
+  level(llvm::cl::desc("Choose optimization level:"),
+        llvm::cl::values(
+          clEnumVal(O0 , "No optimizations"),
+          clEnumVal(O1, "Enable trivial optimizations"),
+          clEnumVal(O2, "Enable default optimizations"),
+          clEnumVal(O3, "Enable expensive optimizations"))) {
+}
+
+bool CompilerOptimizeLevelFlag::IsSet() const {
+  return true;
+}
+
+const char* CompilerOptimizeLevelFlag::GetName() {
+  return "optimize";
+}
+
+OPTIMIZATION_LEVEL CompilerOptimizeLevelFlag::GetLevel() const {
+  return level.getValue();
 }

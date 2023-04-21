@@ -5,33 +5,9 @@
 
 #include "core/logger.hpp"
 #include "llvm/Support/CommandLine.h"
+#include "ir/optimization/levels.hpp"
 
 class CompilerFlag;
-
-class Compiler;
-
-//TODO make singleton flags: divide them in categories.
-
-//then use them to call in special places in program
-
-class CompilerFlags {
- public:
-  CompilerFlags() = default;
-
-  ~CompilerFlags();
-
- public:
-  void InitFlags();
-
-  void PreprocessFlags();
-
-  void ReadFromCommandLine(int argc, char** argv);
-
-  void Apply(Compiler* compiler);
-
- private:
-  std::vector<CompilerFlag*> flags;
-};
 
 class Flags {
  public:
@@ -56,8 +32,8 @@ class Flags {
   void ReadFromCommandLine(int argc, char** argv);
 
   template <typename FlagTy>
-  FlagTy* GetFlag(const std::string& id) {
-    return reinterpret_cast<FlagTy>(flags.at(id));
+  FlagTy* GetFlag() {
+    return reinterpret_cast<FlagTy*>(flags.at(FlagTy::GetName()));
   }
 
  private:
@@ -167,6 +143,8 @@ class CompilerDebugLevelFlag : public CompilerFlag {
 
   static const char* GetName();
 
+  [[nodiscard]] LOG_LEVEL GetLevel() const;
+
  private:
   llvm::cl::opt<LOG_LEVEL> debug_level;
 };
@@ -187,4 +165,20 @@ class SymbolTableDumpFlag : public PathFlag {
   ~SymbolTableDumpFlag() override = default;
 
   static const char* GetName();
+};
+
+class CompilerOptimizeLevelFlag : public CompilerFlag {
+ public:
+  CompilerOptimizeLevelFlag();
+
+  ~CompilerOptimizeLevelFlag() override = default;
+
+  [[nodiscard]] bool IsSet() const override;
+
+  static const char* GetName();
+
+  [[nodiscard]] OPTIMIZATION_LEVEL GetLevel() const;
+
+ private:
+  llvm::cl::opt<OPTIMIZATION_LEVEL> level;
 };
