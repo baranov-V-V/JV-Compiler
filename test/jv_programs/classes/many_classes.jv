@@ -1,0 +1,62 @@
+class A {
+  public static void main() {
+    int a;
+    int b;
+    a = 3;
+    b = 3;
+    println(a + b);
+
+    Bar bar;
+    bar = new Bar();
+    
+    Foo foo;
+    foo = new Foo();
+
+    foo.setA(a + 10);
+    bar.setFoo(foo);
+    bar.printFoo();
+  }
+}
+
+class Foo {
+  int getA () {
+    return a;
+  }
+
+  void setA(int a_param) {
+    a = a_param;
+  }
+
+  int a;
+  int b;
+
+  int getB() {
+    return b;
+  }
+
+  void printA() {
+    println(a);
+  }
+}
+
+
+class Bar {
+  Foo getFoo() {
+    return f;
+  }
+
+  Foo f;
+  int b;
+
+  int getB() {
+    return b;
+  }
+
+  void setFoo(Foo f_param) {
+    f = f_param;
+  }
+
+  void printFoo() {
+    f.printA();
+  }
+}

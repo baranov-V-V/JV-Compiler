@@ -1,4 +1,5 @@
 #include "compiler_flags.hpp"
+
 #include "compiler/core/compiler.hpp"
 
 #include <optional>
@@ -18,7 +19,7 @@ void TraseScanFlag::Apply(Compiler* compiler) const {
 }
 
 AstDumpTxtFlag::AstDumpTxtFlag() : 
-  filename("dump-txt", llvm::cl::desc("Specify dump output filename"), llvm::cl::value_desc("filename"),
+  filename("dump-ast-txt", llvm::cl::desc("AST text dump"), llvm::cl::value_desc("filename"),
             llvm::cl::init("")) {}
 
 void AstDumpTxtFlag::Apply(Compiler* compiler) const {
@@ -27,13 +28,10 @@ void AstDumpTxtFlag::Apply(Compiler* compiler) const {
 }
 
 AstDumpPngFlag::AstDumpPngFlag() :
-  filename("dump-pic", llvm::cl::desc("Specify dump output filename"), llvm::cl::value_desc("filename"),
+  filename("dump-ast", llvm::cl::desc("AST graphviz dump"), llvm::cl::value_desc("filename"),
            llvm::cl::init("")) {}
 
 void AstDumpPngFlag::Apply(Compiler* compiler) const {
-  if (!filename.getValue().empty()) {
-    COMPILER_ERROR("this flag is not yet supported")
-  }
   compiler->SetDumpPng(filename.getValue());
 }
 
@@ -60,6 +58,7 @@ CompilerFlags::~CompilerFlags() {
 void CompilerFlags::InitFlags() {
   flags.push_back(new CompilerDebugLevelFlag());
   flags.push_back(new CompileInputFlag());
+  flags.push_back(new SymbolTableDumpFlag());
   flags.push_back(new TraseParseFlag());
   flags.push_back(new TraseScanFlag());
   flags.push_back(new AstDumpTxtFlag());
@@ -86,7 +85,6 @@ void CompilerFlags::PreprocessFlags() {
   Map["color"]->setHiddenFlag(llvm::cl::OptionHidden::Hidden);
   Map["help"]->setDescription("Display available options");
   Map["help-list"]->setDescription("Display list of available options");
-  Map["dump-pic"]->setHiddenFlag(llvm::cl::OptionHidden::Hidden);
 }
 
 void CompilerDebugLevelFlag::Apply(Compiler* compiler) const {
@@ -112,3 +110,11 @@ void CompilerEmitLLVM::Apply(Compiler* compiler) const {
 
 CompilerEmitLLVM::CompilerEmitLLVM() : emit("emit-llvm", llvm::cl::desc("Show llvm ir representation"),
                                             llvm::cl::init(false)) {}
+
+SymbolTableDumpFlag::SymbolTableDumpFlag() :
+  filename("dump-table", llvm::cl::desc("Specify symbol table output filename"), llvm::cl::value_desc("filename"),
+  llvm::cl::init("")) {}
+
+void SymbolTableDumpFlag::Apply(Compiler* compiler) const {
+  compiler->SetDumpTable(filename.getValue());
+}

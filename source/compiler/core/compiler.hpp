@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "compiler/core/logger.hpp"
+
 #include "compiler/util/compiler_flags.hpp"
 #include "compiler/parser/driver.hpp"
 
@@ -21,6 +22,8 @@ class Compiler {
   void SetDumpTxt(const std::filesystem::path& dump_txt);
   void SetDumpPng(const std::filesystem::path& dump_png);
 
+  void SetDumpTable(const std::filesystem::path& dump_png);
+
   void SetDebugLevel(LOG_LEVEL level) const;
 
   void NeedEmitLLVM(bool need_emit);
@@ -32,6 +35,7 @@ class Compiler {
   std::filesystem::path file_in;
   std::filesystem::path dump_txt;
   std::filesystem::path dump_png;
+  std::filesystem::path table_png;
 
   bool need_emit;
 

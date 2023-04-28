@@ -1,6 +1,6 @@
 #include "if_statement.hpp"
 
-IfStatement::IfStatement(Expression* expr, Statement* stmt) :
+IfStatement::IfStatement(Expression* expr, StatementList* stmt) :
   statement_true(stmt), cond_expression(expr) {}
 
 IfStatement::~IfStatement() {

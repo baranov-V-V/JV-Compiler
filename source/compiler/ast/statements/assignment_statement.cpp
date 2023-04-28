@@ -1,10 +1,11 @@
 #include "assignment_statement.hpp"
 
-AssignmentStatement::AssignmentStatement(const std::string& identifier,
+AssignmentStatement::AssignmentStatement(LValue* value,
                                          Expression* expr) :
-  identifier(identifier), expression(expr) {}
+  value(value), expression(expr) {}
 
 AssignmentStatement::~AssignmentStatement() {
+  delete value;
   delete expression;
 }
 

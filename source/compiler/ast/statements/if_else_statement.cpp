@@ -1,7 +1,7 @@
 #include "if_else_statement.hpp"
 
-IfElseStatement::IfElseStatement(Expression* expr, Statement* statement_true,
-                                 Statement* statement_false) :
+IfElseStatement::IfElseStatement(Expression* expr, StatementList* statement_true,
+                                 StatementList* statement_false) :
   cond_expression(expr), statement_true(statement_true), statement_false(statement_false) {}
 
 IfElseStatement::~IfElseStatement() {

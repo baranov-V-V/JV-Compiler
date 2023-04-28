@@ -3,48 +3,49 @@
 #include <string>
 #include <unordered_map>
 
+#include "compiler/core/logger.hpp"
 #include "compiler/exceptions/redeclaration_exception.hpp"
 #include "compiler/exceptions/undeclared_variable_exception.hpp"
 
-template <typename T>
+template <typename Key, typename Val>
 class SymbolTable {
  public:
-  const T& Get(const std::string& identifier) const;
+  const Val& Get(const Key& identifier) const;
 
-  void Update(const std::string& identifier, const T& value);
+  void Update(const Key& identifier, const Val& value);
 
-  void Insert(const std::string& identifier, const T& value);
+  void Insert(const Key& identifier, const Val& value);
 
   void Clear();
  private:
-  std::unordered_map<std::string, T> table;
+  std::unordered_map<Key, Val> table;
 };
 
-template <typename T>
-const T& SymbolTable<T>::Get(const std::string& identifier) const {
+template<typename Key, typename Val>
+const Val& SymbolTable<Key, Val>::Get(const Key& identifier) const {
   if (!table.contains(identifier)) {
     throw UndeclaredVarException(identifier);
   }
   return table.at(identifier);
 }
 
-template <typename T>
-void SymbolTable<T>::Update(const std::string& identifier, const T& value) {
+template<typename Key, typename Val>
+void SymbolTable<Key, Val>::Update(const Key& identifier, const Val& value) {
   if (!table.contains(identifier)) {
     throw UndeclaredVarException(identifier);
   }
   table.at(identifier) = value;
 }
 
-template <typename T>
-void SymbolTable<T>::Insert(const std::string& identifier, const T& value) {
+template<typename Key, typename Val>
+void SymbolTable<Key, Val>::Insert(const Key& identifier, const Val& value) {
   if (table.contains(identifier)) {
     throw RedeclarationException(identifier);
   }
   table.insert({identifier, value});
 }
 
-template <typename T>
-void SymbolTable<T>::Clear() {
+template<typename Key, typename Val>
+void SymbolTable<Key, Val>::Clear() {
   table.clear();
 }

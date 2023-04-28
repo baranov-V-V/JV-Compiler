@@ -21,17 +21,19 @@ Use `./jvc` to compile and execute programs
 
 List of basic flags:
 
-* `-o <filename>` creates text dump of program.
+* `-o <filename>` specify output file name.
 * `--emit-llvm` shows llvm ir representation of program.
-* `--debug-level <debug_level>` enables debug messages of sertan level, critical level is default.
-* `--dump-txt <filename>` creates text dump of program abstract syntax tree
+* `--dump-ast-txt <filename>` creates text dump of program abstract syntax tree
+* `--dump-ast <filename>` creates graphviz dump of program abstract syntax tree
+* `--dump-table=<filename>`  - specify symbol table output filename
 * `--version` shows version of the compiler
+* `--debug-level <level>` enables debug messages of sertan level, critical level is default.
 
 For more flags info use `./jvc --help`
 
 Example:
 
 ```Shell
-$ ./jvc test/jv_programs/test_while.jv -o buzz.out
+$ ./jvc --debug-level=TRACE --dump-table=pic/table.png --dump-ast-txt=pic/ast.txt --dump-ast=pic/ast.png test/jv_programs/classes/many_classes.jv
 $
 ```

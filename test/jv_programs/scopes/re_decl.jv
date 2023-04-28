@@ -1,0 +1,18 @@
+class A {
+  public static void main() {
+    int a;
+    int b;
+    if (a > 2 || a > 4) {
+      int a;
+      {
+        int a;
+        {
+          int a;
+        }
+        int a; //re-decl here
+      }
+    } else {
+      b = 11;
+    }
+  }
+}

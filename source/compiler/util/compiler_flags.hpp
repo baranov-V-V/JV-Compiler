@@ -8,6 +8,9 @@
 class CompilerFlag;
 class Compiler;
 
+//TODO make singleton flags: divide them in categories.
+//then use them to call in special places in program
+
 class CompilerFlags {
  public:
   CompilerFlags() = default;
@@ -118,4 +121,15 @@ class CompilerEmitLLVM : public CompilerFlag {
 
  private:
   llvm::cl::opt<bool> emit;
+};
+
+class SymbolTableDumpFlag : public CompilerFlag {
+ public:
+  SymbolTableDumpFlag();
+  ~SymbolTableDumpFlag() override = default;
+
+  void Apply(Compiler* compiler) const override;
+
+ private:
+  llvm::cl::opt<std::string> filename;
 };

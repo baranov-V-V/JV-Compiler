@@ -1,8 +1,10 @@
 #include "class_declaration.hpp"
 
-ClassDeclaration::ClassDeclaration(const std::string& class_name,
+#include <utility>
+
+ClassDeclaration::ClassDeclaration(SharedPtr<ClassType> class_type,
                                    DeclarationList* decl_list) :
-  class_name(class_name), declaration_list(decl_list) {}
+  class_type(std::move(class_type)), declaration_list(decl_list) {}
 
 ClassDeclaration::~ClassDeclaration() {
   delete declaration_list;

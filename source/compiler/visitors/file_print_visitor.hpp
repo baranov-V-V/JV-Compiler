@@ -9,9 +9,23 @@
 class FilePrintVisitor: public PrintVisitor {
  public:
   FilePrintVisitor() = default;
-  virtual ~FilePrintVisitor() override = default;
+  ~FilePrintVisitor() override = default;
 
-  virtual void Print(const std::filesystem::path& filename, Program* program) override;
+  void Print(const std::filesystem::path& filename, Program* program) override;
+
+  void Visit(ArrayIdxExpression* expression) override;
+  void Visit(LengthExpression* expression) override;
+  void Visit(MethodCallExpression* expression) override;
+  void Visit(NewArrayExpression* expression) override;
+  void Visit(NewClassExpression* expression) override;
+  void Visit(ThisExpression* expression) override;
+  void Visit(CommaExpressionList* program) override;
+  void Visit(MethodCall* program) override;
+  void Visit(AssertStatement* statement) override;
+  void Visit(MethodCallStatement* statement) override;
+  void Visit(ArrayLValue* statement) override;
+  void Visit(FieldLValue* statement) override;
+  void Visit(IdentifierLValue* statement) override;
 
   virtual void Visit(Program* program) override;
   virtual void Visit(MainClass* main_class) override;
@@ -31,15 +45,16 @@ class FilePrintVisitor: public PrintVisitor {
   void Visit(IntegerExpression* expression) override;
   void Visit(NotExpression* expression) override;
 
-  virtual void Visit(AssignmentStatement* statement) override;
-  virtual void Visit(IfElseStatement* statement) override;
-  virtual void Visit(IfStatement* statement) override;
-  virtual void Visit(PrintStatement* statement) override;
-  virtual void Visit(ReturnStatement* statement) override;
-  virtual void Visit(WhileStatement* statement) override;
-  virtual void Visit(StatementList* statement) override;
-  virtual void Visit(LocalVariableStatement* statement) override;
-  virtual void Visit(StatementListStatement* statement) override;
+  void Visit(FieldDeclaration* declaration) override;
+  void Visit(AssignmentStatement* statement) override;
+  void Visit(IfElseStatement* statement) override;
+  void Visit(IfStatement* statement) override;
+  void Visit(PrintStatement* statement) override;
+  void Visit(ReturnStatement* statement) override;
+  void Visit(WhileStatement* statement) override;
+  void Visit(StatementList* statement) override;
+  void Visit(LocalVariableStatement* statement) override;
+  void Visit(StatementListStatement* statement) override;
  private:
   std::ofstream stream;
   int tabs_count; 

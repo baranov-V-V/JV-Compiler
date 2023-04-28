@@ -1,0 +1,9 @@
+class A {
+  public static void main() {
+    int a;
+    if (a > 2 || a > 4) {
+      a = 3;
+    }
+    b = 11;
+  }
+}

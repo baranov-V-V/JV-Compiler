@@ -1,0 +1,14 @@
+class A {
+  public static void main() {
+    int a; // this is a comment
+    a = 3 + 2;
+    // this // is // also a comment //
+    println(a);
+  }
+  /* this
+  is
+  a
+  big
+  comment
+  */ // hiii its sml cmmnt
+}

@@ -1,6 +1,6 @@
 #include "identifier_expression.hpp"
 
-IdentifierExpression::IdentifierExpression(const std::string& identifier) :
+IdentifierExpression::IdentifierExpression(const Symbol& identifier) :
   identifier(identifier) {}
 
 void IdentifierExpression::Accept(Visitor* visitor) {

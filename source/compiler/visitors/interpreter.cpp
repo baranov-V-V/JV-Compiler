@@ -38,7 +38,7 @@ void Interpreter::Visit(MethodDeclaration* method_declaration) {
 }
 
 void Interpreter::Visit(VariableDeclaration* variable_declaration) {
-  table.Insert(variable_declaration->identifier, 0);
+  //class_table.Insert(variable_declaration->identifier.name, 0);
 }
 
 void Interpreter::Visit(TrueExpression* expression) {
@@ -50,7 +50,7 @@ void Interpreter::Visit(FalseExpression* expression) {
 }
 
 void Interpreter::Visit(IdentifierExpression* expression) {
-  stack.Put(table.Get(expression->identifier));
+  stack.Put(table.Get(expression->identifier.name));
 }
 
 void Interpreter::Visit(IntegerExpression* expression) {
@@ -62,7 +62,7 @@ void Interpreter::Visit(NotExpression* expression) {
 }
 
 void Interpreter::Visit(AssignmentStatement* statement) {
-  table.Update(statement->identifier, Accept(statement->expression));
+  //class_table.Update(statement->value->, Accept(statement->expression));
 }
 
 void Interpreter::Visit(IfElseStatement* statement) {
@@ -158,4 +158,60 @@ void Interpreter::Visit(MathOpExpression* expression) {
   }
 
   stack.Put(result);
+}
+
+void Interpreter::Visit(ArrayIdxExpression *expression) {
+
+}
+
+void Interpreter::Visit(LengthExpression *expression) {
+
+}
+
+void Interpreter::Visit(MethodCallExpression *expression) {
+
+}
+
+void Interpreter::Visit(NewArrayExpression *expression) {
+
+}
+
+void Interpreter::Visit(NewClassExpression *expression) {
+
+}
+
+void Interpreter::Visit(ThisExpression *expression) {
+
+}
+
+void Interpreter::Visit(CommaExpressionList *program) {
+
+}
+
+void Interpreter::Visit(MethodCall *program) {
+
+}
+
+void Interpreter::Visit(AssertStatement *statement) {
+
+}
+
+void Interpreter::Visit(MethodCallStatement *statement) {
+
+}
+
+void Interpreter::Visit(ArrayLValue *statement) {
+
+}
+
+void Interpreter::Visit(FieldLValue *statement) {
+
+}
+
+void Interpreter::Visit(IdentifierLValue *statement) {
+
+}
+
+void Interpreter::Visit(FieldDeclaration* declaration) {
+
 }

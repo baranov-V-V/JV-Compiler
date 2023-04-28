@@ -44,7 +44,7 @@ T& ProgramStack<T>::Top() const {
 template <typename T>
 void ProgramStack<T>::Pop() {
   if (!data.empty()) {
-    data.pop_front();
+    data.pop_back();
   }
 }
 
@@ -55,8 +55,8 @@ void ProgramStack<T>::Put(const T& value) {
 
 template <typename T>
 T ProgramStack<T>::TopAndPop() {
-  T top = data.front();
-  data.pop_front();
+  T top = data.back();
+  data.pop_back();
   return top;
 }
 

@@ -4,10 +4,11 @@
 #include "compiler/visitors/interpreter.hpp"
 #include "compiler/visitors/file_print_visitor.hpp"
 #include "compiler/visitors/graph_print_visitor.hpp"
-#include "compiler/visitors/llvm_ir_visitor.hpp"
+#include "ir/visitors/llvm_ir_visitor.hpp"
 
 #include "compiler/ast/program/program.hpp"
 #include "exceptions/compilation_exception.hpp"
+#include "scope/visitors/symbol_table_visitor.hpp"
 #include <cstdio>
 
 Driver::Driver() : trace_parsing(false), trace_scanning(false), 
@@ -84,11 +85,26 @@ void Driver::IrGen(const std::filesystem::path& filepath) {
   if (program == nullptr) {
     LOG_CRITICAL("No program pointer in IrGen")
   }
-  visitor.TranslateToIR(program, filepath);
+  visitor.TranslateToIR(program, std::move(layer_tree), filepath);
 }
 
 void Driver::SetTraceScan(bool trace) { trace_scanning = trace; }
 
 void Driver::SetTraceParse(bool trace) {
   trace_parsing = trace;
+}
+
+void Driver::PrintSymbolTree(const std::filesystem::path& filepath) const {
+    LOG_DEBUG("Start Print")
+    layer_tree->DumpTree(filepath);
+}
+
+void Driver::BuildLayerTree() {
+  SymbolTableVisitor visitor;
+
+  layer_tree = visitor.ConstructSymbolTree(program);
+}
+
+yy::location Driver::GetLocation() {
+  return location;
 }

@@ -20,18 +20,22 @@ void FilePrintVisitor::Visit(Program* program) {
 }
 
 void FilePrintVisitor::Visit(MainClass* main_class) {
-  PRINT_TABBED("Main Class")
+  PRINT_TABBED("Main ClassRef")
   VISIT_TABBED(
-    main_class->statement_list->Accept(this);
+    Visit(main_class->statement_list);
   )
 }
 
 void FilePrintVisitor::Visit(ClassDeclaration* class_declaration) {
-  return;
+  PRINT_TABBED("ClassDeclaration")
+  VISIT_TABBED(
+    EXECUTE_TABBED(stream << "type " << class_declaration->class_type->ToString() << std::endl;)
+    class_declaration->declaration_list->Accept(this);
+  )
 }
 
 void FilePrintVisitor::Visit(ClassDeclarationList* class_declaration_list) {
-  PRINT_TABBED("Class Declaration List")
+  PRINT_TABBED("ClassRef Declaration List")
   VISIT_TABBED(
     class_declaration_list->Accept(this);
   )
@@ -45,12 +49,18 @@ void FilePrintVisitor::Visit(DeclarationList* declaration_list) {
 }
 
 void FilePrintVisitor::Visit(MethodDeclaration* method_declaration) {
-  return;
+  PRINT_TABBED("Method Declaration")
+  VISIT_TABBED(
+    EXECUTE_TABBED(stream << "type" << (int) method_declaration->method_type->GetReturnType()->GetTypeId() <<
+    " " << method_declaration->identifier.name << "()" << std::endl; )
+  )
 }
 
 void FilePrintVisitor::Visit(VariableDeclaration* variable_declaration) {
+  PRINT_TABBED("Variable declaration")
   EXECUTE_TABBED(
-    stream << "Decl int " << variable_declaration->identifier << std::endl;
+    stream << "Decl type(" << (int) variable_declaration->type->GetTypeId() << ") " <<
+    variable_declaration->identifier.name << std::endl;
   )
 }
 
@@ -64,7 +74,7 @@ void FilePrintVisitor::Visit(FalseExpression* expression) {
 
 void FilePrintVisitor::Visit(IdentifierExpression* expression) {
   EXECUTE_TABBED(
-    stream << "Identifier Expr " << expression->identifier << std::endl;
+    stream << "Identifier Expr " << expression->identifier.name << std::endl;
   )
 }
 
@@ -82,11 +92,9 @@ void FilePrintVisitor::Visit(NotExpression* expression) {
 }
 
 void FilePrintVisitor::Visit(AssignmentStatement* statement) {
-  PRINT_TABBED("Assignment Expr")
+  PRINT_TABBED("Assignment Stmt")
   VISIT_TABBED(
-    EXECUTE_TABBED(
-      stream << "Identifier "<< statement->identifier << std::endl;
-    )
+    statement->value->Accept(this);
     statement->expression->Accept(this);
   )
 }
@@ -178,9 +186,111 @@ void FilePrintVisitor::Visit(CompareOpExpression* expression) {
 void FilePrintVisitor::Visit(MathOpExpression* expression) {
   PRINT_TABBED("Math Op Expr")
   VISIT_TABBED(
-      expression->lhs->Accept(this);
-      PRINT_TABBED(GetMathStrOp(expression->operation))
-      expression->rhs->Accept(this);
+    expression->lhs->Accept(this);
+    PRINT_TABBED(GetMathStrOp(expression->operation))
+    expression->rhs->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(ArrayIdxExpression* expression) {
+  PRINT_TABBED("ArrayIdxExpression")
+  VISIT_TABBED(
+    expression->expr->Accept(this);
+    expression->idx->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(LengthExpression* expression) {
+  PRINT_TABBED("LengthExpression")
+  VISIT_TABBED(
+    expression->identifier->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(MethodCallExpression* expression) {
+  PRINT_TABBED("MethodCallExpression")
+  VISIT_TABBED(
+    expression->call->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(NewArrayExpression* expression) {
+  PRINT_TABBED("NewArrayExpression")
+  VISIT_TABBED(
+    EXECUTE_TABBED(
+      stream << (int) expression->type.get()->GetTypeId() << std::endl;
+    )
+    expression->size->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(NewClassExpression* expression) {
+  PRINT_TABBED("NewClassExpression")
+  VISIT_TABBED(
+    EXECUTE_TABBED(
+       stream << expression->type.get()->ToString() << std::endl;
+    )
+  )
+}
+
+void FilePrintVisitor::Visit(ThisExpression* expression) {
+  PRINT_TABBED("ThisExpression")
+}
+
+void FilePrintVisitor::Visit(CommaExpressionList* program) {
+  PRINT_TABBED("CommaExprList")
+  VISIT_TABBED(
+    program->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(AssertStatement* statement) {
+  PRINT_TABBED("Assert")
+  VISIT_TABBED(
+    statement->expression->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(MethodCallStatement* statement) {
+  PRINT_TABBED("MethodCallStatement")
+  VISIT_TABBED(
+    statement->call->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(MethodCall* program) {
+  PRINT_TABBED("MethodCall")
+  VISIT_TABBED(
+    program->caller->Accept(this);
+    EXECUTE_TABBED(stream << program->function_name.name << std::endl;)
+    program->expression_list->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(ArrayLValue* statement) {
+  PRINT_TABBED("ArrayLValue")
+  VISIT_TABBED(
+    EXECUTE_TABBED(stream << statement->identifier.name << std::endl;)
+    statement->idx->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(FieldLValue* statement) {
+  PRINT_TABBED("ArrayLValue")
+}
+
+void FilePrintVisitor::Visit(IdentifierLValue* statement) {
+  PRINT_TABBED("IdLValue")
+  VISIT_TABBED(
+    EXECUTE_TABBED(stream << statement->name.name << std::endl;)
+  )
+}
+
+void FilePrintVisitor::Visit(FieldDeclaration* declaration) {
+  PRINT_TABBED("Field declaration")
+  EXECUTE_TABBED(
+    stream << "Decl type(" << (int) declaration->type->GetTypeId() << ") " <<
+           declaration << std::endl;
   )
 }
 
