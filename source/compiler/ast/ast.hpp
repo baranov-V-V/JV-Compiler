@@ -12,6 +12,9 @@
 #include "compiler/ast/declarations/variable_declaration.hpp"
 
 #include "compiler/ast/expressions/binary_op_expression.hpp"
+#include "compiler/ast/expressions/math_op_expression.hpp"
+#include "compiler/ast/expressions/logic_op_expression.hpp"
+#include "compiler/ast/expressions/compare_op_expression.hpp"
 #include "compiler/ast/expressions/bool_expression.hpp"
 #include "compiler/ast/expressions/identifier_expression.hpp"
 #include "compiler/ast/expressions/integer_expression.hpp"

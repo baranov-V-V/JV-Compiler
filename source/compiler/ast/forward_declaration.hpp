@@ -10,6 +10,9 @@ class MethodDeclaration;
 class VariableDeclaration;
 
 class BinOpExpression;
+class LogicOpExpression;
+class MathOpExpression;
+class CompareOpExpression;
 class TrueExpression;
 class FalseExpression;
 class Expression;

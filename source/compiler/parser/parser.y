@@ -33,6 +33,9 @@
   #include "../ast/declarations/variable_declaration.hpp"
 
   #include "../ast/expressions/binary_op_expression.hpp"
+  #include "../ast/expressions/math_op_expression.hpp"
+  #include "../ast/expressions/logic_op_expression.hpp"
+  #include "../ast/expressions/compare_op_expression.hpp"
   #include "../ast/expressions/bool_expression.hpp"
   #include "../ast/expressions/identifier_expression.hpp"
   #include "../ast/expressions/integer_expression.hpp"
@@ -138,7 +141,7 @@
 %left "==" "!=" "!";
 %left "<" ">";
 %left "+" "-";
-%left "*" "/";
+%left "*" "/" "%";
 %left "(";
 
 %%
@@ -202,32 +205,34 @@ statement_list: statement
   { $$ = new StatementList($1); }
               | statement_list statement 
   { $$ = $1; $$->Add($2); }
+              |
+  { /*empty*/ }
 ;
 
 expr: "(" expr ")"
   { $$ = $2; }
       | expr "+"    expr
-  {$$ = new BinOpExpression($1, BinOperation::PLUS, $3);}
+  {$$ = new MathOpExpression($1, MathOperation::PLUS, $3);}
       | expr "-"   expr
-  {$$ = new BinOpExpression($1, BinOperation::MINUS, $3);}
+  {$$ = new MathOpExpression($1, MathOperation::MINUS, $3);}
       | expr "*"    expr
-  {$$ = new BinOpExpression($1, BinOperation::MUL, $3);}
+  {$$ = new MathOpExpression($1, MathOperation::MUL, $3);}
       | expr "/"   expr
-  {$$ = new BinOpExpression($1, BinOperation::DIV, $3);}
+  {$$ = new MathOpExpression($1, MathOperation::DIV, $3);}
       | expr "=="   expr
-  {$$ = new BinOpExpression($1, BinOperation::EQUAL, $3);}
+  {$$ = new CompareOpExpression($1, CompareOperation::EQUAL, $3);}
       | expr "!="   expr
-  {$$ = new BinOpExpression($1, BinOperation::NEQUAL, $3);}
+  {$$ = new CompareOpExpression($1, CompareOperation::NEQUAL, $3);}
       | expr "<"    expr
-  {$$ = new BinOpExpression($1, BinOperation::LESS, $3);}
+  {$$ = new CompareOpExpression($1, CompareOperation::LESS, $3);}
       | expr ">"    expr
-  {$$ = new BinOpExpression($1, BinOperation::GREATER, $3);}
+  {$$ = new CompareOpExpression($1, CompareOperation::GREATER, $3);}
       | expr "||"   expr
-  {$$ = new BinOpExpression($1, BinOperation::OR, $3);}
+  {$$ = new LogicOpExpression($1, LogicOperation::OR, $3);}
       | expr "&&"   expr
-  {$$ = new BinOpExpression($1, BinOperation::AND, $3);}
+  {$$ = new LogicOpExpression($1, LogicOperation::AND, $3);}
       | expr "%"   expr
-  {$$ = new BinOpExpression($1, BinOperation::PERCENT, $3);}
+  {$$ = new MathOpExpression($1, MathOperation::PERCENT, $3);}
       | "identifier"
   { $$ = new IdentifierExpression($1); }
       | integer_literal
@@ -249,5 +254,5 @@ integer_literal : "number"
 void
 yy::parser::error(const location_type& l, const std::string& m)
 {
-  std::cerr << l << ": " << m << '\n';
+  std::cerr << "parser error! " << l << ": " << m << '\n';
 }

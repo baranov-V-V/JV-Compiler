@@ -5,7 +5,7 @@
 #define EXECUTE_TABBED(code) PrintTabs(); code
 #define VISIT_TABBED(code) ++tabs_count; code --tabs_count;
 
-void FilePrintVisitor::Print(const std::string& filename, Program* program) {
+void FilePrintVisitor::Print(const std::filesystem::path& filename, Program* program) {
   tabs_count = 0;
   stream.open(filename);
   Visit(program);
@@ -51,15 +51,6 @@ void FilePrintVisitor::Visit(MethodDeclaration* method_declaration) {
 void FilePrintVisitor::Visit(VariableDeclaration* variable_declaration) {
   EXECUTE_TABBED(
     stream << "Decl int " << variable_declaration->identifier << std::endl;
-  )
-}
-
-void FilePrintVisitor::Visit(BinOpExpression* expression) {
-  PRINT_TABBED("Bin Op Expr")
-  VISIT_TABBED(
-    expression->lhs->Accept(this);
-    PRINT_TABBED(bin_ops[(int) expression->operation])
-    expression->rhs->Accept(this);
   )
 }
 
@@ -164,6 +155,33 @@ void FilePrintVisitor::PrintTabs() {
   for (int i = 0; i < tabs_count; ++i) {
     stream << "\t";
   };
+}
+
+void FilePrintVisitor::Visit(LogicOpExpression* expression) {
+  PRINT_TABBED("Logic Op Expr")
+  VISIT_TABBED(
+      expression->lhs->Accept(this);
+      PRINT_TABBED(GetLogicStrOp(expression->operation))
+      expression->rhs->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(CompareOpExpression* expression) {
+  PRINT_TABBED("Compare Op Expr")
+  VISIT_TABBED(
+      expression->lhs->Accept(this);
+      PRINT_TABBED(GetCompareStrOp(expression->operation))
+      expression->rhs->Accept(this);
+  )
+}
+
+void FilePrintVisitor::Visit(MathOpExpression* expression) {
+  PRINT_TABBED("Math Op Expr")
+  VISIT_TABBED(
+      expression->lhs->Accept(this);
+      PRINT_TABBED(GetMathStrOp(expression->operation))
+      expression->rhs->Accept(this);
+  )
 }
 
 #undef PRINT_TABBED

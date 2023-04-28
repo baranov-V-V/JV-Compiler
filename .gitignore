@@ -8,13 +8,20 @@ cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
+cmake-build-debug
 _deps
 
 build
 
+TODO.md
+
 # VS-CODE FILES
 
 .vscode
+
+# IDEA FILES
+
+.idea
 
 # BISON FILES
 
@@ -26,4 +33,15 @@ source/compiler/parser/parser.output
 # FLEX FILES
 
 source/compiler/parser/scanner.cpp
+
+# TEST FILES
+
+llvm_tree.cpp
+
+# EXECUTABLES
+
+jvc
+*.out
+*.o
+*.ll
 

@@ -1,35 +1,19 @@
-#include <iostream>
-#include <string>
+#include "compiler/core/logger.hpp"
+
 #include <fstream>
+
+#include "compiler/exceptions/compilation_exception.hpp"
 #include "compiler/parser/driver.hpp"
-#include <filesystem>
+#include "compiler/core/compiler.hpp"
 
 int main(int argc, char** argv) {
-  Driver driver;
-  std::string filename;
-  bool need_print = false;
+  Compiler compiler;
 
-  for (int i = 1; i < argc; ++i) {
-    if (argv[i] == std::string("-p") || argv[i] == std::string("--parse")) {
-      driver.SetTraceParse(true);
-    } else if (argv[i] == std::string("-s") || argv[i] == std::string("--scan")) {
-      driver.SetTraceScan(true);
-    } else if (argv[i] == std::string("-d") || argv[i] == std::string("--dump")) {
-      need_print = true;
-    } else {
-      filename = argv[i];
-    }
+  try {
+    compiler.Compile(argc, argv);
+  } catch (const CompilationException& e) {
+    LOG_TRACE("compilation error occurred")
   }
 
-  driver.Parse(filename);
-
-  if (need_print) {
-    std::filesystem::path file_path(filename);
-    file_path.replace_extension(".dmp");
-    driver.PrintTree(file_path.string());
-  }
-  
-  driver.Run();
-  
   return 0;
 }

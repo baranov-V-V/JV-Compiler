@@ -12,8 +12,10 @@ class Visitor {
   virtual void Visit(DeclarationList* declaration_list) = 0;
   virtual void Visit(MethodDeclaration* method_declaration) = 0;
   virtual void Visit(VariableDeclaration* variable_declarations) = 0;
-  
-  virtual void Visit(BinOpExpression* expression) = 0;
+
+  virtual void Visit(LogicOpExpression* expression) = 0;
+  virtual void Visit(CompareOpExpression* expression) = 0;
+  virtual void Visit(MathOpExpression* expression) = 0;
   virtual void Visit(TrueExpression* expression) = 0;
   virtual void Visit(FalseExpression* expression) = 0;
   virtual void Visit(IdentifierExpression* expression) = 0;

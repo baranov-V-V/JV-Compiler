@@ -1,0 +1,41 @@
+class A {
+  public static void main() {
+    int a;
+    int b;
+    a = 3;
+    b = 5;
+    
+    if ((a > 2) || (a > 4)) {
+      b = 10;
+    } else {
+      b = 11;
+    }
+
+    println(b + 100);
+    a = 4;
+
+    if ((a > 2) && (a == 4)) {
+      b = 13;
+    } else {
+      b = 11;
+    }
+
+    int c;
+    int d;
+
+    c = 10;
+
+    if (c < 11 && true) {
+      println(1);
+    } else {
+      println(0);
+    }
+
+    if (false || true) {
+      println(1);
+    } else {
+      println(0);
+    }
+
+  }
+}

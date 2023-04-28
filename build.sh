@@ -1,6 +1,6 @@
 mkdir -p build
-cd build
+cd build || exit
 cmake ../
-make
-mv compiler ../
+make -j 8
+mv jvc ../
 cd ..

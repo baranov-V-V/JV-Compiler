@@ -4,7 +4,9 @@ class A {
     int b;
     a = 1;
     while (a < 10) {
-      println(a);
+      if (a > 3) {
+        println(a);
+      }
       a = a + 1;
     }
   }

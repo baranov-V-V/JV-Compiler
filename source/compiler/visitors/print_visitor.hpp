@@ -3,6 +3,7 @@
 #include "visitor.hpp"
 #include "compiler/ast/forward_declaration.hpp"
 
+#include <filesystem>
 #include <string>
 
 class PrintVisitor: public Visitor {
@@ -10,7 +11,7 @@ class PrintVisitor: public Visitor {
   PrintVisitor() = default;
   virtual ~PrintVisitor() = default;
 
-  virtual void Print(const std::string& filename, Program* program) = 0;
+  virtual void Print(const std::filesystem::path& filename, Program* program) = 0;
 
   virtual void Visit(Program* program) = 0;
   virtual void Visit(MainClass* main_class) = 0;
@@ -20,8 +21,10 @@ class PrintVisitor: public Visitor {
   virtual void Visit(DeclarationList* declaration_list) = 0;
   virtual void Visit(MethodDeclaration* method_declaration) = 0;
   virtual void Visit(VariableDeclaration* variable_declaration) = 0;
-  
-  virtual void Visit(BinOpExpression* expression) = 0;
+
+  virtual void Visit(LogicOpExpression* expression) = 0;
+  virtual void Visit(CompareOpExpression* expression) = 0;
+  virtual void Visit(MathOpExpression* expression) = 0;
   virtual void Visit(TrueExpression* expression) = 0;
   virtual void Visit(FalseExpression* expression) = 0;
   virtual void Visit(IdentifierExpression* expression) = 0;
