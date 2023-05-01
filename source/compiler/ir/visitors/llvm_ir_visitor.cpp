@@ -588,14 +588,13 @@ void LLVMIRVisitor::Visit(NewArrayExpression* expression) {
 void LLVMIRVisitor::Visit(NewClassExpression* expression) {
   llvm::Type* class_type = GetLLVMType(expression->type);
 
-  // hack - calculate the size of an object in bytes by getting the address of
-  // the 1st element of an array that starts at NULL (which has address 0) and
-  // casting it to an int
-  //get size
   llvm::Value* tmp_class_ptr = builder->CreateConstGEP1_64(
     llvm::Constant::getNullValue(class_type->getPointerTo()), 1, "class size"
   );
   llvm::Value* class_size = builder->CreatePointerCast(tmp_class_ptr, llvm::Type::getInt64Ty(*context));
+
+  //llvm::TypeSize type_size = module->getDataLayout().getTypeAllocSize(class_type);
+  //type_size.getFixedSize();
 
   llvm::Value* void_ptr = builder->CreateCall(module->getFunction("malloc"), class_size);
   llvm::Value* class_ptr = builder->CreateBitCast(void_ptr, class_type);

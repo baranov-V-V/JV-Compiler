@@ -2,12 +2,9 @@
 
 #include "spdlog/spdlog.h"
 
-#include "fmt/core.h"
-#include "fmt/color.h"
-
 #include "exceptions/compilation_exception.hpp"
 
-enum LOG_LEVEL : int {
+enum class LOG_LEVEL : int {
   OFF = 0,
   TRACE,
   DEBUG,

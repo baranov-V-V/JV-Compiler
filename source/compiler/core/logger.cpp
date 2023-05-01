@@ -2,36 +2,36 @@
 
 void SetLogLevel(LOG_LEVEL level) {
   switch (level) {
-    case OFF:
+    case LOG_LEVEL::OFF:
       spdlog::set_level(spdlog::level::off);
       break;
 
-    case TRACE:
+    case LOG_LEVEL::TRACE:
       spdlog::set_level(spdlog::level::trace);
       break;
 
-    case DEBUG:
+    case LOG_LEVEL::DEBUG:
       spdlog::set_level(spdlog::level::debug);
       break;
 
-    case INFO:
+    case LOG_LEVEL::INFO:
       spdlog::set_level(spdlog::level::info);
       break;
 
-    case WARN:
+    case LOG_LEVEL::WARN:
       spdlog::set_level(spdlog::level::warn);
       break;
 
-    case ERROR:
+    case LOG_LEVEL::ERROR:
       spdlog::set_level(spdlog::level::err);
       break;
 
-    case CRITICAL:
+    case LOG_LEVEL::CRITICAL:
       spdlog::set_level(spdlog::level::critical);
       break;
 
     default:
-      fmt::print(stderr, "unknown logger level [{}]", level);
+      fmt::print(stderr, "unknown logger level [{}]", (int) level);
       break;
   }
 }

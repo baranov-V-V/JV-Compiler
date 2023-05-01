@@ -13,7 +13,7 @@ class Compiler {
   Compiler() = default;
   ~Compiler() = default;
 
-  void Compile(int argc, char** argv);
+  void Compile(int argc, const char* argv[]);
 
   Driver& GetDriver();
   const Driver& GetDriver() const;
@@ -26,5 +26,5 @@ class Compiler {
 
   Driver driver;
 
-  void ParseArgs(int argc, char** argv);
+  void ParseArgs(int argc, const char* argv[]);
 };

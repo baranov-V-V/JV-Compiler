@@ -61,15 +61,15 @@ void CompilerDebugLevelFlag::Apply(Compiler* compiler) const {
 CompilerDebugLevelFlag::CompilerDebugLevelFlag() :
   debug_level(
     llvm::StringRef(CompilerDebugLevelFlag::GetName()), llvm::cl::desc("Choose debug level:"),
-    llvm::cl::init(CRITICAL),
+    llvm::cl::init(LOG_LEVEL::CRITICAL),
     llvm::cl::values(
-      clEnumVal(OFF, "No debug"),
-      clEnumVal(TRACE, "Enable trace level information"),
-      clEnumVal(DEBUG, "Enable debug level information"),
-      clEnumVal(INFO, "Enable info level information"),
-      clEnumVal(WARN, "Enable warn level information"),
-      clEnumVal(ERROR, "Enable error level information"),
-      clEnumVal(CRITICAL, "Enable critical level information")
+      clEnumVal(LOG_LEVEL::OFF, "No debug"),
+      clEnumVal(LOG_LEVEL::TRACE, "Enable trace level information"),
+      clEnumVal(LOG_LEVEL::DEBUG, "Enable debug level information"),
+      clEnumVal(LOG_LEVEL::INFO, "Enable info level information"),
+      clEnumVal(LOG_LEVEL::WARN, "Enable warn level information"),
+      clEnumVal(LOG_LEVEL::ERROR, "Enable error level information"),
+      clEnumVal(LOG_LEVEL::CRITICAL, "Enable critical level information")
     )) {
 }
 
@@ -124,7 +124,7 @@ void Flags::PreprocessFlags() {
   Map["help-list"]->setDescription("Display list of available options");
 }
 
-void Flags::ReadFromCommandLine(int argc, char** argv) {
+void Flags::ReadFromCommandLine(int argc, const char* argv[]) {
   llvm::cl::ParseCommandLineOptions(argc, argv, "This is a small java-like language compiler");
 }
 
@@ -147,10 +147,10 @@ std::filesystem::path PathFlag::GetPath() const {
 CompilerOptimizeLevelFlag::CompilerOptimizeLevelFlag() :
   level(llvm::cl::desc("Choose optimization level:"),
         llvm::cl::values(
-          clEnumVal(O0 , "No optimizations"),
-          clEnumVal(O1, "Enable trivial optimizations"),
-          clEnumVal(O2, "Enable default optimizations"),
-          clEnumVal(O3, "Enable expensive optimizations"))) {
+          clEnumVal(OPTIMIZATION_LEVEL::O0 , "No optimizations"),
+          clEnumVal(OPTIMIZATION_LEVEL::O1, "Enable trivial optimizations"),
+          clEnumVal(OPTIMIZATION_LEVEL::O2, "Enable default optimizations"),
+          clEnumVal(OPTIMIZATION_LEVEL::O3, "Enable expensive optimizations"))) {
 }
 
 bool CompilerOptimizeLevelFlag::IsSet() const {

@@ -29,7 +29,7 @@ class Flags {
 
   void PreprocessFlags();
 
-  void ReadFromCommandLine(int argc, char** argv);
+  void ReadFromCommandLine(int argc, const char* argv[]);
 
   template <typename FlagTy>
   FlagTy* GetFlag() {

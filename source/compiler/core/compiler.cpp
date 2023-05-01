@@ -6,23 +6,23 @@
 #include "compiler.hpp"
 #include "exceptions/compilation_exception.hpp"
 
-void Compiler::Compile(int argc, char** argv) {
+void Compiler::Compile(int argc, const char* argv[]) {
   ParseArgs(argc, argv);
 
   driver.Parse(file_in);
 
-  if (!dump_txt.empty()) {
-    driver.PrintTreeTxt(dump_txt);
+  if (Flags::Instance().GetFlag<AstDumpTxtFlag>()->IsSet()) {
+    driver.PrintTreeTxt(Flags::Instance().GetFlag<AstDumpTxtFlag>()->GetPath());
   }
 
-  if (!dump_png.empty()) {
-    driver.PrintTreePng(dump_png);
+  if (Flags::Instance().GetFlag<AstDumpPngFlag>()->IsSet()) {
+    driver.PrintTreePng(Flags::Instance().GetFlag<AstDumpPngFlag>()->GetPath());
   }
 
   driver.BuildLayerTree();
 
-  if (!table_png.empty()) {
-    driver.PrintSymbolTree(table_png);
+  if (Flags::Instance().GetFlag<SymbolTableDumpFlag>()->IsSet()) {
+    driver.PrintSymbolTree(Flags::Instance().GetFlag<SymbolTableDumpFlag>()->GetPath());
   }
 
   std::filesystem::path tmp_dir = file_in.parent_path().append("tmp");
@@ -52,8 +52,7 @@ void Compiler::Compile(int argc, char** argv) {
   LOG_DEBUG("llc errcode: {}", llc_errcode);
   LOG_DEBUG("clang errcode:  {}", clang_errcode);
 
-  if (need_emit) {
-
+  if (Flags::Instance().GetFlag<CompilerEmitLLVM>()->IsSet()) {
     //std::filesystem::rename(ir_path, file_out.parent_path());
     std::string mv_command = "mv " + ir_path.native() + " .";
     LOG_DEBUG("mv command: {}", mv_command);
@@ -69,7 +68,7 @@ Driver& Compiler::GetDriver() {
 
 const Driver& Compiler::GetDriver() const { return driver; }
 
-void Compiler::ParseArgs(int argc, char** argv) {
+void Compiler::ParseArgs(int argc, const char* argv[]) {
   if (argc < 2) {
     COMPILER_ERROR("no input files\ncompilation terminated.\n")
   }

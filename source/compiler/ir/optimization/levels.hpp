@@ -1,6 +1,6 @@
 #pragma once
 
-enum OPTIMIZATION_LEVEL : int {
+enum class OPTIMIZATION_LEVEL : int {
   O0 = 0,
   O1,
   O2,

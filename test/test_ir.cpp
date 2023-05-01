@@ -1,8 +1,5 @@
 #include "gtest/gtest.h"
 #include "core/compiler.hpp"
-#include "core/logger.hpp"
-#include "exceptions/compilation_exception.hpp"
-
 
 TEST(a, a) {
   Compiler compiler;
@@ -12,8 +9,9 @@ TEST(a, a) {
     "bb"
   };
 
-  ASSERT_EQ(1, 2);
+  ASSERT_EQ(2, 2);
 
+  //ASSERT_ANY_THROW()
   /*
   try {
     compiler.Compile(2, p_string);

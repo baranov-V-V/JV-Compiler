@@ -1,28 +1,21 @@
 #include "gtest/gtest.h"
+#include "scn/scn.h"
 
-#include "fmt/core.h"
-#include "fmt/printf.h"
+#include "core/compiler.hpp"
+#include "fixtures/compiler_fixture.hpp"
 
-#include <unordered_map>
-#include <string>
 #include <deque>
 
-/*
-class InterpreterTestVisitor : public Interpreter {
- public:
-  InterpreterTestVisitor() = default;
-  virtual ~InterpreterTestVisitor() override = default;
-  virtual void Visit(PrintStatement* statement) override {
-    
-  };
+TEST_F(TestCompiledProgram, simple) {
+  test_path.append("primitive").append("test1").replace_extension("jv");
 
- private:
-  std::deque<int> expect_values;
-};
-*/
-
-//WIP
-
-TEST(Hello_world, simple) {
-  fmt::print("Hello world {}", 42);
+  int a;
+  
+  CompileProgram();
+  OutputBuffer buffer(ExecuteProgram());
+  
+  auto result = scn::scan(scn::string_view{buffer.Data()}, "{}\n", a);
+  
+  ASSERT_TRUE(result.empty()) << "left is: [" << result.range_as_string() << "]\n";
+  ASSERT_EQ(a, 5);
 }

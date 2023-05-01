@@ -7,3 +7,9 @@
 [submodule "third_party/spdlog"]
 	path = third_party/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "third_party/bdwgc"]
+	path = third_party/bdwgc
+	url = https://github.com/ivmai/bdwgc.git
+[submodule "third_party/scnlib"]
+	path = third_party/scnlib
+	url = https://github.com/eliaskosunen/scnlib.git
