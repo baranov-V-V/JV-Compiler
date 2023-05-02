@@ -1,0 +1,25 @@
+class A {
+  public static void main() {
+    Foo foo;
+    
+    int i;
+    
+    i = 0;
+    
+    int b;
+
+    while (i < 1000000) {
+      foo = new Foo();
+      i = i + 1;
+      b = b + i;
+    }
+
+    println(b);
+
+  }
+}
+
+class Foo {
+ int a;
+ int b;
+}

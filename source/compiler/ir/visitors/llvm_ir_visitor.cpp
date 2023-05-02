@@ -596,7 +596,7 @@ void LLVMIRVisitor::Visit(NewClassExpression* expression) {
   //llvm::TypeSize type_size = module->getDataLayout().getTypeAllocSize(class_type);
   //type_size.getFixedSize();
 
-  llvm::Value* void_ptr = builder->CreateCall(module->getFunction("malloc"), class_size);
+  llvm::Value* void_ptr = builder->CreateCall(module->getFunction("GC_malloc"), class_size);
   llvm::Value* class_ptr = builder->CreateBitCast(void_ptr, class_type);
 
   stack.Put(class_ptr);
@@ -700,7 +700,7 @@ void LLVMIRVisitor::GenerateStandartLib() {
 
   llvm::Function::Create(
     malloc_type, llvm::Function::ExternalLinkage,
-    "malloc",
+    "GC_malloc",
     *module
   );
 }

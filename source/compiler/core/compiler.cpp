@@ -41,7 +41,7 @@ void Compiler::Compile(int argc, const char* argv[]) {
   driver.IrGen(ir_path);
 
   std::string llc_command = "llc -filetype=obj " + ir_path.native() + " -o " + obj_path.native();
-  std::string clang_command = "clang++ " + obj_path.native() + " -o " + file_out.native();
+  std::string clang_command = "clang++ " + obj_path.native() + " -L/usr/lib/jvc/gc/ -lgc -o " + file_out.native();
 
   LOG_DEBUG("llc compile command \"{}\"", llc_command);
   LOG_DEBUG("clang compile command \"{}\"", clang_command);
