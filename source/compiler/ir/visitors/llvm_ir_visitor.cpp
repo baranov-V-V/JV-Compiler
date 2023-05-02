@@ -9,8 +9,8 @@ void LLVMIRVisitor::TranslateToIR(Program* program, std::unique_ptr<SymbolLayerT
                                   const std::filesystem::path& path) {
   LOG_TRACE("path: {}", path.native());
 
-  this->table = std::move(layer_tree);
-  current_scope = table->begin();
+  this->symbol_tree = std::move(layer_tree);
+  current_scope = symbol_tree->begin();
   stack.Clear();
 
   InitializeLLVM(path.string());
@@ -156,6 +156,7 @@ void LLVMIRVisitor::Visit(IdentifierExpression* expression) {
   LOG_DEBUG("In Identifier Expression: {}", expression->identifier.name)
 
   std::shared_ptr<IRObject> obj = current_scope->GetFromAnywhere(expression->identifier);
+
   if (obj->GetType()->IsClass()) {
     last_expr_class = std::reinterpret_pointer_cast<ClassType>(obj->GetType());
   }
@@ -172,7 +173,7 @@ void LLVMIRVisitor::Visit(IdentifierExpression* expression) {
         {
           llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 0),
           llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)),
-                                       table->GetClassTable()->GetInfo(current_class).GetFieldNo(expression->identifier))}
+                                       symbol_tree->GetClassTable()->GetInfo(current_class).GetFieldNo(expression->identifier))}
       )
     );
   }
@@ -570,10 +571,36 @@ void LLVMIRVisitor::Visit(MathOpExpression* expression) {
 }
 
 void LLVMIRVisitor::Visit(ArrayIdxExpression* expression) {
-  assert(!"not supported");
+  llvm::Value* arr_ptr = Accept(expression->expr); //ptr to array struct
+  llvm::Value* idx = Accept(expression->idx); //int
+
+  llvm::Value* gep = builder->CreateGEP(arr_ptr->getType(),
+                                        builder->CreateLoad(arr_ptr->getType(), arr_ptr),
+                                        llvm::ArrayRef<llvm::Value*>({
+                                          llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 0),
+                                          llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 1)})
+                                          );
+
+  stack.Put(builder->CreateGEP(
+    arr_ptr->getType(),
+    builder->CreateLoad(arr_ptr->getType(), arr_ptr),
+    llvm::ArrayRef<llvm::Value*>({idx})
+    )
+  );
 }
 
 void LLVMIRVisitor::Visit(LengthExpression* expression) {
+  llvm::Value* arr_ptr = Accept(expression->identifier); //ptr to array struct
+
+  stack.Put(builder->CreateGEP(
+  arr_ptr->getType(),
+  builder->CreateLoad(arr_ptr->getType(), arr_ptr),
+    llvm::ArrayRef<llvm::Value*>({
+        llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 0),
+        llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 1)})
+    )
+  );
+
   assert(!"not supported");
 }
 
@@ -642,8 +669,7 @@ void LLVMIRVisitor::Visit(ArrayLValue* statement) {
 }
 
 void LLVMIRVisitor::Visit(FieldLValue* statement) {
-  assert(!"pass");
-  //not used
+  assert(!"not used");
 }
 
 void LLVMIRVisitor::Visit(IdentifierLValue* statement) {
@@ -658,9 +684,9 @@ void LLVMIRVisitor::Visit(IdentifierLValue* statement) {
         {
           llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 0),
           llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)),
-                                       table->GetClassTable()->GetInfo(current_class).GetFieldNo(statement->name))}
+                                       symbol_tree->GetClassTable()->GetInfo(current_class).GetFieldNo(statement->name))}
+        )
       )
-    )
     );
     /*
      *
@@ -714,12 +740,12 @@ void LLVMIRVisitor::ScopeGoDown() {
 }
 
 void LLVMIRVisitor::GenerateClassesDecl() {
-  for (const auto& entry: table->GetClassTable()->GetAllInfo()) {
+  for (const auto& entry: symbol_tree->GetClassTable()->GetAllInfo()) {
     LOG_DEBUG("Created {}", entry.first->ToString())
     llvm::StructType::create(*context, llvm::StringRef(entry.first->GetName().name));
   }
 
-  for (const auto& entry: table->GetClassTable()->GetAllInfo()) {
+  for (const auto& entry: symbol_tree->GetClassTable()->GetAllInfo()) {
     llvm::StructType* class_type = module->getTypeByName(entry.first->GetName().name);
     std::vector<llvm::Type*> fields_types;
     for (const auto& field: entry.second.GetAllFields()) {
@@ -730,7 +756,7 @@ void LLVMIRVisitor::GenerateClassesDecl() {
 }
 
 void LLVMIRVisitor::GenerateMethodsDecl() {
-  for (const auto& class_entry: table->GetClassTable()->GetAllInfo()) {
+  for (const auto& class_entry: symbol_tree->GetClassTable()->GetAllInfo()) {
     for (const auto& method_entry: class_entry.second.GetAllMethods()) {
       //first arg is class
       std::vector<llvm::Type*> param_types({GetLLVMType(class_entry.first)});
@@ -763,12 +789,33 @@ std::string LLVMIRVisitor::GenMethodName(SharedPtr<ClassType> class_type,
   return class_type->GetName().name + "@" + method_name;
 }
 
+std::string LLVMIRVisitor::GenArrayName(const SharedPtr<ArrayType>& array_type) {
+  return "array@" + array_type->GetElemType()->ToString();
+}
+
 llvm::Type* LLVMIRVisitor::GetLLVMType(const SharedPtr<Type>& type) {
   if (type->IsClass()) {
     return module->getTypeByName(
       llvm::StringRef(
         std::reinterpret_pointer_cast<ClassType>(type)->GetName().name
       ))->getPointerTo();
+  } else if (type->IsArray()) {
+    SharedPtr<ArrayType> array_type = std::reinterpret_pointer_cast<ArrayType>(type);
+    
+    llvm::StructType* llvm_array_type = module->getTypeByName(llvm::StringRef(GenArrayName(array_type)));
+
+    if (llvm_array_type == nullptr) {
+      llvm::StructType::create(*context, llvm::StringRef(GenArrayName(array_type)));
+      llvm_array_type = module->getTypeByName(llvm::StringRef(GenArrayName(array_type)));
+
+      std::vector<llvm::Type*> fields_types;
+
+      fields_types.push_back(GetLLVMType(array_type->GetElemType()));
+      fields_types.push_back(builder->getInt32Ty()->getPointerTo());
+      llvm_array_type->setBody(llvm::ArrayRef<llvm::Type*>(fields_types));
+    }
+
+    return llvm_array_type->getPointerTo();
   } else {
     switch (type->GetTypeId()) {
       case Type::TypeID::VoidTy:

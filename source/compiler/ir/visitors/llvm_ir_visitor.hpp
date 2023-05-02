@@ -123,8 +123,9 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
   void GenerateMethodsDecl();
 
   std::string GenMethodName(SharedPtr<ClassType> class_type, SharedPtr<MethodType> method_type);
-
   std::string GenMethodName(SharedPtr<ClassType> class_type, const std::string& method_name);
+
+  std::string GenArrayName(const SharedPtr<ArrayType>& array_type);
 
   void ScopeGoUp();
 
@@ -146,7 +147,7 @@ class LLVMIRVisitor : public Visitor, public VisitorHelper<llvm::Value*> {
 
   void CastToCommonType(llvm::Value** lhs, llvm::Value** rhs);
 
-  std::unique_ptr<SymbolLayerTree> table;
+  std::unique_ptr<SymbolLayerTree> symbol_tree;
   SymbolLayerTree::Iterator current_scope;
 
   ProgramStack<llvm::Value*> stack;
