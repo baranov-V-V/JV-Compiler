@@ -22,16 +22,16 @@ Type::TypeID Type::GetTypeId() const {
 std::string Type::ToString() const {
   switch (id) {
     case TypeID::IntTy:
-      return "int";
+      return "Int";
 
     case TypeID::VoidTy:
-      return "void";
+      return "Void";
 
     case TypeID::FloatTy:
-      return "float";
+      return "Float";
 
     case TypeID::BoolTy:
-      return "bool";
+      return "Bool";
 
     default:
       LOG_CRITICAL("Unknown basic type [{}]", (int) id)

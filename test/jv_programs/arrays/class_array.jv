@@ -1,0 +1,14 @@
+class A {
+  public static void main() {
+    Foo[] arr_foo;
+
+    Foo foo;
+
+    foo = arr_foo[4];
+  }
+}
+
+class Foo {
+ int a;
+ int b;
+}

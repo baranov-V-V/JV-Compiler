@@ -571,37 +571,50 @@ void LLVMIRVisitor::Visit(MathOpExpression* expression) {
 }
 
 void LLVMIRVisitor::Visit(ArrayIdxExpression* expression) {
-  llvm::Value* arr_ptr = Accept(expression->expr); //ptr to array struct
+  llvm::Value* arr_struct_ptr = Accept(expression->expr); //ptr to array struct
   llvm::Value* idx = Accept(expression->idx); //int
 
-  llvm::Value* gep = builder->CreateGEP(arr_ptr->getType(),
-                                        builder->CreateLoad(arr_ptr->getType(), arr_ptr),
-                                        llvm::ArrayRef<llvm::Value*>({
-                                          llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 0),
-                                          llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 1)})
-                                          );
+  llvm::PointerType* arr_struct_type = (llvm::PointerType*) arr_struct_ptr->getType();
 
-  stack.Put(builder->CreateGEP(
-    arr_ptr->getType(),
-    builder->CreateLoad(arr_ptr->getType(), arr_ptr),
+  llvm::Value* arr_ptr = builder->CreateGEP(
+    arr_struct_type->getElementType(),
+    arr_struct_ptr,
+    //builder->CreateLoad(arr_struct_ptr->getType(), arr_struct_ptr),
+    llvm::ArrayRef<llvm::Value*>({
+      llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 0),
+      llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 0)
+    })
+  );
+
+  //stack.Put(arr_ptr);
+  //builder->CreateLoad(arr_ptr->getType()->getPointerElementType(),
+
+  stack.Put(builder->CreateLoad(arr_ptr->getType()->getPointerElementType()->getPointerElementType(), builder->CreateGEP(
+    arr_ptr->getType()->getPointerElementType()->getPointerElementType(),
+    //arr_ptr,
+    builder->CreateLoad(arr_ptr->getType()->getPointerElementType(), arr_ptr),
     llvm::ArrayRef<llvm::Value*>({idx})
     )
-  );
+  ));
+
 }
 
 void LLVMIRVisitor::Visit(LengthExpression* expression) {
-  llvm::Value* arr_ptr = Accept(expression->identifier); //ptr to array struct
+  llvm::Value* arr_struct_ptr = Accept(expression->identifier); //ptr to array struct
 
-  stack.Put(builder->CreateGEP(
-  arr_ptr->getType(),
-  builder->CreateLoad(arr_ptr->getType(), arr_ptr),
+  llvm::PointerType* arr_struct_type = (llvm::PointerType*) arr_struct_ptr->getType();
+
+  llvm::Value* len = builder->CreateGEP(
+    arr_struct_type->getElementType(),
+    arr_struct_ptr,
+    //builder->CreateLoad(arr_struct_ptr->getType(), arr_struct_ptr),
     llvm::ArrayRef<llvm::Value*>({
-        llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 0),
-        llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 1)})
-    )
+                                   llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 0),
+                                   llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 1)
+                                 })
   );
 
-  assert(!"not supported");
+  stack.Put(builder->CreateLoad(len->getType()->getPointerElementType(), len));
 }
 
 void LLVMIRVisitor::Visit(MethodCallExpression* expression) {
@@ -680,11 +693,10 @@ void LLVMIRVisitor::Visit(IdentifierLValue* statement) {
     stack.Put(builder->CreateGEP(
     module->getTypeByName(current_class->GetName().name),
       builder->CreateLoad(GetLLVMType(current_class), current_this),
-      llvm::ArrayRef<llvm::Value*>(
-        {
-          llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 0),
-          llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)),
-                                       symbol_tree->GetClassTable()->GetInfo(current_class).GetFieldNo(statement->name))}
+      llvm::ArrayRef<llvm::Value*>({
+        llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)), 0),
+        llvm::ConstantInt::getSigned((llvm::Type::getInt32Ty(*context)),
+                                      symbol_tree->GetClassTable()->GetInfo(current_class).GetFieldNo(statement->name))}
         )
       )
     );
@@ -775,7 +787,6 @@ void LLVMIRVisitor::GenerateMethodsDecl() {
         method_type, llvm::Function::InternalLinkage,
         GenMethodName(class_entry.first, method_entry.second),
         *module);
-
     }
   }
 }
@@ -790,7 +801,7 @@ std::string LLVMIRVisitor::GenMethodName(SharedPtr<ClassType> class_type,
 }
 
 std::string LLVMIRVisitor::GenArrayName(const SharedPtr<ArrayType>& array_type) {
-  return "array@" + array_type->GetElemType()->ToString();
+  return "Array" + array_type->GetElemType()->ToString();
 }
 
 llvm::Type* LLVMIRVisitor::GetLLVMType(const SharedPtr<Type>& type) {
@@ -810,8 +821,8 @@ llvm::Type* LLVMIRVisitor::GetLLVMType(const SharedPtr<Type>& type) {
 
       std::vector<llvm::Type*> fields_types;
 
-      fields_types.push_back(GetLLVMType(array_type->GetElemType()));
-      fields_types.push_back(builder->getInt32Ty()->getPointerTo());
+      fields_types.push_back(GetLLVMType(array_type->GetElemType())->getPointerTo()); //0th field (data)
+      fields_types.push_back(builder->getInt32Ty());  //1th field (size)
       llvm_array_type->setBody(llvm::ArrayRef<llvm::Type*>(fields_types));
     }
 

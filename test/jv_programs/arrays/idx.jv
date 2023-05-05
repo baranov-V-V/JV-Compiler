@@ -1,0 +1,10 @@
+class A {
+  public static void main() {
+    int a;
+    int b;
+
+    int[] arr_a;
+
+    b = arr_a[3];
+  }
+}
